@@ -24,6 +24,8 @@
 | **02-Oct-2026** | 100 | `https://` | **Batch 13:** 1 Fresh Unsubmitted (`/trust-center`) + Rotational Priority Re-crawl (100 URLs) | 1164 | **0 (Sitemap 100% Submitted)** |
 | **03-Oct-2026** | 100 | `https://` | **Batch 14:** Rotational Priority Re-crawl (100 URLs) | 1264 | **0 (Sitemap 100% Submitted)** |
 
+| **04-Oct-2026** | 100 | `https://` | **Batch 15:** Rotational Priority Re-crawl (100 URLs) | 1364 | **0 (Sitemap 100% Submitted)** |
+| **05-Oct-2026** | 100 | `https://` | **Batch 16:** Rotational Priority Re-crawl (100 URLs) | 1464 | **0 (Sitemap 100% Submitted)** |
 ### 🚀 Immediate Morning Priority Queue (Bing URL Submission)
 1. `https://chittortech.in/email-deliverability-services`
 2. `https://chittortech.in/dmarc-dkim-spf-setup`

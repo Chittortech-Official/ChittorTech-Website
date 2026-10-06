@@ -23,8 +23,10 @@
 | **29-Sep-2026** | 150 | `https://` | **Batch 8:** 6 Fresh High-Ticket Service Pages + 144 Priority Re-crawl URLs | 726 | 0 | Done |
 | **30-Sep-2026** | 150 | `https://` | **Batch 9:** Rotational Priority Re-crawl (150 URLs) | 726 | 0 | Done |
 | **02-Oct-2026** | 150 | `https://` | **Batch 14:** 1 Fresh Unsubmitted (`/trust-center`) + Rotational Priority Re-crawl (150 URLs) | 1364 | 0 | Done |
-| **03-Oct-2026** | 150 | `https://` | **Batch 15:** Rotational Priority Re-crawl (150 URLs) | 1514 | 0 | **Ready for Morning Submission** |
+| **03-Oct-2026** | 150 | `https://` | **Batch 15:** Rotational Priority Re-crawl (150 URLs) | 1514 | 0 | Done |
 
+| **04-Oct-2026** | 150 | `https://` | **Batch 16:** Rotational Priority Re-crawl (150 URLs) | 1664 | 0 | Done |
+| **05-Oct-2026** | 150 | `https://` | **Batch 17:** Rotational Priority Re-crawl (150 URLs) | 1814 | 0 | **Ready for Morning Submission** |
 ### 🚀 Immediate Morning Priority Queue (Yandex Re-crawl Queue)
 1. `https://chittortech.in/email-deliverability-services`
 2. `https://chittortech.in/dmarc-dkim-spf-setup`
