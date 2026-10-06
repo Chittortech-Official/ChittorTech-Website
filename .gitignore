@@ -52,6 +52,7 @@ COMPANY_REGISTRATIONS.md
 /*_batch.txt
 yandex_*.txt
 bing_*.txt
+SEO-History/
 
 # local utility scripts (keep generate-sitemap.js and ensure-dual-routes.js for CI/CD build)
 lead-audit-generator.js
