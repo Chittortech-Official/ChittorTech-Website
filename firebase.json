@@ -30,6 +30,51 @@
         "source": "/pos_bill/lead/inquiry_form_justdial",
         "destination": "/contact-us",
         "type": 301
+      },
+      {
+        "source": "/footwear-store",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/pos",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/garments",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/textile",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/cosmetic-store",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/pet-shop",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/gift-shop",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/home-decor-furniture",
+        "destination": "/smart-retail",
+        "type": 301
+      },
+      {
+        "source": "/readymade-garment",
+        "destination": "/smart-retail",
+        "type": 301
       }
     ],
     "headers": [
