@@ -33,6 +33,31 @@ export default function TrustCenterPage() {
       },
       {
         "@type": "PropertyValue",
+        "name": "Asian Development Bank (ADB CMS Number)",
+        "value": "051187"
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Singapore Government GeBIZ Trading Partner Reference",
+        "value": "Y309075"
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "Singapore Government GeBIZ Partner ID",
+        "value": "946298091482"
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "United Nations Global Marketplace (UNGM) Vendor Entity",
+        "value": "ChittorTech UNGM Vendor"
+      },
+      {
+        "@type": "PropertyValue",
+        "name": "United States SAM.gov Federal Contractor",
+        "value": "ChittorTech SAM.gov Registered Entity"
+      },
+      {
+        "@type": "PropertyValue",
         "name": "iStart Rajasthan Q-Rate Assessment",
         "value": "32 Q-Rate Score"
       }
@@ -46,6 +71,10 @@ export default function TrustCenterPage() {
       "addressCountry": "IN"
     },
     "sameAs": [
+      "https://selfservice.adb.org/",
+      "https://www.gebiz.gov.sg/",
+      "https://www.ungm.org/",
+      "https://sam.gov/",
       "https://www.linkedin.com/company/chittortech",
       "https://clutch.co/profile/chittortech",
       "https://www.goodfirms.co/company/chittortech",
@@ -142,32 +171,64 @@ export default function TrustCenterPage() {
           margin: 0 auto 32px;
           line-height: 1.65;
         }
-        .tc-stats-row {
+        /* ─── Hero Marquee Badges (Dual Rotating Rows, Clean Edge-to-Edge, Zero Side Shadow) ─── */
+        .tc-hero-marquee-wrap {
+          margin-top: 36px;
+          width: 100%;
+          position: relative;
+          overflow: hidden;
           display: flex;
-          justify-content: center;
+          flex-direction: column;
           gap: 12px;
-          flex-wrap: wrap;
+          padding: 6px 0;
+        }
+        .tc-hero-marquee-track {
+          display: flex;
+          gap: 12px;
+          width: max-content;
+        }
+        .tc-hero-marquee-track.left {
+          animation: tcMarqueeScrollLeft 35s linear infinite;
+        }
+        .tc-hero-marquee-track.right {
+          animation: tcMarqueeScrollRight 40s linear infinite;
+        }
+        .tc-hero-marquee-wrap:hover .tc-hero-marquee-track {
+          animation-play-state: paused;
+        }
+        @keyframes tcMarqueeScrollLeft {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes tcMarqueeScrollRight {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
         }
         .tc-stat-badge {
           background: rgba(255, 255, 255, 0.08);
           backdrop-filter: blur(12px);
           border: 1px solid rgba(255, 255, 255, 0.18);
-          border-radius: 12px;
-          padding: 9px 16px;
-          display: flex;
+          border-radius: 50px;
+          padding: 8px 18px;
+          display: inline-flex;
           align-items: center;
           gap: 8px;
-          font-size: 0.85rem;
+          font-size: 0.84rem;
           font-weight: 600;
           color: #f1f5f9 !important;
           transition: all 0.25s ease;
+          white-space: nowrap;
+          cursor: default;
+          user-select: none;
         }
         .tc-stat-badge:hover {
           transform: translateY(-2px);
           border-color: #38bdf8;
-          background: rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.16);
+          color: #ffffff !important;
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
         }
-        .tc-stat-badge i { color: #38bdf8; font-size: 1rem; }
+        .tc-stat-badge i { color: #38bdf8; font-size: 0.95rem; }
 
         /* ─── Sections ─── */
         .tc-section {
@@ -250,6 +311,10 @@ export default function TrustCenterPage() {
         }
         .tc-card-icon.gov { background: #eff6ff; color: #2563eb; }
         .tc-card-icon.global { background: #f0fdf4; color: #059669; }
+        .tc-card-icon.adb { background: #eff6ff; color: #1e40af; }
+        .tc-card-icon.gebiz { background: #fef2f2; color: #dc2626; }
+        .tc-card-icon.un { background: #f0f9ff; color: #0284c7; }
+        .tc-card-icon.sam { background: #f8fafc; color: #0f172a; border: 1.5px solid #cbd5e1; }
         .tc-card-icon.clutch { background: #fef2f2; color: #ef4444; }
         .tc-card-icon.goodfirms { background: #eff6ff; color: #1d4ed8; }
         .tc-card-icon.gmb { background: #f0fdf4; color: #16a34a; }
@@ -608,48 +673,322 @@ export default function TrustCenterPage() {
       `}</style>
 
       {/* ─── Hero Section ─── */}
+      {/* ─── Hero Section ─── */}
       <section className="tc-hero">
         <div className="container text-center">
           <div className="tc-pill">
-            <i className="fa-solid fa-shield-halved"></i> Official Verification &amp; Compliance Center
+            <i className="fa-solid fa-earth-americas"></i> International Accreditations &amp; Global Procurement Center
           </div>
           <h1 className="tc-hero-title">
-            Enterprise Trust, <span>Validated Credentials</span> &amp; Accreditations
+            Global Enterprise Trust, <span>International Accreditations</span> &amp; Validated Credentials
           </h1>
           <p className="tc-hero-subtitle">
-            ChittorTech operates with 100% legal transparency and regulatory compliance. 
-            From Government of India statutory trade codes to state startup incubation and verified developer ecosystems, 
-            explore our corporate identity records safeguarding every client engagement.
+            ChittorTech operates with 100% legal transparency and regulatory compliance across international multilateral banks, global government procurement portals, and Indian statutory registries. From Asian Development Bank (ADB) and Singapore Government (GeBIZ) empanelment to DGFT IEC and state incubation, explore our verified corporate credentials.
           </p>
-          <div className="tc-stats-row">
-            <span className="tc-stat-badge">
-              <i className="fa-solid fa-building-columns"></i> DGFT IEC: <strong>OTWPS1188A</strong>
-            </span>
-            <span className="tc-stat-badge">
-              <i className="fa-solid fa-lightbulb"></i> Startup India Recognized
-            </span>
-            <span className="tc-stat-badge">
-              <i className="fa-solid fa-award"></i> iStart Rajasthan: <strong>32 Q-Rate</strong>
-            </span>
-            <span className="tc-stat-badge">
-              <i className="fa-solid fa-flag"></i> MSME Govt. of India
-            </span>
-            <span className="tc-stat-badge">
-              <i className="fa-brands fa-google-play"></i> Google Play Verified Developer
-            </span>
-            <span className="tc-stat-badge">
-              <i className="fa-brands fa-apple"></i> Apple Developer (iOS) Track
-            </span>
+        </div>
+
+        {/* Dual Dynamic Rotating Marquee Tracks (Smooth Infinite Scroll on Desktop & Mobile, Edge-to-Edge) */}
+        <div className="tc-hero-marquee-wrap">
+          {/* Track 1: Scrolling Left */}
+          <div className="tc-hero-marquee-track left">
+            {[
+              { icon: "fa-solid fa-landmark", label: "ADB CMS Empaneled", val: "#051187" },
+              { icon: "fa-solid fa-city", label: "SG GeBIZ Partner", val: "#Y309075" },
+              { icon: "fa-solid fa-globe", label: "UNGM Supplier", val: "United Nations" },
+              { icon: "fa-solid fa-flag-usa", label: "SAM.gov Contractor", val: "US Federal" },
+              { icon: "fa-solid fa-building-columns", label: "DGFT IEC Code", val: "OTWPS1188A" },
+            ].concat([
+              { icon: "fa-solid fa-landmark", label: "ADB CMS Empaneled", val: "#051187" },
+              { icon: "fa-solid fa-city", label: "SG GeBIZ Partner", val: "#Y309075" },
+              { icon: "fa-solid fa-globe", label: "UNGM Supplier", val: "United Nations" },
+              { icon: "fa-solid fa-flag-usa", label: "SAM.gov Contractor", val: "US Federal" },
+              { icon: "fa-solid fa-building-columns", label: "DGFT IEC Code", val: "OTWPS1188A" },
+            ]).concat([
+              { icon: "fa-solid fa-landmark", label: "ADB CMS Empaneled", val: "#051187" },
+              { icon: "fa-solid fa-city", label: "SG GeBIZ Partner", val: "#Y309075" },
+              { icon: "fa-solid fa-globe", label: "UNGM Supplier", val: "United Nations" },
+              { icon: "fa-solid fa-flag-usa", label: "SAM.gov Contractor", val: "US Federal" },
+              { icon: "fa-solid fa-building-columns", label: "DGFT IEC Code", val: "OTWPS1188A" },
+            ]).map((b, idx) => (
+              <span key={idx} className="tc-stat-badge">
+                <i className={b.icon}></i> {b.label}: <strong>{b.val}</strong>
+              </span>
+            ))}
+          </div>
+
+          {/* Track 2: Scrolling Right */}
+          <div className="tc-hero-marquee-track right">
+            {[
+              { icon: "fa-solid fa-lightbulb", label: "Startup India", val: "DPIIT Recognized" },
+              { icon: "fa-solid fa-award", label: "iStart Rajasthan", val: "32 Q-Rate Assessed" },
+              { icon: "fa-solid fa-flag", label: "MSME Ministry", val: "Govt. of India" },
+              { icon: "fa-brands fa-google-play", label: "Google Play Console", val: "Verified Developer" },
+              { icon: "fa-brands fa-apple", label: "Apple Developer Track", val: "iOS & macOS" },
+            ].concat([
+              { icon: "fa-solid fa-lightbulb", label: "Startup India", val: "DPIIT Recognized" },
+              { icon: "fa-solid fa-award", label: "iStart Rajasthan", val: "32 Q-Rate Assessed" },
+              { icon: "fa-solid fa-flag", label: "MSME Ministry", val: "Govt. of India" },
+              { icon: "fa-brands fa-google-play", label: "Google Play Console", val: "Verified Developer" },
+              { icon: "fa-brands fa-apple", label: "Apple Developer Track", val: "iOS & macOS" },
+            ]).concat([
+              { icon: "fa-solid fa-lightbulb", label: "Startup India", val: "DPIIT Recognized" },
+              { icon: "fa-solid fa-award", label: "iStart Rajasthan", val: "32 Q-Rate Assessed" },
+              { icon: "fa-solid fa-flag", label: "MSME Ministry", val: "Govt. of India" },
+              { icon: "fa-brands fa-google-play", label: "Google Play Console", val: "Verified Developer" },
+              { icon: "fa-brands fa-apple", label: "Apple Developer Track", val: "iOS & macOS" },
+            ]).map((b, idx) => (
+              <span key={idx} className="tc-stat-badge">
+                <i className={b.icon}></i> {b.label}: <strong>{b.val}</strong>
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ─── Section 1: Government of India & State Accreditations ─── */}
+      {/* ─── Premier Section: Global Government Procurement & Multilateral Tender Empanelment ─── */}
+      <section className="tc-section" style={{ background: "#ffffff", borderBottom: "1.5px solid #e2e8f0" }}>
+        <div className="container">
+          <div className="tc-sec-head">
+            <span className="tc-sec-tag" style={{ color: "#1e40af" }}>Global Procurement &amp; Multilateral Empanelment</span>
+            <h2 className="tc-sec-title">International Government &amp; Multilateral Tender Registrations</h2>
+            <p className="tc-sec-desc">
+              ChittorTech is formally empaneled and registered across global multilateral development banks, national governments, and the United Nations procurement system for cross-border public sector IT consulting, AI implementations, and enterprise software contracts.
+            </p>
+          </div>
+
+          <div className="row g-4">
+            {/* Card 1: Asian Development Bank (ADB CMS) */}
+            <div className="col-lg-6 col-md-12">
+              <div className="tc-card" style={{ borderColor: "#bfdbfe" }}>
+                <div className="tc-card-top">
+                  <div className="tc-card-icon adb">
+                    <i className="fa-solid fa-landmark"></i>
+                  </div>
+                  <span className="tc-status-pill verified" style={{ background: "#eff6ff", color: "#1d4ed8", borderColor: "#bfdbfe" }}>
+                    <i className="fa-solid fa-circle-check"></i> Empaneled Consulting Entity
+                  </span>
+                </div>
+                <h3 className="tc-card-title">Asian Development Bank (ADB CMS)</h3>
+                <p className="tc-card-sub">
+                  Empaneled Consulting Entity on the Asian Development Bank Consultant Management System (CMS). Eligible for multilateral sovereign and non-sovereign ICT, digital public infrastructure, AI engineering, and technical advisory tenders across 68 member economies.
+                </p>
+                <div className="tc-meta-box">
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">CMS Number</span>
+                    <span className="tc-meta-val">
+                      051187
+                      <button
+                        className="tc-copy-btn"
+                        onClick={() => handleCopy("051187", "adb_cms")}
+                        title="Copy CMS Number"
+                      >
+                        <i className={copiedId === "adb_cms" ? "fa-solid fa-check text-success" : "fa-regular fa-copy"}></i>
+                      </button>
+                    </span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Empaneled Entity</span>
+                    <span className="tc-meta-val">ChittorTech</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Authorized Account</span>
+                    <span className="tc-meta-val">business@chittortech.in</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Tender Jurisdiction</span>
+                    <span className="tc-meta-val">Asia-Pacific (68 Member Nations)</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">HQ / Secretariat</span>
+                    <span className="tc-meta-val">ADB Headquarters, Manila, PH</span>
+                  </div>
+                </div>
+                <a
+                  href="https://selfservice.adb.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tc-btn-verify"
+                  style={{ background: "#eff6ff", color: "#1d4ed8", borderColor: "#bfdbfe" }}
+                >
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Verify on ADB CMS Portal
+                </a>
+              </div>
+            </div>
+
+            {/* Card 2: Singapore Government (GeBIZ) */}
+            <div className="col-lg-6 col-md-12">
+              <div className="tc-card" style={{ borderColor: "#fecaca" }}>
+                <div className="tc-card-top">
+                  <div className="tc-card-icon gebiz">
+                    <i className="fa-solid fa-city"></i>
+                  </div>
+                  <span className="tc-status-pill verified" style={{ background: "#fef2f2", color: "#b91c1c", borderColor: "#fecaca" }}>
+                    <i className="fa-solid fa-circle-check"></i> Registered Trading Partner
+                  </span>
+                </div>
+                <h3 className="tc-card-title">Singapore Government (GeBIZ)</h3>
+                <p className="tc-card-sub">
+                  Officially registered Trading Partner on GeBIZ — the Republic of Singapore Government’s one-stop e-procurement portal. Qualified to participate in Singapore public sector ICT tenders, government quotations, and statutory board software engineering contracts.
+                </p>
+                <div className="tc-meta-box">
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Trading Partner Ref</span>
+                    <span className="tc-meta-val">
+                      Y309075
+                      <button
+                        className="tc-copy-btn"
+                        onClick={() => handleCopy("Y309075", "gebiz_ref")}
+                        title="Copy Ref No"
+                      >
+                        <i className={copiedId === "gebiz_ref" ? "fa-solid fa-check text-success" : "fa-regular fa-copy"}></i>
+                      </button>
+                    </span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">GeBIZ Partner ID</span>
+                    <span className="tc-meta-val">
+                      946298091482
+                      <button
+                        className="tc-copy-btn"
+                        onClick={() => handleCopy("946298091482", "gebiz_id")}
+                        title="Copy GeBIZ ID"
+                      >
+                        <i className={copiedId === "gebiz_id" ? "fa-solid fa-check text-success" : "fa-regular fa-copy"}></i>
+                      </button>
+                    </span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Authorised Rep</span>
+                    <span className="tc-meta-val">Kush Sharma</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Registered Business Email</span>
+                    <span className="tc-meta-val">contact@chittortech.in</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Jurisdiction</span>
+                    <span className="tc-meta-val">Republic of Singapore (Govt ICT)</span>
+                  </div>
+                </div>
+                <a
+                  href="https://www.gebiz.gov.sg/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tc-btn-verify"
+                  style={{ background: "#fef2f2", color: "#b91c1c", borderColor: "#fecaca" }}
+                >
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Verify on Singapore GeBIZ Portal
+                </a>
+              </div>
+            </div>
+
+            {/* Card 3: United Nations Global Marketplace (UNGM) */}
+            <div className="col-lg-6 col-md-12">
+              <div className="tc-card" style={{ borderColor: "#bae6fd" }}>
+                <div className="tc-card-top">
+                  <div className="tc-card-icon un">
+                    <i className="fa-solid fa-globe"></i>
+                  </div>
+                  <span className="tc-status-pill verified" style={{ background: "#f0f9ff", color: "#0284c7", borderColor: "#bae6fd" }}>
+                    <i className="fa-solid fa-circle-check"></i> Registered UN Supplier
+                  </span>
+                </div>
+                <h3 className="tc-card-title">United Nations Global Marketplace (UNGM)</h3>
+                <p className="tc-card-sub">
+                  Officially registered vendor on the United Nations Global Marketplace (UNGM) — the common procurement portal for the entire UN system. Eligible to bid for IT, custom software development, digital platforms, and technical consultancy across 30+ UN bodies.
+                </p>
+                <div className="tc-meta-box">
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Procurement Portal</span>
+                    <span className="tc-meta-val">UNGM (United Nations)</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Participating Agencies</span>
+                    <span className="tc-meta-val">UN Secretariat, UNDP, UNICEF, WHO</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Vendor Entity</span>
+                    <span className="tc-meta-val">ChittorTech</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Procurement Category</span>
+                    <span className="tc-meta-val">IT, Software &amp; Tech Consulting</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Geographic Eligibility</span>
+                    <span className="tc-meta-val">193 UN Member Nations</span>
+                  </div>
+                </div>
+                <a
+                  href="https://www.ungm.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tc-btn-verify"
+                  style={{ background: "#f0f9ff", color: "#0284c7", borderColor: "#bae6fd" }}
+                >
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Verify on UNGM Portal
+                </a>
+              </div>
+            </div>
+
+            {/* Card 4: United States Federal Contractor (SAM.gov & NCAGE) */}
+            <div className="col-lg-6 col-md-12">
+              <div className="tc-card" style={{ borderColor: "#cbd5e1" }}>
+                <div className="tc-card-top">
+                  <div className="tc-card-icon sam">
+                    <i className="fa-solid fa-flag-usa"></i>
+                  </div>
+                  <span className="tc-status-pill verified" style={{ background: "#f8fafc", color: "#0f172a", borderColor: "#cbd5e1" }}>
+                    <i className="fa-solid fa-circle-check"></i> US Federal Contractor
+                  </span>
+                </div>
+                <h3 className="tc-card-title">US Federal Contractor (SAM.gov &amp; NCAGE)</h3>
+                <p className="tc-card-sub">
+                  Registered commercial and government entity in the United States Federal System for Award Management (SAM.gov) and NATO Commercial and Government Entity (NCAGE) catalog. Authorized for US federal government contracts, solicitations, grants, and subcontracting.
+                </p>
+                <div className="tc-meta-box">
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Federal Portal</span>
+                    <span className="tc-meta-val">SAM.gov (US Federal Government)</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Administering Agency</span>
+                    <span className="tc-meta-val">US General Services Administration (GSA)</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">International Registry</span>
+                    <span className="tc-meta-val">NATO CAGE / NCAGE Entity Track</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Registered Contractor</span>
+                    <span className="tc-meta-val">ChittorTech</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Contract Scope</span>
+                    <span className="tc-meta-val">US Defense &amp; Civilian Tech Solicitations</span>
+                  </div>
+                </div>
+                <a
+                  href="https://sam.gov/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tc-btn-verify"
+                  style={{ background: "#f8fafc", color: "#0f172a", borderColor: "#cbd5e1" }}
+                >
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Verify on SAM.gov Portal
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Section 2: Statutory Government of India & State Accreditations ─── */}
       <section className="tc-section">
         <div className="container">
           <div className="tc-sec-head">
-            <span className="tc-sec-tag">Statutory &amp; Government Recognition</span>
-            <h2 className="tc-sec-title">Official Accreditations &amp; Registrations</h2>
+            <span className="tc-sec-tag">Statutory &amp; National Recognition</span>
+            <h2 className="tc-sec-title">Government of India &amp; State Accreditations</h2>
             <p className="tc-sec-desc">
               Direct verification records issued by the Government of India, DPIIT, and the Department of Information Technology &amp; Communication (DoIT&amp;C).
             </p>
@@ -1848,6 +2187,162 @@ export default function TrustCenterPage() {
           </div>
 
           <div className="tc-matrix-grid">
+            {/* Record: ADB CMS */}
+            <div className="tc-matrix-card">
+              <div>
+                <div className="tc-matrix-header">
+                  <div className="tc-matrix-top-bar">
+                    <div className="tc-matrix-icon adb" style={{ background: "#eff6ff", color: "#1e40af" }}>
+                      <i className="fa-solid fa-landmark"></i>
+                    </div>
+                    <span className="tc-status-pill verified">
+                      <i className="fa-solid fa-circle-check"></i> Empaneled
+                    </span>
+                  </div>
+                  <div className="tc-matrix-title-wrap">
+                    <h4 className="tc-matrix-title">Asian Development Bank</h4>
+                    <p className="tc-matrix-authority">ADB Consultant Management System</p>
+                  </div>
+                </div>
+
+                <div className="tc-matrix-body">
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">CMS Number</span>
+                    <span className="tc-matrix-val">#051187</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Portal User</span>
+                    <span className="tc-matrix-val">business@chittortech.in</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Scope</span>
+                    <span className="tc-matrix-val">Asia-Pacific (68 Nations)</span>
+                  </div>
+                </div>
+              </div>
+
+              <a href="https://selfservice.adb.org/" target="_blank" rel="noopener noreferrer" className="tc-matrix-btn">
+                <i className="fa-solid fa-arrow-up-right-from-square"></i> Live ADB Portal
+              </a>
+            </div>
+
+            {/* Record: Singapore GeBIZ */}
+            <div className="tc-matrix-card">
+              <div>
+                <div className="tc-matrix-header">
+                  <div className="tc-matrix-top-bar">
+                    <div className="tc-matrix-icon gebiz" style={{ background: "#fef2f2", color: "#dc2626" }}>
+                      <i className="fa-solid fa-city"></i>
+                    </div>
+                    <span className="tc-status-pill verified">
+                      <i className="fa-solid fa-circle-check"></i> Registered
+                    </span>
+                  </div>
+                  <div className="tc-matrix-title-wrap">
+                    <h4 className="tc-matrix-title">Singapore Government</h4>
+                    <p className="tc-matrix-authority">GeBIZ e-Procurement Portal</p>
+                  </div>
+                </div>
+
+                <div className="tc-matrix-body">
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Partner Ref</span>
+                    <span className="tc-matrix-val">#Y309075</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">GeBIZ ID</span>
+                    <span className="tc-matrix-val">946298091482</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Authorised Rep</span>
+                    <span className="tc-matrix-val">Kush Sharma</span>
+                  </div>
+                </div>
+              </div>
+
+              <a href="https://www.gebiz.gov.sg/" target="_blank" rel="noopener noreferrer" className="tc-matrix-btn">
+                <i className="fa-solid fa-arrow-up-right-from-square"></i> Live GeBIZ Portal
+              </a>
+            </div>
+
+            {/* Record: UNGM */}
+            <div className="tc-matrix-card">
+              <div>
+                <div className="tc-matrix-header">
+                  <div className="tc-matrix-top-bar">
+                    <div className="tc-matrix-icon un" style={{ background: "#f0f9ff", color: "#0284c7" }}>
+                      <i className="fa-solid fa-globe"></i>
+                    </div>
+                    <span className="tc-status-pill verified">
+                      <i className="fa-solid fa-circle-check"></i> UN Supplier
+                    </span>
+                  </div>
+                  <div className="tc-matrix-title-wrap">
+                    <h4 className="tc-matrix-title">United Nations (UNGM)</h4>
+                    <p className="tc-matrix-authority">UN Global Marketplace</p>
+                  </div>
+                </div>
+
+                <div className="tc-matrix-body">
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Category</span>
+                    <span className="tc-matrix-val">IT &amp; Software Consulting</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Agencies</span>
+                    <span className="tc-matrix-val">Secretariat, UNDP, UNICEF</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Scope</span>
+                    <span className="tc-matrix-val">193 UN Member States</span>
+                  </div>
+                </div>
+              </div>
+
+              <a href="https://www.ungm.org/" target="_blank" rel="noopener noreferrer" className="tc-matrix-btn">
+                <i className="fa-solid fa-arrow-up-right-from-square"></i> Live UNGM Portal
+              </a>
+            </div>
+
+            {/* Record: US SAM.gov */}
+            <div className="tc-matrix-card">
+              <div>
+                <div className="tc-matrix-header">
+                  <div className="tc-matrix-top-bar">
+                    <div className="tc-matrix-icon sam" style={{ background: "#f8fafc", color: "#0f172a" }}>
+                      <i className="fa-solid fa-flag-usa"></i>
+                    </div>
+                    <span className="tc-status-pill verified">
+                      <i className="fa-solid fa-circle-check"></i> Contractor
+                    </span>
+                  </div>
+                  <div className="tc-matrix-title-wrap">
+                    <h4 className="tc-matrix-title">US Federal Contractor</h4>
+                    <p className="tc-matrix-authority">SAM.gov &amp; NCAGE System</p>
+                  </div>
+                </div>
+
+                <div className="tc-matrix-body">
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Registry</span>
+                    <span className="tc-matrix-val">US GSA SAM.gov</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Entity Track</span>
+                    <span className="tc-matrix-val">CAGE / NCAGE Catalog</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Eligibility</span>
+                    <span className="tc-matrix-val">US Federal IT Solicitations</span>
+                  </div>
+                </div>
+              </div>
+
+              <a href="https://sam.gov/" target="_blank" rel="noopener noreferrer" className="tc-matrix-btn">
+                <i className="fa-solid fa-arrow-up-right-from-square"></i> Live SAM.gov Portal
+              </a>
+            </div>
+
             {/* Record 1: DGFT IEC */}
             <div className="tc-matrix-card">
               <div>

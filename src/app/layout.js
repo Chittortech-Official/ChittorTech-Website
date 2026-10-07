@@ -167,11 +167,73 @@ export default function RootLayout({ children }) {
                   "availableLanguage": ["en", "hi"]
                 }
               ],
+              "identifier": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "Importer-Exporter Code (IEC)",
+                  "value": "OTWPS1188A"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "Asian Development Bank (ADB CMS Number)",
+                  "value": "051187"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "Singapore Government GeBIZ Trading Partner Reference",
+                  "value": "Y309075"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "Singapore Government GeBIZ Partner ID",
+                  "value": "946298091482"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "United Nations Global Marketplace (UNGM) Vendor Entity",
+                  "value": "ChittorTech UNGM Vendor"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "United States SAM.gov Federal Contractor",
+                  "value": "ChittorTech SAM.gov Registered Entity"
+                },
+                {
+                  "@type": "PropertyValue",
+                  "name": "iStart Rajasthan Q-Rate Score",
+                  "value": "32"
+                }
+              ],
               "award": [
+                "Asian Development Bank (ADB CMS #051187) Empaneled Consulting Entity",
+                "Singapore Government GeBIZ (Ref #Y309075) Registered Trading Partner",
+                "United Nations Global Marketplace (UNGM) Registered Vendor Entity",
+                "United States SAM.gov / NCAGE Registered Federal Contractor",
                 "Government of Rajasthan iStart Qrate 32 Recognized Startup",
-                "Government of India MSME Registered IT Enterprise"
+                "Government of India MSME Registered IT Enterprise",
+                "DGFT Importer-Exporter Code (IEC: OTWPS1188A) Authorized Software Exporter"
               ],
               "hasCredential": [
+                {
+                  "@type": "EducationalOccupationalCredential",
+                  "name": "Asian Development Bank CMS #051187 Empaneled Consulting Entity"
+                },
+                {
+                  "@type": "EducationalOccupationalCredential",
+                  "name": "Singapore Government GeBIZ Registered Trading Partner (Ref #Y309075)"
+                },
+                {
+                  "@type": "EducationalOccupationalCredential",
+                  "name": "United Nations Global Marketplace (UNGM) Registered Vendor"
+                },
+                {
+                  "@type": "EducationalOccupationalCredential",
+                  "name": "US Federal Government SAM.gov / NCAGE Registered Contractor"
+                },
+                {
+                  "@type": "EducationalOccupationalCredential",
+                  "name": "DGFT India Importer-Exporter Code (OTWPS1188A)"
+                },
                 {
                   "@type": "EducationalOccupationalCredential",
                   "name": "iStart Rajasthan Govt Recognized Startup (Qrate 32)"
@@ -312,6 +374,10 @@ export default function RootLayout({ children }) {
                 ]
               },
               "sameAs": [
+                "https://selfservice.adb.org/",
+                "https://www.gebiz.gov.sg/",
+                "https://www.ungm.org/",
+                "https://sam.gov/",
                 "https://www.wikidata.org/wiki/Q141496655",
                 "https://www.linkedin.com/company/chittortech",
                 "https://clutch.co/profile/chittortech",

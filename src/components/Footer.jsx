@@ -476,12 +476,21 @@ export default function Footer() {
                   Empowering global enterprises, startups, and growing businesses with cutting-edge AI Solutions, Custom LLMs, Enterprise Cloud Systems, Dedicated Tech Teams, and Digital Growth Services.
                 </p>
                 <div className="ct-footer-trust-row">
-                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#059669", background: "rgba(16,185,129,0.08)", borderColor: "rgba(16,185,129,0.25)" }}>
-                    <i className="fa-solid fa-certificate"></i> Trust Center
+                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#1e40af", background: "rgba(30,64,175,0.08)", borderColor: "rgba(30,64,175,0.25)" }}>
+                    <i className="fa-solid fa-landmark"></i> ADB Empaneled (#051187)
                   </Link>
-                  <span className="ct-footer-trust-chip"><i className="fa-solid fa-shield-halved"></i> SSL Secured</span>
-                  <span className="ct-footer-trust-chip"><i className="fa-solid fa-brain"></i> AI Powered</span>
-                  <span className="ct-footer-trust-chip"><i className="fa-solid fa-award"></i> Made in India</span>
+                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#b91c1c", background: "rgba(185,28,28,0.08)", borderColor: "rgba(185,28,28,0.25)" }}>
+                    <i className="fa-solid fa-city"></i> SG GeBIZ Partner (#Y309075)
+                  </Link>
+                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#0284c7", background: "rgba(2,132,199,0.08)", borderColor: "rgba(2,132,199,0.25)" }}>
+                    <i className="fa-solid fa-globe"></i> UNGM Supplier
+                  </Link>
+                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#0f172a", background: "rgba(15,23,42,0.06)", borderColor: "rgba(15,23,42,0.2)" }}>
+                    <i className="fa-solid fa-flag-usa"></i> SAM.gov Contractor
+                  </Link>
+                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#059669", background: "rgba(16,185,129,0.08)", borderColor: "rgba(16,185,129,0.25)" }}>
+                    <i className="fa-solid fa-certificate"></i> Trust Center &amp; DGFT IEC
+                  </Link>
                 </div>
                 <div className="ct-footer-socials">
                   <a href="https://www.linkedin.com/company/chittortech" target="_blank" rel="noopener noreferrer" className="ct-footer-social-btn linkedin" title="LinkedIn"><i className="fa-brands fa-linkedin-in"></i></a>
@@ -782,8 +791,11 @@ export default function Footer() {
               <a href="/sitemap.xml">Sitemap</a>
             </div>
             <div className="ct-footer-bottom-right">
+              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#eff6ff', color: '#1e40af', borderColor: '#bfdbfe' }}><i className="fa-solid fa-landmark"></i> ADB #051187</Link>
+              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' }}><i className="fa-solid fa-city"></i> GeBIZ #Y309075</Link>
+              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}><i className="fa-solid fa-globe"></i> UNGM Supplier</Link>
+              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f8fafc', color: '#0f172a', borderColor: '#cbd5e1' }}><i className="fa-solid fa-flag-usa"></i> SAM.gov</Link>
               <span className="ct-footer-badge-pill ssl"><i className="fa-solid fa-shield-halved"></i> SSL Secured</span>
-              <span className="ct-footer-badge-pill ai"><i className="fa-solid fa-brain"></i> AI Powered</span>
               <span className="ct-footer-badge-pill india"><i className="fa-solid fa-flag"></i> Made in India</span>
             </div>
           </div>

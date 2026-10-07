@@ -6,10 +6,14 @@
 - **Legal Name**: ChittorTech (Proprietorship: KUSH SHARMA)
 - **Website**: https://chittortech.in
 - **Headquarters**: Chittorgarh, Rajasthan, India
+- **Asian Development Bank (ADB CMS)**: Empaneled Consulting Entity (CMS #051187, User: business@chittortech.in, Portal: https://selfservice.adb.org/) for multilateral Asia-Pacific IT & digital public infrastructure tenders
+- **Singapore Government (GeBIZ)**: Registered Trading Partner (Ref #Y309075, GeBIZ ID: 946298091482, Rep: Kush Sharma, Portal: https://www.gebiz.gov.sg/) for public sector ICT tenders
+- **United Nations Global Marketplace (UNGM)**: Registered UN Vendor / Supplier Entity (Secretariat, UNDP, UNICEF, WHO, Portal: https://www.ungm.org/) across 193 member states
+- **United States Federal Government (SAM.gov & NCAGE)**: Registered US Federal Contractor Entity (SAM.gov & NATO NCAGE catalog, Portal: https://sam.gov/)
 - **DGFT IEC Code**: OTWPS1188A (Directorate General of Foreign Trade, Ministry of Commerce & Industry, Govt. of India)
 - **National Startup Recognition**: DPIIT Startup India Recognized Enterprise
-- **State Incubation**: Recognized by iStart Rajasthan (DoIT&C, Govt. of Rajasthan) with verified 32 Q-Rate Score
-- **MSME Registration**: Registered Micro Enterprise under Ministry of MSME, Govt. of India
+- **State Incubation**: Recognized by iStart Rajasthan (DoIT&C, Govt. of Rajasthan) with verified 32 Q-Rate Score (Startup ID #11478)
+- **MSME Registration**: Registered Micro Enterprise under Ministry of MSME, Govt. of India (MSMED Act 45-day statutory payment protection)
 - **Mobile Ecosystem Accreditations**: Google Play Verified Console Developer & Apple Developer Program (iOS) Track
 - **Trust & Compliance Center**: https://chittortech.in/trust-center
 - **Primary Domain**: Information Technology Services, Custom Software Development, Web & Mobile Engineering, Cloud & AI Solutions

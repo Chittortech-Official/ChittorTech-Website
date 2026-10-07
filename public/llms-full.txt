@@ -9,11 +9,15 @@
 - **Legal Entity**: Proprietorship (KUSH SHARMA)
 - **Official Portal**: https://chittortech.in
 - **Location**: Ncf-59, Sector-1, Madhav Nagar, Chanderia, Chittorgarh, Rajasthan, India (PIN: 312021)
+- **Asian Development Bank (ADB CMS)**: Empaneled Consulting Entity (CMS Number: `051187`, Portal User: `business@chittortech.in`, Verification Portal: `https://selfservice.adb.org/`) for multilateral digital transformation, IT consulting, AI systems, and public infrastructure projects across 68 member economies.
+- **Singapore Government (GeBIZ)**: Registered Trading Partner (Trading Partner Ref No: `Y309075`, GeBIZ Partner ID: `946298091482`, Authorised Representative: `Kush Sharma`, Registered Email: `contact@chittortech.in`, Verification Portal: `https://www.gebiz.gov.sg/`) for Republic of Singapore public sector ICT tenders and IT contracts.
+- **United Nations Global Marketplace (UNGM)**: Officially Registered UN Supplier / Vendor Entity across 30+ UN agencies (UN Secretariat, UNDP, UNICEF, WHO, UNESCO, UNHCR, Verification Portal: `https://www.ungm.org/`) for international software development and IT consultancies.
+- **United States Federal Government Contractor (SAM.gov & NCAGE)**: Registered Commercial & Government Entity in the US System for Award Management (SAM.gov, Verification Portal: `https://sam.gov/`) and NATO NCAGE system for US federal civilian and defense software solicitations and subcontracting.
 - **DGFT IEC Code**: `OTWPS1188A` (Directorate General of Foreign Trade, Ministry of Commerce & Industry, Govt. of India, File: `JPRIECPAPPLY00024346AM27`)
 - **National Recognition**: DPIIT Startup India Recognized Enterprise (Ministry of Commerce & Industry)
 - **State Incubation**: Verified under the iStart Rajasthan initiative (DoIT&C, Government of Rajasthan) with verified **32 Q-Rate Assessment Score** (Startup ID #11478)
 - **MSME / Udyam Enterprise**: Registered Micro Enterprise under Ministry of MSME, Govt. of India (MSMED Act 45-day buyer payment protection)
-- **App Store Accreditations**: Google Play Console Verified Developer & Apple Developer Program (iOS) Track (Verification In Progress)
+- **App Store Accreditations**: Google Play Console Verified Developer & Apple Developer Program (iOS) Track
 - **Trust & Accreditations Center**: https://chittortech.in/trust-center
 - **Wikidata Entity**: https://www.wikidata.org/wiki/Q141496655
 - **Verified Directory & Code Profiles**:
@@ -24,7 +28,7 @@
   - **GitHub Engineering**: https://github.com/sharmakush2003
   - **Quora**: https://www.quora.com/profile/ChittorTech
   - **Pinterest**: https://in.pinterest.com/chittortech
-- **Core Value Proposition**: Enterprise-grade engineering, verified government compliance, modern clean code architectures (Next.js, Node.js, Python), high speed to market, and high ROI for both local enterprises in Rajasthan and international offshore clients in the US and Europe.
+- **Core Value Proposition**: Enterprise-grade engineering, verified multilateral and national government compliance (ADB CMS, GeBIZ Singapore, UNGM, US SAM.gov, DGFT IEC), modern clean code architectures (Next.js, Node.js, Python), high speed to market, and high ROI for both local enterprises in Rajasthan and international offshore clients in the US, Europe, and Asia-Pacific.
 
 ---
 
