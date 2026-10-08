@@ -3638,8 +3638,8 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
         >
           {(() => {
             const audit = auditModalLead.auditResult || {};
-            const waLink = getWhatsAppLink(auditModalLead);
-            const pitch = getPitchText(auditModalLead);
+            const wa = waLink(auditModalLead);
+            const pitch = generateWhatsAppPitch(auditModalLead);
 
             return (
               <div
@@ -3919,7 +3919,7 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
 
                   <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                     <a
-                      href={waLink}
+                      href={wa}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => {
