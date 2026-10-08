@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import B2BLeadGenerator from "@/components/admin/B2BLeadGenerator";
 import AdminSessionsView from "@/components/admin/AdminSessionsView";
+import NotificationHub from "@/components/admin/NotificationHub";
+import ProjectInvoiceManager from "@/components/admin/ProjectInvoiceManager";
 import {
   subscribeToLeads,
   updateLeadStatus,
@@ -25,7 +27,23 @@ const SCRIPT_URL =
     : "https://script.google.com/macros/s/AKfycbxbWvxG81_lwfFh0sIqGhQnJnHwPwC0TxBnmiPq_DFxfFp7OnxNY1XC60nmFZxABve8/exec";
 
 export default function AdminLeadsPage() {
-  const [adminPipelineTab, setAdminPipelineTab] = useState("b2b_outbound"); // "b2b_outbound" | "inbound" | "how_to_use"
+  const [adminPipelineTab, setAdminPipelineTab] = useState("b2b_outbound");
+
+  useEffect(() => {
+    try {
+      const savedTab = localStorage.getItem("ct_admin_pipeline_tab");
+      if (savedTab && ["b2b_outbound", "inbound", "notifications", "projects_invoices", "sessions"].includes(savedTab)) {
+        setAdminPipelineTab(savedTab);
+      }
+    } catch (e) {}
+  }, []);
+
+  const changeAdminTab = (newTab) => {
+    setAdminPipelineTab(newTab);
+    try {
+      localStorage.setItem("ct_admin_pipeline_tab", newTab);
+    } catch (e) {}
+  };
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [passcode, setPasscode] = useState("");
@@ -1755,7 +1773,7 @@ export default function AdminLeadsPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
             gap: "10px",
             background: "#ffffff",
             padding: "8px",
@@ -1767,7 +1785,7 @@ export default function AdminLeadsPage() {
         >
           {/* Tab 1: Generate Leads */}
           <button
-            onClick={() => setAdminPipelineTab("b2b_outbound")}
+            onClick={() => changeAdminTab("b2b_outbound")}
             style={{
               display: "flex",
               alignItems: "center",
@@ -1791,7 +1809,7 @@ export default function AdminLeadsPage() {
 
           {/* Tab 2: Incoming Leads */}
           <button
-            onClick={() => setAdminPipelineTab("inbound")}
+            onClick={() => changeAdminTab("inbound")}
             style={{
               display: "flex",
               alignItems: "center",
@@ -1813,9 +1831,57 @@ export default function AdminLeadsPage() {
             <span>Incoming Leads</span>
           </button>
 
-          {/* Tab 3: Sessions & Access Logs */}
+          {/* Tab 3: Notification Hub */}
           <button
-            onClick={() => setAdminPipelineTab("sessions")}
+            onClick={() => changeAdminTab("notifications")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              padding: "12px 14px",
+              borderRadius: "12px",
+              fontSize: "0.9rem",
+              fontWeight: 800,
+              cursor: "pointer",
+              border: adminPipelineTab === "notifications" ? "1px solid rgba(2, 132, 199, 0.3)" : "1px solid #f1f5f9",
+              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+              background: adminPipelineTab === "notifications" ? "linear-gradient(135deg, #0284c7, #0369a1)" : "#f8fafc",
+              color: adminPipelineTab === "notifications" ? "#ffffff" : "#475569",
+              boxShadow: adminPipelineTab === "notifications" ? "0 4px 14px rgba(2, 132, 199, 0.28)" : "none",
+            }}
+          >
+            <i className="fas fa-bell" style={{ fontSize: "1rem", color: adminPipelineTab === "notifications" ? "#bae6fd" : "#0284c7" }}></i>
+            <span>Notification Hub</span>
+          </button>
+
+          {/* Tab 4: Projects & Invoices */}
+          <button
+            onClick={() => changeAdminTab("projects_invoices")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              padding: "12px 14px",
+              borderRadius: "12px",
+              fontSize: "0.9rem",
+              fontWeight: 800,
+              cursor: "pointer",
+              border: adminPipelineTab === "projects_invoices" ? "1px solid rgba(2, 132, 199, 0.3)" : "1px solid #f1f5f9",
+              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+              background: adminPipelineTab === "projects_invoices" ? "linear-gradient(135deg, #0284c7, #0369a1)" : "#f8fafc",
+              color: adminPipelineTab === "projects_invoices" ? "#ffffff" : "#475569",
+              boxShadow: adminPipelineTab === "projects_invoices" ? "0 4px 14px rgba(2, 132, 199, 0.28)" : "none",
+            }}
+          >
+            <i className="fas fa-file-invoice-dollar" style={{ fontSize: "1rem", color: adminPipelineTab === "projects_invoices" ? "#bae6fd" : "#0284c7" }}></i>
+            <span>Projects &amp; Invoices</span>
+          </button>
+
+          {/* Tab 5: Sessions & Security */}
+          <button
+            onClick={() => changeAdminTab("sessions")}
             style={{
               display: "flex",
               alignItems: "center",
@@ -1907,6 +1973,10 @@ export default function AdminLeadsPage() {
           </div>
         ) : adminPipelineTab === "b2b_outbound" ? (
           <B2BLeadGenerator isOnline={isOnline && isDbConnected} />
+        ) : (adminPipelineTab === "projects_invoices" || adminPipelineTab === "projects") ? (
+          <ProjectInvoiceManager />
+        ) : adminPipelineTab === "notifications" ? (
+          <NotificationHub />
         ) : adminPipelineTab === "sessions" ? (
           <AdminSessionsView />
         ) : (
