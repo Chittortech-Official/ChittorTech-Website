@@ -35,6 +35,36 @@ export default function AdminLeadsPage() {
   const [captchaCode, setCaptchaCode] = useState("");
   const [captchaInput, setCaptchaInput] = useState("");
 
+  // Live Network & Database Connection Status
+  const [isOnline, setIsOnline] = useState(() => {
+    return typeof navigator !== "undefined" ? navigator.onLine : true;
+  });
+  const [isDbConnected, setIsDbConnected] = useState(true);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      setIsDbConnected(true);
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      setIsDbConnected(false);
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      setIsOnline(false);
+      setIsDbConnected(false);
+    }
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
   // 2FA state
   const [step, setStep] = useState("login"); // "login" | "otp" | "forgot"
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
@@ -414,11 +444,15 @@ export default function AdminLeadsPage() {
         setLeads(data);
         setLoading(false);
         setError(null);
+        setIsDbConnected(true);
       },
       (err) => {
-        console.error("Leads subscription error:", err);
+        console.warn("Leads subscription sync notice:", err);
         setError("Failed to load leads from Firestore. Please verify Firestore rules.");
         setLoading(false);
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+          setIsDbConnected(false);
+        }
       }
     );
 
@@ -429,8 +463,18 @@ export default function AdminLeadsPage() {
   useEffect(() => {
     if (!isAuthenticated) return;
     const unsub = subscribeToB2BLeads(
-      (data) => { setB2bLeads(data); setB2bLoading(false); },
-      () => setB2bLoading(false)
+      (data) => {
+        setB2bLeads(data);
+        setB2bLoading(false);
+        setIsDbConnected(true);
+      },
+      (err) => {
+        console.warn("B2B leads sync notice:", err);
+        setB2bLoading(false);
+        if (typeof navigator !== "undefined" && !navigator.onLine) {
+          setIsDbConnected(false);
+        }
+      }
     );
     return () => unsub && unsub();
   }, [isAuthenticated]);
@@ -1597,23 +1641,43 @@ export default function AdminLeadsPage() {
                 ChittorTech<span style={{ color: "#6366f1" }}>™</span> Admin Console
               </span>
             </Link>
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "6px",
-                background: "rgba(22, 163, 74, 0.10)",
-                color: "#166534",
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                padding: "3px 10px",
-                borderRadius: "20px",
-                border: "1px solid rgba(22, 163, 74, 0.25)",
-              }}
-            >
-              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e" }} />
-              Database Connected
-            </span>
+            {isDbConnected && isOnline ? (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: "rgba(22, 163, 74, 0.10)",
+                  color: "#166534",
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  padding: "3px 10px",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(22, 163, 74, 0.25)",
+                }}
+              >
+                <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e" }} />
+                Database Connected
+              </span>
+            ) : (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: "rgba(239, 68, 68, 0.12)",
+                  color: "#b91c1c",
+                  fontSize: "0.75rem",
+                  fontWeight: 800,
+                  padding: "3px 10px",
+                  borderRadius: "20px",
+                  border: "1px solid rgba(239, 68, 68, 0.35)",
+                }}
+              >
+                <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#ef4444" }} />
+                Database Disconnected
+              </span>
+            )}
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -1774,8 +1838,75 @@ export default function AdminLeadsPage() {
           </button>
         </div>
 
-        {adminPipelineTab === "b2b_outbound" ? (
-          <B2BLeadGenerator />
+        {(!isOnline || !isDbConnected) ? (
+          <div
+            style={{
+              margin: "36px auto",
+              maxWidth: "600px",
+              background: "#ffffff",
+              border: "2px dashed #fca5a5",
+              borderRadius: "20px",
+              padding: "48px 24px",
+              textAlign: "center",
+              boxShadow: "0 10px 30px rgba(239, 68, 68, 0.06)",
+            }}
+          >
+            <div
+              style={{
+                width: "72px",
+                height: "72px",
+                borderRadius: "50%",
+                background: "rgba(239, 68, 68, 0.08)",
+                color: "#ef4444",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "28px",
+                marginBottom: "18px",
+                boxShadow: "0 0 20px rgba(239, 68, 68, 0.15)",
+              }}
+            >
+              <i className="fas fa-wifi-slash"></i>
+            </div>
+            <h2 style={{ fontSize: "1.35rem", fontWeight: 800, color: "#0f172a", margin: "0 0 10px 0" }}>
+              Database Disconnected
+            </h2>
+            <p style={{ fontSize: "0.88rem", color: "#64748b", margin: "0 auto 22px", maxWidth: "460px", lineHeight: 1.55 }}>
+              Aapka internet connection band hai ya Cloud Firestore se connect nahi ho pa raha hai. Data protection ke liye offline mode me leads display band kar diya gaya hai.
+            </p>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
+              <button
+                type="button"
+                onClick={() => {
+                  if (typeof navigator !== "undefined" && navigator.onLine) {
+                    setIsOnline(true);
+                    setIsDbConnected(true);
+                  } else {
+                    alert("Internet connection abhi bhi band hai. Kripya apna Wi-Fi ya Mobile Hotspot on karein.");
+                  }
+                }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "7px",
+                  background: "linear-gradient(135deg, #ef4444, #dc2626)",
+                  color: "#ffffff",
+                  border: "none",
+                  padding: "10px 22px",
+                  borderRadius: "10px",
+                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 14px rgba(239, 68, 68, 0.3)",
+                }}
+              >
+                <i className="fas fa-rotate"></i>
+                <span>Check Connection Again ↻</span>
+              </button>
+            </div>
+          </div>
+        ) : adminPipelineTab === "b2b_outbound" ? (
+          <B2BLeadGenerator isOnline={isOnline && isDbConnected} />
         ) : adminPipelineTab === "sessions" ? (
           <AdminSessionsView />
         ) : (
@@ -2375,7 +2506,73 @@ export default function AdminLeadsPage() {
             </div>
           )}
         </div>
-          </>
+        </>
+        )}
+
+        {/* Persistent Bottom Floating Pill when Disconnected */}
+        {(!isOnline || !isDbConnected) && (
+          <div
+            style={{
+              position: "fixed",
+              bottom: "18px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              background: "linear-gradient(135deg, #0f172a, #1e293b)",
+              border: "1.5px solid rgba(239, 68, 68, 0.45)",
+              borderRadius: "14px",
+              padding: "10px 22px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.45), 0 0 20px rgba(239, 68, 68, 0.2)",
+              zIndex: 99999,
+              maxWidth: "92vw",
+              color: "#ffffff",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            <div
+              style={{
+                width: "9px",
+                height: "9px",
+                borderRadius: "50%",
+                background: "#ef4444",
+                boxShadow: "0 0 10px #ef4444",
+              }}
+            />
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#fca5a5" }}>
+                Database Disconnected (Offline Mode)
+              </span>
+              <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+                Internet connection band hai. Live sync paused.
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof navigator !== "undefined" && navigator.onLine) {
+                  setIsOnline(true);
+                  setIsDbConnected(true);
+                } else {
+                  alert("Internet connection abhi bhi band hai. Kripya apna Wi-Fi ya Mobile Hotspot check karein.");
+                }
+              }}
+              style={{
+                padding: "5px 12px",
+                borderRadius: "6px",
+                background: "rgba(239, 68, 68, 0.2)",
+                border: "1px solid rgba(239, 68, 68, 0.4)",
+                color: "#fecaca",
+                fontSize: "0.74rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Retry ↻
+            </button>
+          </div>
         )}
       </main>
     </div>

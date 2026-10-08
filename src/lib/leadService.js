@@ -223,14 +223,14 @@ export function subscribeToLeads(onData, onError) {
         onData(leads);
       },
       (err) => {
-        console.error("subscribeToLeads error:", err);
+        console.warn("subscribeToLeads warning:", err);
         if (onError) onError(err);
       }
     );
 
     return unsubscribe;
   } catch (err) {
-    console.error("Failed to setup leads listener:", err);
+    console.warn("Failed to setup leads listener:", err);
     if (onError) onError(err);
     return () => {};
   }
@@ -248,7 +248,7 @@ export async function updateLeadStatus(leadId, newStatus) {
     });
     return true;
   } catch (err) {
-    console.error("Failed to update lead status:", err);
+    console.warn("Failed to update lead status:", err);
     return false;
   }
 }
@@ -265,7 +265,7 @@ export async function updateLeadNotes(leadId, notes) {
     });
     return true;
   } catch (err) {
-    console.error("Failed to update lead notes:", err);
+    console.warn("Failed to update lead notes:", err);
     return false;
   }
 }
@@ -318,7 +318,7 @@ export async function addB2BLeads(batch) {
         phone:      lead.phone?.trim()    || "",
         website:    lead.website?.trim()  || "",
         rating:     lead.rating?.trim()   || "",
-        city:       lead.city             || "Bhilwara",
+        city:       lead.city             || "Rajasthan",
         category:   lead.category         || "General",
         status:     "new",
         notes:      lead.notes?.trim()    || "",
@@ -394,7 +394,7 @@ export async function updateB2BLeadStatus(leadId, newStatus) {
     });
     return true;
   } catch (err) {
-    console.error("updateB2BLeadStatus error:", err);
+    console.warn("updateB2BLeadStatus error:", err);
     return false;
   }
 }
@@ -408,7 +408,7 @@ export async function updateB2BLeadNotes(leadId, notes) {
     });
     return true;
   } catch (err) {
-    console.error("updateB2BLeadNotes error:", err);
+    console.warn("updateB2BLeadNotes error:", err);
     return false;
   }
 }
@@ -422,7 +422,7 @@ export async function updateB2BLeadCity(leadId, city) {
     });
     return true;
   } catch (err) {
-    console.error("updateB2BLeadCity error:", err);
+    console.warn("updateB2BLeadCity error:", err);
     return false;
   }
 }
@@ -438,7 +438,22 @@ export async function updateB2BLeadCategory(leadId, category, pitchType) {
     await updateDoc(doc(db, "b2b_leads", leadId), payload);
     return true;
   } catch (err) {
-    console.error("updateB2BLeadCategory error:", err);
+    console.warn("updateB2BLeadCategory error:", err);
+    return false;
+  }
+}
+
+/** Update B2B lead website audit findings in Firestore */
+export async function updateB2BLeadAudit(leadId, auditResult) {
+  try {
+    await updateDoc(doc(db, "b2b_leads", leadId), {
+      auditResult,
+      auditedAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return true;
+  } catch (err) {
+    console.warn("updateB2BLeadAudit error:", err);
     return false;
   }
 }
@@ -449,7 +464,7 @@ export async function deleteB2BLead(leadId) {
     await deleteDoc(doc(db, "b2b_leads", leadId));
     return true;
   } catch (err) {
-    console.error("deleteB2BLead error:", err);
+    console.warn("deleteB2BLead error:", err);
     return false;
   }
 }
@@ -516,7 +531,7 @@ export async function logAdminSessionInFirestore(sessionData) {
     );
     return true;
   } catch (err) {
-    console.error("logAdminSessionInFirestore error:", err);
+    console.warn("logAdminSessionInFirestore warning:", err);
     return false;
   }
 }
@@ -535,7 +550,7 @@ export async function addAdminSessionActivityInFirestore(sessionId, activityObj)
     });
     return true;
   } catch (err) {
-    console.error("addAdminSessionActivityInFirestore error:", err);
+    console.warn("addAdminSessionActivityInFirestore warning:", err);
     return false;
   }
 }
@@ -559,7 +574,7 @@ export async function terminateAdminSessionInFirestore(sessionId, statusType = "
     );
     return true;
   } catch (err) {
-    console.error("terminateAdminSessionInFirestore error:", err);
+    console.warn("terminateAdminSessionInFirestore warning:", err);
     return false;
   }
 }
@@ -573,7 +588,7 @@ export async function deleteAdminSessionFromFirestore(sessionId) {
     await deleteDoc(doc(db, "admin_sessions", sessionId));
     return true;
   } catch (err) {
-    console.error("deleteAdminSessionFromFirestore error:", err);
+    console.warn("deleteAdminSessionFromFirestore warning:", err);
     return false;
   }
 }

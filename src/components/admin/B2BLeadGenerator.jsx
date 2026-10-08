@@ -8,8 +8,10 @@ import {
   updateB2BLeadNotes,
   updateB2BLeadCity,
   updateB2BLeadCategory,
+  updateB2BLeadAudit,
   deleteB2BLead,
 } from "@/lib/leadService";
+import { auditWebsiteTarget } from "@/lib/auditService";
 
 /* ─────────────────────────────────────────────────────────────
    CONSTANTS & DATA
@@ -163,10 +165,25 @@ const E = {
   truck:   "\u{1F69A}",  // 🚚 Truck
 };
 
+function getAuditSnippet(lead) {
+  if (lead?.auditResult) {
+    const ar = lead.auditResult;
+    const issues = ar.painPoints && ar.painPoints.length ? ar.painPoints.slice(0, 3) : [];
+    return (
+`\n${E.sparkle} *Technical Website Audit (${lead.website || ""}):*
+${ar.pitchSnippet ? `⚠️ ${ar.pitchSnippet}\n` : ""}${issues.map(p => `• ${p}`).join("\n")}
+${E.bulb} *ChittorTech Solution:* Hum aapki website ko 100% Secure SSL, Superfast Cloud hosting aur modern corporate design ke sath revamp karte hain jisse outstation clients ka trust bane aur direct inquiries boost hon.\n`
+    );
+  }
+  if (lead?.website?.trim()) {
+    return `\n${E.bulb} *Digital Upgrade:* Hum aapki existing website ko modern look, superfast speed aur live lead conversion features ke sath upgrade kar sakte hain.\n`;
+  }
+  return `\n${E.bulb} *Direct Growth:* Ek modern corporate website aur Google ranking ke sath aap har mahine lakhon ka naya outstation business direct crack kar sakte hain.\n`;
+}
+
 function generateWhatsAppPitch(lead) {
   const name = (lead?.name || "").trim() || "Team";
   const city = lead?.city || "Rajasthan";
-  const hasWeb = !!(lead?.website && lead.website.trim());
   const niche = detectNiche(lead);
 
   if (niche === "marble") {
@@ -186,12 +203,7 @@ ${E.erp} *Custom Factory ERP & GST Billing* — Block cutting, slab inventory, G
 ${E.lock} *Simple & 100% Secure Operations* — Daily operations aasan honge aur aapka factory data cloud-encrypted & 100% secure rahega.
 ${E.crm} *Business CRM & WhatsApp Automation* — Client inquiries par automatic follow-up system taaki deal turant close ho sake.
 ${E.map} *Google Search & Maps Ranking* — "Top Marble in Bhilwara/Rajasthan" par top Google positioning taaki buyers seedha aapko call karein.
-
-${hasWeb ? 
-`${E.bulb} *Digital Upgrade:* Hum aapki existing website ko modern look, superfast speed aur live digital slab catalogue ke sath upgrade kar sakte hain.`
-:
-`${E.bulb} *Direct Growth:* Ek modern digital presence aur Google ranking ke sath aap har mahine lakhon ka naya outstation business direct crack kar sakte hain.`}
-
+${getAuditSnippet(lead)}
 Kya hum is hafte 2-minute quick call ya WhatsApp par portfolio aur live demo share kar sakte hain?
 
 Aapke response ka intezaar rahega.
@@ -247,12 +259,7 @@ ${E.app} *Custom Guest Mobile App & Web Tour* — Room 360° visual preview, ame
 ${E.erp} *Hotel ERP & Billing System* — Room inventory, check-in/out, GST invoices aur kitchen/restaurant KOT billing.
 ${E.lock} *Simple & 100% Secure Operations* — Advance payment seedha aapke bank account me, with zero chargebacks aur secure records.
 ${E.crm} *Guest CRM & WhatsApp Automation* — Automated booking confirmation, check-in details aur 5-star Google review follow-ups.
-
-${hasWeb ? 
-`${E.bulb} *Direct Profit:* Hum aapki existing website par zero-commission direct booking engine aur speed optimization integrate kar sakte hain.`
-:
-`${E.bulb} *Direct Revenue:* Ek custom direct booking website launch karke aap har saal lakhon rupaye ka OTA commission bacha sakte hain.`}
-
+${getAuditSnippet(lead)}
 Would you be open to a quick 5-minute live preview or call this week?
 
 Best regards,
@@ -277,9 +284,7 @@ ${E.web} *B2B Digital Fabric Catalogue* — Pan-India dealers ke liye live stock
 ${E.erp} *Yarn-to-Fabric Production & Inventory ERP* — Loom production, grey fabric, processing, packing aur dispatch tracking.
 ${E.crm} *Dealer Order Portal* — Dealers directly mobile se order place karein, real-time dispatch status dekhein.
 ${E.map} *Pan-India Google B2B Visibility* — Wholesale buyers directly aapki factory se bulk orders connect karein.
-
-${E.bulb} Digital system se order execution speed badhti hai aur outstation buyer network expand hota hai.
-
+${getAuditSnippet(lead)}
 Kya hum is hafte 2-minute quick call ya WhatsApp par demo share kar sakte hain?
 
 Aapke response ka intezaar rahega.
@@ -307,7 +312,7 @@ ${E.erp} *Automated Fee Collection & Online Gateway* — Zero fee delay; parents
 ${E.crm} *Admission Enquiry CRM* — Phone aur website leads par automatic follow-up system taaki inquiry miss na ho.
 ${E.lock} *Staff Payroll & Biometric Attendance* — Teachers aur staff ka attendance, salary slip aur leave management.
 ${E.map} *Google Maps & Local Search Ranking* — "${city} ke top schools/institutes" me Google par #1 ranking taaki parents seedha aapko call karein.
-
+${getAuditSnippet(lead)}
 Kya hum is hafte 2-minute quick call ya WhatsApp par live demo share kar sakte hain?
 
 Aapke response ka intezaar rahega.
@@ -326,7 +331,7 @@ ${E.map} Chittorgarh • Bhilwara • Udaipur • Rajasthan`
 
 Main *ChittorTech* (Mewar) se connect kar raha hoon.
 
-Aapki transport & logistics company ${city}/Rajasthan me fleet aur goods movement me established hai. Hum transport enterprises ke freight billing aur customer acquisition ko digitalize karte hain:
+Aapki transport & logistics company ${city.toLowerCase().includes("rajasthan") ? city : city.toLowerCase().includes("madhya pradesh") ? "Madhya Pradesh" : `${city}`} me fleet aur goods movement me established hai. Hum transport enterprises ke freight billing aur customer acquisition ko digitalize karte hain:
 
 ${E.sparkle} *Humari Logistics & Fleet Tech Solutions:*
 ${E.erp} *Bilty / LR (Lorry Receipt) & GST Billing ERP* — LR generation, freight invoices, advance/diesel slips aur balance settlement ka simple software.
@@ -335,7 +340,7 @@ ${E.target} *Direct Factory & Shipper Leads* — Middlemen aur commission agents
 ${E.lock} *Vehicle Maintenance & Driver Ledger* — Truck maintenance, tyre tracking, driver trip accounts aur expense control.
 ${E.crm} *Consignment Tracking & WhatsApp Updates* — Dispatch se delivery tak client ko WhatsApp par automated status update.
 ${E.map} *Google Search & SEO Ranking* — Top Google positioning taaki manufacturers aur traders direct aapko transport order dein.
-
+${getAuditSnippet(lead)}
 Kya hum is hafte 2-minute quick call ya WhatsApp par live demo share kar sakte hain?
 
 Aapke response ka intezaar rahega.
@@ -366,9 +371,7 @@ ${E.erp} *Custom ERP & GST Billing Software* — GST invoicing, stock/inventory 
 ${E.lock} *Simple & 100% Secure Operations* — Cloud database, user roles aur daily automated backup ke sath business operate karna bilkul aasan.
 ${E.crm} *Business CRM & WhatsApp Automation* — Lead management, client follow-ups aur quotation tracking system.
 ${E.map} *Google Search & SEO Growth* — Google par top positioning taaki outstation & local buyers seedha aapko call karein.
-
-${E.bulb} *Direct Reach:* Ek professional corporate website aur Google positioning ke sath outstation clients aur bulk buyers directly aap tak pahunchte hain.
-
+${getAuditSnippet(lead)}
 Kya hum is hafte 2-minute quick call ya WhatsApp par humara portfolio share kar sakte hain?
 
 Aapke response ka intezaar rahega.
@@ -601,8 +604,15 @@ const SCRAPER_CODE = `(async function scrapeGoogleMaps() {
 
   const qLower = searchInput.toLowerCase();
 
-  // Detect City
-  let defaultCity = "Bhilwara";
+  // Try extracting location from query like "in Madhya Pradesh", "in Bhopal", etc.
+  const locMatch = searchInput.match(/\\b(?:in|at|near|around)\\s+([a-zA-Z\\s,]+)$/i);
+  let parsedLocation = locMatch ? locMatch[1].trim().replace(/[,\\s]+$/, '') : "";
+  if (parsedLocation) {
+    parsedLocation = parsedLocation.split(/\\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+  }
+
+  // Detect City / State
+  let defaultCity = parsedLocation || "Rajasthan";
   if (qLower.includes("khatu shyam") || qLower.includes("khatushyam") || qLower.includes("khatu")) defaultCity = "Khatu Shyam Ji";
   else if (qLower.includes("chittor") || qLower.includes("sanwaliya") || qLower.includes("nimbahera") || qLower.includes("kapasan")) defaultCity = "Chittorgarh";
   else if (qLower.includes("udaipur")) defaultCity = "Udaipur";
@@ -611,13 +621,23 @@ const SCRAPER_CODE = `(async function scrapeGoogleMaps() {
   else if (qLower.includes("kota")) defaultCity = "Kota";
   else if (qLower.includes("ajmer") || qLower.includes("pushkar")) defaultCity = "Ajmer";
   else if (qLower.includes("bhilwara")) defaultCity = "Bhilwara";
+  else if (qLower.includes("salasar")) defaultCity = "Salasar Balaji";
+  else if (qLower.includes("bhopal")) defaultCity = "Bhopal";
+  else if (qLower.includes("indore")) defaultCity = "Indore";
+  else if (qLower.includes("gwalior")) defaultCity = "Gwalior";
+  else if (qLower.includes("jabalpur")) defaultCity = "Jabalpur";
+  else if (qLower.includes("ujjain")) defaultCity = "Ujjain";
+  else if (qLower.includes("madhya pradesh") || qLower.includes("madhya_pradesh") || qLower.includes(" mp ") || qLower.endsWith(" mp")) defaultCity = "Madhya Pradesh";
+  else if (parsedLocation) defaultCity = parsedLocation;
 
   // Detect Category
   let defaultCategory = "General";
-  if (qLower.includes("dharamshala") || qLower.includes("dharmashala") || qLower.includes("dharmsala") || qLower.includes("trust") || qLower.includes("mandir") || qLower.includes("temple")) defaultCategory = "Dharamshala & Trusts";
+  if (qLower.includes("transport") || qLower.includes("logistic") || qLower.includes("cargo") || qLower.includes("packer") || qLower.includes("mover") || qLower.includes("truck") || qLower.includes("fleet") || qLower.includes("carrier") || qLower.includes("freight") || qLower.includes("bilty")) defaultCategory = "Transport & Logistics";
+  else if (qLower.includes("dharamshala") || qLower.includes("dharmashala") || qLower.includes("dharmsala") || qLower.includes("trust") || qLower.includes("mandir") || qLower.includes("temple") || qLower.includes("ashram") || qLower.includes("yatri")) defaultCategory = "Dharamshala & Trusts";
   else if (qLower.includes("marble") || qLower.includes("granite") || qLower.includes("stone") || qLower.includes("quartz") || qLower.includes("mines") || qLower.includes("marmo")) defaultCategory = "Marble & Granite";
   else if (qLower.includes("hotel") || qLower.includes("resort") || qLower.includes("palace") || qLower.includes("stay") || qLower.includes("inn") || qLower.includes("haveli")) defaultCategory = "Hotels & Resorts";
-  else if (qLower.includes("textile") || qLower.includes("spin") || qLower.includes("suit") || qLower.includes("fabric") || qLower.includes("yarn")) defaultCategory = "Textile & Manufacturing";
+  else if (qLower.includes("textile") || qLower.includes("spin") || qLower.includes("suit") || qLower.includes("fabric") || qLower.includes("yarn") || qLower.includes("garment") || qLower.includes("mill")) defaultCategory = "Textile & Manufacturing";
+  else if (qLower.includes("school") || qLower.includes("college") || qLower.includes("coaching") || qLower.includes("institute") || qLower.includes("education") || qLower.includes("academy")) defaultCategory = "Schools & Colleges";
 
   // ── CASE A: SINGLE PLACE PAGE (e.g. https://www.google.com/maps/place/...) ──
   const isSinglePlace = window.location.href.includes('/place/') || (!document.querySelector('div[role="feed"]') && document.querySelector('h1.DUwDvf, h1.fontHeadlineLarge'));
@@ -647,18 +667,28 @@ const SCRAPER_CODE = `(async function scrapeGoogleMaps() {
     // Category
     const catBtn = document.querySelector('button.DkEaL, span.Y0A0hc');
     let category = catBtn ? catBtn.innerText.trim() : defaultCategory;
-    if (category.toLowerCase().includes("marble") || category.toLowerCase().includes("granite")) category = "Marble & Granite";
+    if (category.toLowerCase().includes("transport") || category.toLowerCase().includes("logistic") || category.toLowerCase().includes("cargo") || category.toLowerCase().includes("packer") || category.toLowerCase().includes("carrier")) category = "Transport & Logistics";
+    else if (category.toLowerCase().includes("marble") || category.toLowerCase().includes("granite")) category = "Marble & Granite";
     else if (category.toLowerCase().includes("dharmshala") || category.toLowerCase().includes("trust")) category = "Dharamshala & Trusts";
     else if (category.toLowerCase().includes("hotel") || category.toLowerCase().includes("resort")) category = "Hotels & Resorts";
+    else if (category.toLowerCase().includes("school") || category.toLowerCase().includes("college")) category = "Schools & Colleges";
 
     // Address/City
     const addrEl = document.querySelector('button[data-item-id="address"], [data-item-id*="address"]');
     const fullText = (name + " " + (addrEl?.innerText || "") + " " + searchInput).toLowerCase();
     let city = defaultCity;
-    if (fullText.includes("chittor")) city = "Chittorgarh";
+    if (fullText.includes("bhopal")) city = "Bhopal";
+    else if (fullText.includes("indore")) city = "Indore";
+    else if (fullText.includes("gwalior")) city = "Gwalior";
+    else if (fullText.includes("jabalpur")) city = "Jabalpur";
+    else if (fullText.includes("ujjain")) city = "Ujjain";
+    else if (fullText.includes("madhya pradesh")) city = "Madhya Pradesh";
+    else if (fullText.includes("chittor")) city = "Chittorgarh";
     else if (fullText.includes("udaipur")) city = "Udaipur";
     else if (fullText.includes("khatu shyam") || fullText.includes("khatushyam")) city = "Khatu Shyam Ji";
     else if (fullText.includes("jaipur")) city = "Jaipur";
+    else if (fullText.includes("jodhpur")) city = "Jodhpur";
+    else if (fullText.includes("kota")) city = "Kota";
     else if (fullText.includes("bhilwara")) city = "Bhilwara";
 
     if (!phone) {
@@ -739,16 +769,29 @@ const SCRAPER_CODE = `(async function scrapeGoogleMaps() {
     // City check
     const tLower = (text + " " + name).toLowerCase();
     let city = defaultCity;
-    if (tLower.includes("khatu shyam") || tLower.includes("khatushyam")) city = "Khatu Shyam Ji";
+    if (tLower.includes("bhopal")) city = "Bhopal";
+    else if (tLower.includes("indore")) city = "Indore";
+    else if (tLower.includes("gwalior")) city = "Gwalior";
+    else if (tLower.includes("jabalpur")) city = "Jabalpur";
+    else if (tLower.includes("ujjain")) city = "Ujjain";
+    else if (tLower.includes("madhya pradesh")) city = "Madhya Pradesh";
+    else if (tLower.includes("khatu shyam") || tLower.includes("khatushyam")) city = "Khatu Shyam Ji";
     else if (tLower.includes("chittorgarh") || tLower.includes("chittor") || tLower.includes("sanwaliya")) city = "Chittorgarh";
     else if (tLower.includes("udaipur")) city = "Udaipur";
     else if (tLower.includes("jaipur")) city = "Jaipur";
+    else if (tLower.includes("jodhpur")) city = "Jodhpur";
+    else if (tLower.includes("kota")) city = "Kota";
+    else if (tLower.includes("ajmer") || tLower.includes("pushkar")) city = "Ajmer";
     else if (tLower.includes("bhilwara")) city = "Bhilwara";
 
     // Category check
     let category = defaultCategory;
-    if (tLower.includes("dharamshala") || tLower.includes("dharmashala") || tLower.includes("dharmsala") || tLower.includes("trust")) category = "Dharamshala & Trusts";
+    if (tLower.includes("transport") || tLower.includes("logistic") || tLower.includes("cargo") || tLower.includes("packer") || tLower.includes("mover") || tLower.includes("carrier") || tLower.includes("fleet") || tLower.includes("freight")) category = "Transport & Logistics";
+    else if (tLower.includes("dharamshala") || tLower.includes("dharmashala") || tLower.includes("dharmsala") || tLower.includes("trust")) category = "Dharamshala & Trusts";
     else if (tLower.includes("marble") || tLower.includes("granite") || tLower.includes("stone")) category = "Marble & Granite";
+    else if (tLower.includes("hotel") || tLower.includes("resort") || tLower.includes("palace") || tLower.includes("stay") || tLower.includes("inn")) category = "Hotels & Resorts";
+    else if (tLower.includes("textile") || tLower.includes("fabric") || tLower.includes("yarn") || tLower.includes("garment")) category = "Textile & Manufacturing";
+    else if (tLower.includes("school") || tLower.includes("college") || tLower.includes("coaching") || tLower.includes("institute")) category = "Schools & Colleges";
 
     if (!phone || !phone.trim()) {
       console.log(\`⏩ [Skipped - No Phone] \${name}\`);
@@ -1238,8 +1281,25 @@ function KpiCard({ label, value, sub, accent, icon, glow }) {
 /* ─────────────────────────────────────────────────────────────
    MAIN COMPONENT
 ───────────────────────────────────────────────────────────── */
-export default function B2BLeadGenerator() {
+export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
   // State
+  const [internalOnline, setInternalOnline] = useState(() => {
+    return typeof navigator !== "undefined" ? navigator.onLine : true;
+  });
+
+  useEffect(() => {
+    const handleOnline = () => setInternalOnline(true);
+    const handleOffline = () => setInternalOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  const isActuallyOnline = parentIsOnline && internalOnline;
+
   const [leads, setLeads] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
@@ -1290,6 +1350,29 @@ export default function B2BLeadGenerator() {
   const [campaignIndex, setCampaignIndex] = useState(0);
   const [campaignText, setCampaignText] = useState("");
   const [campaignCopied, setCampaignCopied] = useState(false);
+
+  // ── 1-Click Website Audit & Tech Inspector State ──
+  const [auditingLeadId, setAuditingLeadId] = useState(null);
+  const [auditModalLead, setAuditModalLead] = useState(null);
+  const [auditCopied, setAuditCopied] = useState(false);
+
+  const handleAuditWebsite = async (lead) => {
+    if (!lead || !lead.website) return;
+    setAuditingLeadId(lead.id);
+    try {
+      const result = await auditWebsiteTarget(lead.website);
+      if (result) {
+        setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, auditResult: result } : l));
+        await updateB2BLeadAudit(lead.id, result);
+        setAuditModalLead({ ...lead, auditResult: result });
+      }
+    } catch (err) {
+      console.error("Website audit scan failed:", err);
+      alert("Website audit scan failed: " + (err.message || "Network error"));
+    } finally {
+      setAuditingLeadId(null);
+    }
+  };
 
   // ── Firestore Real-time Sync ──
   useEffect(() => {
@@ -1342,8 +1425,15 @@ export default function B2BLeadGenerator() {
 
     const fn = (fileName || "").toLowerCase();
     
+    // Extract location from filename like "Transport_and_logistics_companies_in_madhya_pradesh_Leads.csv"
+    let fileLocation = "";
+    const locMatch = fn.replace(/\.csv$/i, "").replace(/_leads$/i, "").match(/(?:^|_)in_([a-z_]+)$/);
+    if (locMatch) {
+      fileLocation = locMatch[1].split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    }
+
     // File level default city
-    let defaultCity = "Bhilwara";
+    let defaultCity = fileLocation || "Rajasthan";
     if (fn.includes("khatu shyam") || fn.includes("khatushyam") || fn.includes("khatu")) defaultCity = "Khatu Shyam Ji";
     else if (fn.includes("chittor") || fn.includes("sanwaliya")) defaultCity = "Chittorgarh";
     else if (fn.includes("udaipur")) defaultCity = "Udaipur";
@@ -1352,6 +1442,13 @@ export default function B2BLeadGenerator() {
     else if (fn.includes("kota")) defaultCity = "Kota";
     else if (fn.includes("ajmer")) defaultCity = "Ajmer";
     else if (fn.includes("bhilwara")) defaultCity = "Bhilwara";
+    else if (fn.includes("bhopal")) defaultCity = "Bhopal";
+    else if (fn.includes("indore")) defaultCity = "Indore";
+    else if (fn.includes("gwalior")) defaultCity = "Gwalior";
+    else if (fn.includes("jabalpur")) defaultCity = "Jabalpur";
+    else if (fn.includes("ujjain")) defaultCity = "Ujjain";
+    else if (fn.includes("madhya pradesh") || fn.includes("madhya_pradesh")) defaultCity = "Madhya Pradesh";
+    else if (fileLocation) defaultCity = fileLocation;
     else {
       const cleanFn = (fileName || "").replace(/\.csv$/i, "").replace(/_leads$/i, "").replace(/leads/i, "").replace(/_/g, " ").trim();
       if (cleanFn && cleanFn.length > 2) {
@@ -1361,10 +1458,12 @@ export default function B2BLeadGenerator() {
 
     // File level default category
     let defaultCat = "General";
-    if (fn.includes("marble") || fn.includes("granite") || fn.includes("stone")) defaultCat = "Marble & Granite";
+    if (fn.includes("transport") || fn.includes("logistic") || fn.includes("cargo") || fn.includes("packer") || fn.includes("mover") || fn.includes("truck") || fn.includes("fleet") || fn.includes("carrier")) defaultCat = "Transport & Logistics";
+    else if (fn.includes("marble") || fn.includes("granite") || fn.includes("stone")) defaultCat = "Marble & Granite";
     else if (fn.includes("dharamshala") || fn.includes("dharmashala") || fn.includes("trust") || fn.includes("mandir")) defaultCat = "Dharamshala & Trusts";
     else if (fn.includes("hotel") || fn.includes("resort")) defaultCat = "Hotels & Resorts";
     else if (fn.includes("textile")) defaultCat = "Textile & Manufacturing";
+    else if (fn.includes("school") || fn.includes("college") || fn.includes("education") || fn.includes("coaching")) defaultCat = "Schools & Colleges";
 
     const batch = [];
 
@@ -1381,15 +1480,24 @@ export default function B2BLeadGenerator() {
 
       // City detection: Column -> Name/Address text -> File Name default
       let rowCity = (cityI !== -1 ? cols[cityI] : "")?.trim();
-      if (!rowCity) {
+      const fnLower = (fileName || "").toLowerCase();
+      // If rowCity is empty OR was wrongly assigned "Bhilwara" while the filename/content specifies another location
+      const hasMismatch = rowCity.toLowerCase() === "bhilwara" && (fnLower.includes("madhya") || fnLower.includes("bhopal") || fnLower.includes("indore") || (fileLocation && fileLocation.toLowerCase() !== "bhilwara"));
+      if (!rowCity || hasMismatch) {
         const t = (name + " " + (cols[4] || "") + " " + fileName).toLowerCase();
-        if (t.includes("khatu shyam") || t.includes("khatushyam") || t.includes("khatu")) rowCity = "Khatu Shyam Ji";
+        if (t.includes("bhopal")) rowCity = "Bhopal";
+        else if (t.includes("indore")) rowCity = "Indore";
+        else if (t.includes("gwalior")) rowCity = "Gwalior";
+        else if (t.includes("jabalpur")) rowCity = "Jabalpur";
+        else if (t.includes("ujjain")) rowCity = "Ujjain";
+        else if (t.includes("madhya pradesh") || t.includes("madhya_pradesh")) rowCity = "Madhya Pradesh";
+        else if (t.includes("khatu shyam") || t.includes("khatushyam") || t.includes("khatu")) rowCity = "Khatu Shyam Ji";
         else if (t.includes("chittor") || t.includes("sanwaliya") || t.includes("nimbahera") || t.includes("kapasan") || t.includes("bassi")) rowCity = "Chittorgarh";
         else if (t.includes("udaipur") || t.includes("sukhadia") || t.includes("fateh sagar")) rowCity = "Udaipur";
         else if (t.includes("jaipur")) rowCity = "Jaipur";
         else if (t.includes("jodhpur")) rowCity = "Jodhpur";
         else if (t.includes("kota")) rowCity = "Kota";
-        else if (t.includes("bhilwara")) rowCity = "Bhilwara";
+        else if (t.includes("bhilwara") && !hasMismatch) rowCity = "Bhilwara";
         else rowCity = defaultCity;
       }
 
@@ -1397,10 +1505,12 @@ export default function B2BLeadGenerator() {
       let rowCat = (catI !== -1 ? cols[catI] : "")?.trim();
       if (!rowCat || rowCat.toLowerCase() === "general") {
         const t = (name + " " + fileName).toLowerCase();
-        if (t.includes("dharamshala") || t.includes("dharmashala") || t.includes("dharmsala") || t.includes("dharmshala") || t.includes("trust") || t.includes("mandir") || t.includes("temple") || t.includes("dadawadi") || t.includes("ashram")) rowCat = "Dharamshala & Trusts";
+        if (t.includes("transport") || t.includes("logistic") || t.includes("cargo") || t.includes("packer") || t.includes("mover") || t.includes("carrier") || t.includes("truck") || t.includes("fleet") || t.includes("bilty") || t.includes("freight")) rowCat = "Transport & Logistics";
+        else if (t.includes("dharamshala") || t.includes("dharmashala") || t.includes("dharmsala") || t.includes("dharmshala") || t.includes("trust") || t.includes("mandir") || t.includes("temple") || t.includes("dadawadi") || t.includes("ashram")) rowCat = "Dharamshala & Trusts";
         else if (t.includes("marble") || t.includes("granite") || t.includes("stone") || t.includes("mines") || t.includes("quartz") || t.includes("marmo")) rowCat = "Marble & Granite";
         else if (t.includes("hotel") || t.includes("resort") || t.includes("palace") || t.includes("stay") || t.includes("inn") || t.includes("haveli")) rowCat = "Hotels & Resorts";
         else if (t.includes("textile") || t.includes("spin") || t.includes("suit") || t.includes("fabric") || t.includes("garment") || t.includes("yarn") || t.includes("mill") || t.includes("synthetics")) rowCat = "Textile & Manufacturing";
+        else if (t.includes("school") || t.includes("college") || t.includes("coaching") || t.includes("institute") || t.includes("education") || t.includes("academy")) rowCat = "Schools & Colleges";
         else rowCat = defaultCat;
       }
 
@@ -2339,7 +2449,7 @@ export default function B2BLeadGenerator() {
                         padding: "2px 6px",
                         borderRadius: "4px",
                       }}>
-                        "{constructedQuery}"
+                        &quot;{constructedQuery}&quot;
                       </code>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -2564,7 +2674,46 @@ export default function B2BLeadGenerator() {
       {/* ══════════════════════════════════════════
           5. LEADS DISPLAY
       ══════════════════════════════════════════ */}
-      {filtered.length === 0 ? (
+      {!isActuallyOnline ? (
+        <div style={{
+          background: DS.surfacePrimary, border: `2px dashed #fca5a5`,
+          borderRadius: "16px", padding: "52px 24px", textAlign: "center",
+          boxShadow: "0 10px 25px rgba(239,68,68,0.06)",
+        }}>
+          <div style={{
+            width: "64px", height: "64px", borderRadius: "50%",
+            background: "rgba(239, 68, 68, 0.1)", color: "#ef4444",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            fontSize: "26px", marginBottom: "14px",
+          }}>
+            <i className="fas fa-wifi-slash"></i>
+          </div>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: 800, color: DS.textPrimary, margin: "0 0 8px 0" }}>
+            Database Disconnected
+          </h3>
+          <p style={{ fontSize: "0.85rem", color: DS.textSecondary, margin: "0 auto 20px", maxWidth: "480px", lineHeight: 1.5 }}>
+            Internet connection band hai. Data protection ke liye offline mode me data display band hai. Internet restore hote hi live B2B leads display ho jayengi.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof navigator !== "undefined" && navigator.onLine) {
+                setInternalOnline(true);
+              } else {
+                alert("Internet connection abhi bhi band hai. Kripya apna Wi-Fi ya Mobile Data check karein.");
+              }
+            }}
+            style={{
+              padding: "8px 18px", borderRadius: "8px",
+              background: "linear-gradient(135deg, #ef4444, #dc2626)",
+              color: "#ffffff", border: "none", fontWeight: 700, fontSize: "0.8rem",
+              cursor: "pointer",
+            }}
+          >
+            Check Connection ↻
+          </button>
+        </div>
+      ) : filtered.length === 0 ? (
         <div style={{
           background: DS.surfacePrimary, border: `1px solid ${DS.surfaceBorder}`,
           borderRadius: "14px", padding: "52px 24px", textAlign: "center",
@@ -2717,19 +2866,86 @@ export default function B2BLeadGenerator() {
                         </div>
                       </td>
 
-                      {/* Opportunity */}
+                      {/* Opportunity & Tech Audit */}
                       <td style={{ padding: "12px 14px" }}>
                         {hasWeb ? (
-                          <div>
-                            <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", background: DS.accentBlueBg, border: `1px solid ${DS.accentBlueBorder}`, color: DS.accentBlue, padding: "3px 8px", borderRadius: "5px", fontSize: "0.68rem", fontWeight: 700 }}>
-                              <i className="fas fa-globe" style={{ fontSize: "9px" }}></i> Has Website
-                            </span>
-                            <div style={{ marginTop: "4px" }}>
-                              <a href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`} target="_blank" rel="noopener noreferrer" style={{ color: DS.accentIndigo, fontSize: "0.72rem", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "3px", maxWidth: "130px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                {lead.website.replace(/^https?:\/\//i,"").split("/")[0]}
-                                <i className="fas fa-arrow-up-right-from-square" style={{ fontSize: "8px" }}></i>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                              <a
+                                href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ color: DS.accentIndigo, fontSize: "0.72rem", textDecoration: "none", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: "3px", maxWidth: "125px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                                title={lead.website}
+                              >
+                                <i className="fas fa-globe" style={{ fontSize: "10px", color: DS.accentBlue }}></i>
+                                {lead.website.replace(/^https?:\/\//i, "").replace(/\/$/, "")}
+                                <i className="fas fa-arrow-up-right-from-square" style={{ fontSize: "8px", opacity: 0.7 }}></i>
                               </a>
                             </div>
+
+                            {/* ⚡ 1-Click Audit Button / Score Pill */}
+                            {lead.auditResult ? (
+                              <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setAuditModalLead(lead)}
+                                  style={{
+                                    display: "inline-flex", alignItems: "center", gap: "4px",
+                                    padding: "3px 8px", borderRadius: "5px",
+                                    background: lead.auditResult.score < 60 ? "rgba(239, 68, 68, 0.12)" : lead.auditResult.score < 80 ? "rgba(245, 158, 11, 0.12)" : "rgba(34, 197, 94, 0.12)",
+                                    border: `1px solid ${lead.auditResult.score < 60 ? "rgba(239, 68, 68, 0.3)" : lead.auditResult.score < 80 ? "rgba(245, 158, 11, 0.3)" : "rgba(34, 197, 94, 0.3)"}`,
+                                    color: lead.auditResult.score < 60 ? "#ef4444" : lead.auditResult.score < 80 ? "#f59e0b" : "#16a34a",
+                                    fontSize: "0.68rem", fontWeight: 800, cursor: "pointer",
+                                  }}
+                                  title="View detailed Website Audit Report & Tech Stack"
+                                >
+                                  <span>⚡ {lead.auditResult.score}/100</span>
+                                  {lead.auditResult.painPoints?.length > 0 && (
+                                    <span style={{ fontSize: "0.64rem", opacity: 0.85 }}>({lead.auditResult.painPoints.length} issues)</span>
+                                  )}
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={auditingLeadId === lead.id}
+                                  onClick={() => handleAuditWebsite(lead)}
+                                  title="Re-audit website"
+                                  style={{
+                                    background: "transparent", border: "none", color: DS.textTertiary,
+                                    cursor: "pointer", fontSize: "10px", padding: "2px 4px",
+                                  }}
+                                >
+                                  <i className={`fas fa-rotate ${auditingLeadId === lead.id ? "fa-spin" : ""}`}></i>
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                disabled={auditingLeadId === lead.id}
+                                onClick={() => handleAuditWebsite(lead)}
+                                style={{
+                                  display: "inline-flex", alignItems: "center", gap: "4px",
+                                  padding: "3px 8px", borderRadius: "5px",
+                                  background: "linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(249, 115, 22, 0.15))",
+                                  border: "1px solid rgba(234, 179, 8, 0.4)",
+                                  color: "#f59e0b", fontSize: "0.68rem", fontWeight: 800,
+                                  cursor: auditingLeadId === lead.id ? "not-allowed" : "pointer",
+                                  transition: "all 0.15s ease",
+                                }}
+                                title="Run 1-Click Website Audit (SSL, Mobile, CMS Stack)"
+                              >
+                                {auditingLeadId === lead.id ? (
+                                  <>
+                                    <i className="fas fa-spinner fa-spin" style={{ fontSize: "9px" }}></i>
+                                    <span>Scanning...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>⚡ Audit Website</span>
+                                  </>
+                                )}
+                              </button>
+                            )}
                           </div>
                         ) : (
                           <div>
@@ -2860,13 +3076,74 @@ export default function B2BLeadGenerator() {
                   </button>
                 </div>
 
-                {/* Opportunity strip */}
+                {/* Opportunity & Tech Audit strip */}
                 {hasWeb ? (
-                  <div style={{ padding: "7px 10px", borderRadius: "7px", background: "rgba(56,189,248,0.07)", border: `1px solid rgba(56,189,248,0.15)`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: "0.72rem", fontWeight: 700, color: DS.accentBlue, display: "flex", alignItems: "center", gap: "5px", background: DS.accentBlueBg, padding: "5px 9px", borderRadius: "6px" }}>
-                      <i className="fas fa-globe" style={{ fontSize: "10px" }}></i> Has Website
-                    </span>
-                    <a href={lead.website.startsWith("http")?lead.website:`https://${lead.website}`} target="_blank" rel="noopener noreferrer" style={{ color: DS.accentIndigo, fontSize: "0.7rem", textDecoration: "none", fontWeight: 700 }}>View ↗</a>
+                  <div style={{ padding: "8px 10px", borderRadius: "8px", background: "rgba(56,189,248,0.05)", border: `1px solid rgba(56,189,248,0.15)`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span style={{ fontSize: "0.7rem", fontWeight: 700, color: DS.accentBlue, display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <i className="fas fa-globe" style={{ fontSize: "10px" }}></i>
+                        <a href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`} target="_blank" rel="noopener noreferrer" style={{ color: DS.accentIndigo, textDecoration: "none", fontWeight: 700, maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "inline-block" }}>
+                          {lead.website.replace(/^https?:\/\//i, "").replace(/\/$/, "")}
+                        </a>
+                      </span>
+                    </div>
+
+                    {lead.auditResult ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                        <button
+                          type="button"
+                          onClick={() => setAuditModalLead(lead)}
+                          style={{
+                            display: "inline-flex", alignItems: "center", gap: "4px",
+                            padding: "3px 8px", borderRadius: "6px",
+                            background: lead.auditResult.score < 60 ? "rgba(239, 68, 68, 0.12)" : lead.auditResult.score < 80 ? "rgba(245, 158, 11, 0.12)" : "rgba(34, 197, 94, 0.12)",
+                            border: `1px solid ${lead.auditResult.score < 60 ? "rgba(239, 68, 68, 0.3)" : lead.auditResult.score < 80 ? "rgba(245, 158, 11, 0.3)" : "rgba(34, 197, 94, 0.3)"}`,
+                            color: lead.auditResult.score < 60 ? "#ef4444" : lead.auditResult.score < 80 ? "#f59e0b" : "#16a34a",
+                            fontSize: "0.68rem", fontWeight: 800, cursor: "pointer",
+                          }}
+                          title="View Website Audit Report & Tech Stack"
+                        >
+                          <span>⚡ {lead.auditResult.score}/100</span>
+                        </button>
+                        <button
+                          type="button"
+                          disabled={auditingLeadId === lead.id}
+                          onClick={() => handleAuditWebsite(lead)}
+                          title="Re-audit website"
+                          style={{
+                            background: "transparent", border: "none", color: DS.textTertiary,
+                            cursor: "pointer", fontSize: "10px", padding: "2px 4px",
+                          }}
+                        >
+                          <i className={`fas fa-rotate ${auditingLeadId === lead.id ? "fa-spin" : ""}`}></i>
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={auditingLeadId === lead.id}
+                        onClick={() => handleAuditWebsite(lead)}
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: "4px",
+                          padding: "4px 9px", borderRadius: "6px",
+                          background: "linear-gradient(135deg, rgba(234, 179, 8, 0.18), rgba(249, 115, 22, 0.18))",
+                          border: "1px solid rgba(234, 179, 8, 0.4)",
+                          color: "#f59e0b", fontSize: "0.7rem", fontWeight: 800,
+                          cursor: auditingLeadId === lead.id ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        {auditingLeadId === lead.id ? (
+                          <>
+                            <i className="fas fa-spinner fa-spin" style={{ fontSize: "9px" }}></i>
+                            <span>Scanning...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>⚡ Audit Website</span>
+                          </>
+                        )}
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <div style={{ padding: "7px 10px", borderRadius: "7px", background: DS.accentAmberBg, border: `1px solid ${DS.accentAmberBorder}`, display: "flex", alignItems: "center", gap: "7px", boxShadow: "0 0 14px rgba(245,158,11,0.08)" }}>
@@ -3337,6 +3614,332 @@ export default function B2BLeadGenerator() {
                     <i className="fab fa-whatsapp" style={{ fontSize: "16px" }}></i>
                     <span>Open WhatsApp & Send Next ▶ (Enter ↵)</span>
                   </button>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* ── 1-Click Technical Website Audit & Inspector Modal ── */}
+      {auditModalLead && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setAuditModalLead(null)}
+          style={{
+            position: "fixed", inset: 0,
+            background: "rgba(15, 23, 42, 0.72)",
+            backdropFilter: "blur(6px)",
+            zIndex: 10000,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "16px",
+          }}
+        >
+          {(() => {
+            const audit = auditModalLead.auditResult || {};
+            const waLink = getWhatsAppLink(auditModalLead);
+            const pitch = getPitchText(auditModalLead);
+
+            return (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  background: "#ffffff",
+                  borderRadius: "16px",
+                  maxWidth: "680px",
+                  width: "100%",
+                  maxHeight: "90vh",
+                  overflowY: "auto",
+                  boxShadow: "0 25px 60px -15px rgba(0,0,0,0.3)",
+                  border: `1px solid ${DS.surfaceBorder}`,
+                  display: "flex", flexDirection: "column",
+                }}
+              >
+                {/* Header */}
+                <div style={{
+                  padding: "18px 24px",
+                  borderBottom: `1px solid ${DS.surfaceBorder}`,
+                  background: "linear-gradient(135deg, #0f172a, #1e293b)",
+                  color: "#ffffff",
+                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px",
+                  borderTopLeftRadius: "16px", borderTopRightRadius: "16px",
+                }}>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
+                      <span style={{
+                        display: "inline-flex", alignItems: "center", gap: "4px",
+                        padding: "3px 8px", borderRadius: "6px",
+                        background: "rgba(245, 158, 11, 0.2)", border: "1px solid rgba(245, 158, 11, 0.4)",
+                        color: "#f59e0b", fontSize: "0.72rem", fontWeight: 800,
+                      }}>
+                        ⚡ 1-CLICK TECH AUDIT
+                      </span>
+                      <span style={{ fontSize: "0.78rem", color: "#94a3b8" }}>
+                        {auditModalLead.city || "Business Target"} • {auditModalLead.category || "General"}
+                      </span>
+                    </div>
+                    <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 800, color: "#ffffff" }}>
+                      {auditModalLead.name}
+                    </h3>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setAuditModalLead(null)}
+                    style={{
+                      background: "rgba(255,255,255,0.1)", border: "none", color: "#cbd5e1",
+                      width: "32px", height: "32px", borderRadius: "8px", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "14px",
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Body */}
+                <div style={{ padding: "22px 24px", display: "flex", flexDirection: "column", gap: "18px" }}>
+                  {/* URL & Score Strip */}
+                  <div style={{
+                    padding: "14px 16px", borderRadius: "12px",
+                    background: (audit.score || 0) < 60 ? "rgba(239, 68, 68, 0.06)" : (audit.score || 0) < 80 ? "rgba(245, 158, 11, 0.06)" : "rgba(34, 197, 94, 0.06)",
+                    border: `1px solid ${(audit.score || 0) < 60 ? "rgba(239, 68, 68, 0.2)" : (audit.score || 0) < 80 ? "rgba(245, 158, 11, 0.2)" : "rgba(34, 197, 94, 0.2)"}`,
+                    display: "flex", alignItems: "center", justifyContent: "space-between", gap: "14px", flexWrap: "wrap",
+                  }}>
+                    <div>
+                      <div style={{ fontSize: "0.72rem", fontWeight: 700, color: DS.textTertiary, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                        Inspected Website
+                      </div>
+                      <a
+                        href={auditModalLead.website?.startsWith("http") ? auditModalLead.website : `https://${auditModalLead.website}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: DS.accentIndigo, fontWeight: 700, fontSize: "0.92rem", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "2px" }}
+                      >
+                        <i className="fas fa-globe"></i>
+                        <span>{auditModalLead.website}</span>
+                        <i className="fas fa-arrow-up-right-from-square" style={{ fontSize: "10px" }}></i>
+                      </a>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontSize: "0.7rem", fontWeight: 700, color: DS.textTertiary }}>HEALTH SCORE</div>
+                        <div style={{
+                          fontSize: "1.45rem", fontWeight: 900,
+                          color: (audit.score || 0) < 60 ? "#ef4444" : (audit.score || 0) < 80 ? "#f59e0b" : "#16a34a",
+                        }}>
+                          {audit.score || 0}<span style={{ fontSize: "0.85rem", fontWeight: 600, color: DS.textTertiary }}>/100</span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        disabled={auditingLeadId === auditModalLead.id}
+                        onClick={() => handleAuditWebsite(auditModalLead)}
+                        style={{
+                          display: "inline-flex", alignItems: "center", gap: "5px",
+                          padding: "8px 12px", borderRadius: "8px",
+                          background: "#ffffff", border: `1px solid ${DS.surfaceBorder}`,
+                          color: DS.textPrimary, fontSize: "0.75rem", fontWeight: 700,
+                          cursor: auditingLeadId === auditModalLead.id ? "not-allowed" : "pointer",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                        }}
+                      >
+                        <i className={`fas fa-rotate ${auditingLeadId === auditModalLead.id ? "fa-spin" : ""}`}></i>
+                        <span>Re-Scan</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 4 Inspector Metric Cards */}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(135px, 1fr))", gap: "10px" }}>
+                    {/* SSL */}
+                    <div style={{
+                      padding: "12px", borderRadius: "10px",
+                      background: audit.hasHttps ? "rgba(34, 197, 94, 0.05)" : "rgba(239, 68, 68, 0.06)",
+                      border: `1px solid ${audit.hasHttps ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.25)"}`,
+                    }}>
+                      <div style={{ fontSize: "0.68rem", fontWeight: 700, color: DS.textTertiary, marginBottom: "4px" }}>
+                        SSL CERTIFICATE
+                      </div>
+                      <div style={{ fontSize: "0.82rem", fontWeight: 800, color: audit.hasHttps ? "#16a34a" : "#ef4444", display: "flex", alignItems: "center", gap: "5px" }}>
+                        <i className={`fas ${audit.hasHttps ? "fa-lock" : "fa-lock-open"}`}></i>
+                        {audit.hasHttps ? "HTTPS Secured" : "Not Secure ⚠️"}
+                      </div>
+                      <div style={{ fontSize: "0.68rem", color: DS.textSecondary, marginTop: "4px" }}>
+                        {audit.hasHttps ? "Valid SSL encryption" : "Browser warns client"}
+                      </div>
+                    </div>
+
+                    {/* Viewport */}
+                    <div style={{
+                      padding: "12px", borderRadius: "10px",
+                      background: audit.hasViewport ? "rgba(34, 197, 94, 0.05)" : "rgba(239, 68, 68, 0.06)",
+                      border: `1px solid ${audit.hasViewport ? "rgba(34, 197, 94, 0.2)" : "rgba(239, 68, 68, 0.25)"}`,
+                    }}>
+                      <div style={{ fontSize: "0.68rem", fontWeight: 700, color: DS.textTertiary, marginBottom: "4px" }}>
+                        MOBILE VIEWPORT
+                      </div>
+                      <div style={{ fontSize: "0.82rem", fontWeight: 800, color: audit.hasViewport ? "#16a34a" : "#ef4444", display: "flex", alignItems: "center", gap: "5px" }}>
+                        <i className={`fas ${audit.hasViewport ? "fa-mobile-screen" : "fa-triangle-exclamation"}`}></i>
+                        {audit.hasViewport ? "Responsive Meta" : "Layout Broken 📱"}
+                      </div>
+                      <div style={{ fontSize: "0.68rem", color: DS.textSecondary, marginTop: "4px" }}>
+                        {audit.hasViewport ? "Scales on phone" : "Cuts off on mobile"}
+                      </div>
+                    </div>
+
+                    {/* Tech Stack */}
+                    <div style={{
+                      padding: "12px", borderRadius: "10px",
+                      background: "rgba(99, 102, 241, 0.05)",
+                      border: "1px solid rgba(99, 102, 241, 0.2)",
+                    }}>
+                      <div style={{ fontSize: "0.68rem", fontWeight: 700, color: DS.textTertiary, marginBottom: "4px" }}>
+                        TECH STACK / CMS
+                      </div>
+                      <div style={{ fontSize: "0.82rem", fontWeight: 800, color: "#6366f1", display: "flex", alignItems: "center", gap: "5px" }}>
+                        <i className="fas fa-layer-group"></i>
+                        {audit.cms || "Custom"}
+                      </div>
+                      <div style={{ fontSize: "0.68rem", color: DS.textSecondary, marginTop: "4px" }}>
+                        {audit.cms?.includes("WordPress") ? "High hack / slow risk" : "Current platform"}
+                      </div>
+                    </div>
+
+                    {/* Speed / Ping */}
+                    <div style={{
+                      padding: "12px", borderRadius: "10px",
+                      background: "rgba(14, 165, 233, 0.05)",
+                      border: "1px solid rgba(14, 165, 233, 0.2)",
+                    }}>
+                      <div style={{ fontSize: "0.68rem", fontWeight: 700, color: DS.textTertiary, marginBottom: "4px" }}>
+                        SERVER RESPONSE
+                      </div>
+                      <div style={{ fontSize: "0.82rem", fontWeight: 800, color: "#0284c7", display: "flex", alignItems: "center", gap: "5px" }}>
+                        <i className="fas fa-bolt"></i>
+                        {audit.durationMs ? `${audit.durationMs}ms` : "Active"}
+                      </div>
+                      <div style={{ fontSize: "0.68rem", color: DS.textSecondary, marginTop: "4px" }}>
+                        {audit.isReachable ? "Server reachable" : "Slow response"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Real Detected Pain Points Checklist */}
+                  <div>
+                    <div style={{ fontSize: "0.78rem", fontWeight: 800, color: DS.textPrimary, marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <i className="fas fa-triangle-exclamation" style={{ color: "#ef4444" }}></i>
+                      <span>Detected Website Weaknesses (Client Ko Batane Ke Liye):</span>
+                    </div>
+                    {audit.painPoints && audit.painPoints.length > 0 ? (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                        {audit.painPoints.map((point, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              padding: "8px 12px", borderRadius: "8px",
+                              background: "rgba(239, 68, 68, 0.05)", border: "1px solid rgba(239, 68, 68, 0.15)",
+                              fontSize: "0.76rem", color: "#991b1b", fontWeight: 600,
+                              display: "flex", alignItems: "center", gap: "8px",
+                            }}
+                          >
+                            <i className="fas fa-circle-exclamation" style={{ color: "#ef4444", fontSize: "11px", flexShrink: 0 }}></i>
+                            <span>{point}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{
+                        padding: "10px 14px", borderRadius: "8px",
+                        background: "rgba(34, 197, 94, 0.06)", border: "1px solid rgba(34, 197, 94, 0.2)",
+                        fontSize: "0.76rem", color: "#166534", fontWeight: 600,
+                      }}>
+                        Website online hai lekin modern ChittorTech speed, CRM leads capture aur direct WhatsApp button missing hai.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Tailored WhatsApp Pitch Box (Incorporates Audit Findings) */}
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <label style={{ fontSize: "0.78rem", fontWeight: 800, color: DS.textPrimary, display: "flex", alignItems: "center", gap: "6px" }}>
+                        <i className="fab fa-whatsapp" style={{ color: "#16a34a" }}></i>
+                        <span>Auto-Generated WhatsApp Pitch (With Real Audit Pain Points):</span>
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(pitch);
+                          setAuditCopied(true);
+                          setTimeout(() => setAuditCopied(false), 2200);
+                        }}
+                        style={{
+                          background: "transparent", border: "none", color: auditCopied ? "#16a34a" : DS.accentIndigo,
+                          fontSize: "0.74rem", fontWeight: 700, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px",
+                        }}
+                      >
+                        <i className={`fas ${auditCopied ? "fa-check" : "fa-copy"}`}></i>
+                        <span>{auditCopied ? "Copied!" : "Copy Pitch"}</span>
+                      </button>
+                    </div>
+
+                    <textarea
+                      readOnly
+                      rows={6}
+                      value={pitch}
+                      style={{
+                        width: "100%", padding: "12px 14px", borderRadius: "10px",
+                        background: "#f8fafc", border: `1px solid ${DS.surfaceBorder}`,
+                        fontSize: "0.76rem", color: DS.textPrimary, fontFamily: "inherit",
+                        lineHeight: 1.5, resize: "none",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div style={{
+                  padding: "14px 24px", borderTop: `1px solid ${DS.surfaceBorder}`,
+                  background: "#f8fafc", display: "flex", alignItems: "center", justifyContent: "space-between",
+                  gap: "10px", flexWrap: "wrap", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px",
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => setAuditModalLead(null)}
+                    style={{
+                      padding: "8px 16px", borderRadius: "8px",
+                      background: "transparent", border: `1px solid ${DS.surfaceBorder}`,
+                      color: DS.textSecondary, fontSize: "0.8rem", fontWeight: 700, cursor: "pointer",
+                    }}
+                  >
+                    Close
+                  </button>
+
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    <a
+                      href={waLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => {
+                        onContactClick(auditModalLead, "whatsapp");
+                        setAuditModalLead(null);
+                      }}
+                      style={{
+                        display: "inline-flex", alignItems: "center", gap: "7px",
+                        padding: "9px 20px", borderRadius: "10px",
+                        background: "linear-gradient(135deg, #22c55e, #16a34a)",
+                        border: "none", color: "#ffffff",
+                        fontSize: "0.84rem", fontWeight: 800, textDecoration: "none",
+                        boxShadow: "0 4px 14px rgba(34, 197, 94, 0.35)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <i className="fab fa-whatsapp" style={{ fontSize: "15px" }}></i>
+                      <span>Send Pitch on WhatsApp ↗</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             );
