@@ -1,7 +1,9 @@
 import { initializeApp, getApps, cert } from "firebase-admin/app";
 import { getMessaging } from "firebase-admin/messaging";
+import { getFirestore } from "firebase-admin/firestore";
 
 let messaging = null;
+let firestore = null;
 
 if (!getApps().length) {
   try {
@@ -20,6 +22,7 @@ if (!getApps().length) {
         }),
       });
       messaging = getMessaging(app);
+      firestore = getFirestore(app);
       console.log("Firebase Admin SDK initialized successfully");
     }
   } catch (error) {
@@ -28,9 +31,12 @@ if (!getApps().length) {
 } else {
   try {
     messaging = getMessaging();
+    firestore = getFirestore();
   } catch (err) {
-    console.warn("Firebase Admin messaging notice:", err.message);
+    console.warn("Firebase Admin service notice:", err.message);
   }
 }
 
 export const adminMessaging = messaging;
+export const adminDb = firestore;
+

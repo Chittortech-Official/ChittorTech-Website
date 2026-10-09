@@ -335,7 +335,7 @@ export default function NotificationHub() {
                     "Your sprint invoice and security architecture documents are updated in your Client Portal.",
                     "UPDATE",
                     "SPECIFIC_CLIENT",
-                    knownClients[0] || "chittortech@gmail.com"
+                    knownClients[0] || "business@chittortech.in"
                   )
                 }
                 style={{ background: "#f5f3ff", border: "1px solid #ddd6fe", borderRadius: "8px", padding: "6px 12px", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer", color: "#6d28d9", display: "flex", alignItems: "center", gap: "6px" }}

@@ -20,11 +20,7 @@ import {
   subscribeToAdminSessions,
 } from "@/lib/leadService";
 
-const SCRIPT_URL =
-  process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL &&
-  !process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL.includes("AKfycbzpTM2VcC")
-    ? process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL
-    : "https://script.google.com/macros/s/AKfycbxbWvxG81_lwfFh0sIqGhQnJnHwPwC0TxBnmiPq_DFxfFp7OnxNY1XC60nmFZxABve8/exec";
+const SCRIPT_URL = "/api/admin/auth";
 
 export default function AdminLeadsPage() {
   const [adminPipelineTab, setAdminPipelineTab] = useState("b2b_outbound");
@@ -1052,7 +1048,7 @@ export default function AdminLeadsPage() {
                 </div>
                 <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "6px 10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 600 }}>Notification API</span>
-                  <span style={{ fontSize: "0.66rem", color: "#059669", fontWeight: 700 }}>Online (Apps Script)</span>
+                  <span style={{ fontSize: "0.66rem", color: "#059669", fontWeight: 700 }}>Online (Vercel Serverless)</span>
                 </div>
                 <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "6px 10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 600 }}>Security Protocol</span>

@@ -519,7 +519,7 @@
     "codeSnippet": {
       "language": "javascript",
       "title": "ChittorTech Pre-Rendered Dynamic Route Template",
-      "code": "// ChittorTech Next.js App Router Static Generation Pattern\nimport { notFound } from 'next/navigation';\nimport clientCatalog from '@/data/catalog.json';\n\nexport const dynamicParams = false; // Strictly prevent missing routes\n\nexport async function generateStaticParams() {\n  return clientCatalog.map((item) => ({ slug: item.slug }));\n}\n\nexport async function generateMetadata({ params }) {\n  const { slug } = await params;\n  const item = clientCatalog.find(i => i.slug === slug);\n  return {\n    title: `${item.title} | ChittorTech Solutions`,\n    alternates: { canonical: `https://chittortech.in/${slug}` }\n  };\n}"
+      "code": "// ChittorTech Next.js App Router Static Generation Pattern\nimport { notFound } from 'next/navigation';\nimport clientCatalog from '@/data/catalog.json';\n\nexport const dynamicParams = false; // Strictly prevent missing routes\n\nexport async function generateStaticParams() {\n  return clientCatalog.map((item) => ({ slug: item.slug }));\n}\n\nexport async function generateMetadata({ params }) {\n  const { slug } = await params;\n  const item = clientCatalog.find(i => i.slug === slug);\n  return {\n    title: `${item.title} | ChittorTech`,\n    alternates: { canonical: `https://chittortech.in/${slug}` }\n  };\n}"
     },
     "faqList": [
       {

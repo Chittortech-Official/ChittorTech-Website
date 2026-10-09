@@ -60,12 +60,6 @@ export async function flushBufferedLeads() {
   }
 
   const remaining = [];
-  const scriptUrl =
-    process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL &&
-    !process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL.includes("AKfycbzpTM2VcC")
-      ? process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL
-      : "https://script.google.com/macros/s/AKfycbxbWvxG81_lwfFh0sIqGhQnJnHwPwC0TxBnmiPq_DFxfFp7OnxNY1XC60nmFZxABve8/exec";
-
   for (const item of list) {
     try {
       const leadsCollection = collection(db, "leads");
@@ -75,10 +69,11 @@ export async function flushBufferedLeads() {
         recoveredFromBuffer: true,
       });
 
-      // Attempt background email trigger
-      if (scriptUrl && item.rawFormData) {
-        fetch(scriptUrl, {
+      // Attempt background ingestion trigger via Vercel Serverless
+      if (item.rawFormData) {
+        fetch("/api/leads", {
           method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...item.rawFormData,
             firestoreId: docRef.id,
@@ -157,36 +152,28 @@ export async function submitLead(formData) {
     bufferLeadLocally(leadPayload, formData);
   }
 
-  // 2. Trigger Email via Google Apps Script (in background, non-blocking)
-  const scriptUrl =
-    process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL &&
-    !process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL.includes("AKfycbzpTM2VcC")
-      ? process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL
-      : "https://script.google.com/macros/s/AKfycbxbWvxG81_lwfFh0sIqGhQnJnHwPwC0TxBnmiPq_DFxfFp7OnxNY1XC60nmFZxABve8/exec";
-  if (scriptUrl) {
-    try {
-      fetch(scriptUrl, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: leadPayload.name,
-          email: leadPayload.email,
-          contact: leadPayload.contact,
-          company: leadPayload.company,
-          industry: leadPayload.industry,
-          firm: leadPayload.firm,
-          location: leadPayload.location,
-          message: leadPayload.message,
-          firestoreId: firestoreDocId,
-          source: leadPayload.source,
-        }),
-      }).catch((emailErr) => {
-        console.warn("Google Apps Script email webhook warning (lead is still safely in Firestore/Buffer):", emailErr);
-      });
-    } catch (e) {
-      console.warn("Background fetch trigger error:", e);
-    }
+  // 2. Trigger Lead Ingestion & Dispatch via Vercel Serverless (in background, non-blocking)
+  try {
+    fetch("/api/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: leadPayload.name,
+        email: leadPayload.email,
+        contact: leadPayload.contact,
+        company: leadPayload.company,
+        industry: leadPayload.industry,
+        firm: leadPayload.firm,
+        location: leadPayload.location,
+        message: leadPayload.message,
+        firestoreId: firestoreDocId,
+        source: leadPayload.source,
+      }),
+    }).catch((emailErr) => {
+      console.warn("Vercel lead ingestion notice (lead is safely stored in Firestore):", emailErr);
+    });
+  } catch (e) {
+    console.warn("Background fetch trigger error:", e);
   }
 
   return {

@@ -104,8 +104,8 @@ export async function POST(req) {
     </div>
 
     <div class="footer">
-      <p><strong>ChittorTech Solutions</strong> • Collectorate Circle, Chittorgarh, Rajasthan (312001)</p>
-      <p>Official Portal: <a href="https://chittortech.in">chittortech.in</a> • Email: <a href="mailto:contact@chittortech.in">contact@chittortech.in</a></p>
+      <p><strong>ChittorTech</strong> • Collectorate Circle, Chittorgarh, Rajasthan (312001)</p>
+      <p>Official Portal: <a href="https://chittortech.in">chittortech.in</a> • Email: <a href="mailto:business@chittortech.in">business@chittortech.in</a></p>
     </div>
   </div>
 </body>
@@ -118,7 +118,7 @@ export async function POST(req) {
         const transporter = nodemailer.createTransport({
           host: process.env.SMTP_HOST,
           port: Number(process.env.SMTP_PORT) || 587,
-          secure: process.env.SMTP_SECURE === "true",
+          secure: process.env.SMTP_SECURE === "true" || process.env.SMTP_PORT === "465",
           auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
@@ -126,8 +126,9 @@ export async function POST(req) {
         });
 
         await transporter.sendMail({
-          from: `"ChittorTech Solutions" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+          from: `"ChittorTech" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
           to: email,
+          bcc: "kushsharma.cor@gmail.com, lavsharma.cor@gmail.com",
           subject: `✨ Meeting Confirmed: Strategy Consultation with Founder Lav Sharma`,
           html: htmlContent,
         });

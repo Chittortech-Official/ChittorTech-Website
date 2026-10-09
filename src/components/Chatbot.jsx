@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { submitLead } from "@/lib/leadService";
-import { CHITTORTECH_KNOWLEDGE_BASE } from "@/data/chittortechKnowledgeBase";
 
 function getPageAwareDetails(pathname, userName = "") {
   const nameGreeting = userName ? ` ${userName}` : "";
@@ -662,75 +661,21 @@ export default function Chatbot() {
           content: sanitizeContent(m.content, m.role),
         }));
 
-      const p1 = "gsk_IDpObGXNtTE7zv7";
-      const p2 = "LfuheWGdyb3FYRbWozDPnaLnySa7YtfpM0maO";
-      const groqKey = p1 + p2;
-      const pageInfo = getPageAwareDetails(pathname, userName);
-      const systemPrompt = {
-        role: "system",
-        content: `You are ChittorTech GPT, the official AI assistant and Customer Support Executive for ChittorTech.
-
-CURRENT ACTIVE VISITOR CONTEXT:
-- Active Page: ${pathname}
-- Page Focus: ${pageInfo.contextPrompt}
-- Dynamically tailor your answers to highlight what the visitor is exploring right now.
-
-CRITICAL RESPONSE FORMAT RULES:
-1. TABLES (IF APPLICABLE):
-   - Keep tables compact with STRICTLY 2 COLUMNS (e.g. | Feature / Module | Highlights |).
-   - Maximum 4 rows only! Never produce giant or multi-column wide tables.
-2. WHY CHOOSE CHITTORTECH:
-   - Keep to exactly 3 punchy bullet points (max 1 sentence each).
-3. NEXT STEPS / ACTION (NO LONG QUESTIONNAIRES):
-   - NEVER ask the visitor a long 6-step questionnaire or barrage of questions.
-   - Simply guide them directly with a short friendly note and direct link: "Ready to discuss your project? Get in touch with our team via our Contact page or WhatsApp!"
-   - Always append '[ACTION:CONTACT]' or '[ACTION:WHATSAPP]'.
-4. BREVITY & CONVERSION:
-   - Keep answers focused, crisp, and high-impact so visitors can read quickly without scrolling fatigue.
-
-OFFICIAL COMPREHENSIVE CHITTORTECH KNOWLEDGE BASE (SOURCE OF TRUTH):
-${CHITTORTECH_KNOWLEDGE_BASE}`
-      };
-
-      const finalMessages = [systemPrompt, ...chatHistory];
-
-      let response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      // Secure Vercel Serverless AI Execution (/api/chat)
+      const response = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Authorization": `Bearer ${groqKey}`,
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "openai/gpt-oss-120b",
-          messages: finalMessages,
-          temperature: 0.7,
-          max_tokens: 2048
+          messages: chatHistory,
+          pathname,
+          userName,
         }),
       });
-
-      if (!response.ok) {
-        // Fallback to secondary fast model if 120b model rate limits
-        response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${groqKey}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model: "openai/gpt-oss-20b",
-            messages: finalMessages,
-            temperature: 0.7,
-            max_tokens: 2048
-          }),
-        });
-      }
 
       if (!response.ok) throw new Error(`API Error ${response.status}`);
 
       const data = await response.json();
-      const reply = data.choices && data.choices[0] && data.choices[0].message 
-        ? data.choices[0].message.content 
-        : "Sorry, I didn't quite catch that. Could you please rephrase?";
+      const reply = data.reply || "Sorry, I didn't quite catch that. Could you please rephrase?";
 
       typeMessage(reply);
     } catch (e) {
