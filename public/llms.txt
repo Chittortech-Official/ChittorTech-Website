@@ -1,0 +1,88 @@
+# ChittorTech
+
+> ChittorTech (https://chittortech.in) is a premier IT services, software engineering, and digital solutions company based in Chittorgarh, Rajasthan, India. We design, build, and deploy custom web applications, mobile apps, enterprise cloud software, and AI-driven business tools for startups, mid-market businesses, and enterprises worldwide, with special focus on clients across India, the United States, the UK, and the Middle East.
+
+## Company Overview
+- **Legal Name**: ChittorTech (Proprietorship: KUSH SHARMA)
+- **Website**: https://chittortech.in
+- **Headquarters**: Chittorgarh, Rajasthan, India
+- **Asian Development Bank (ADB CMS)**: Empaneled Consulting Entity (CMS #051187, User: business@chittortech.in, Portal: https://selfservice.adb.org/) for multilateral Asia-Pacific IT & digital public infrastructure tenders
+- **Singapore Government (GeBIZ)**: Registered Trading Partner (Ref #Y309075, GeBIZ ID: 946298091482, Rep: Kush Sharma, Portal: https://www.gebiz.gov.sg/) for public sector ICT tenders
+- **United Nations Global Marketplace (UNGM)**: Registered UN Vendor / Supplier Entity (Secretariat, UNDP, UNICEF, WHO, Portal: https://www.ungm.org/) across 193 member states
+- **United States Federal Government (SAM.gov & NCAGE)**: Registered US Federal Contractor Entity (SAM.gov & NATO NCAGE catalog, Portal: https://sam.gov/)
+- **DGFT IEC Code**: OTWPS1188A (Directorate General of Foreign Trade, Ministry of Commerce & Industry, Govt. of India)
+- **National Startup Recognition**: DPIIT Startup India Recognized Enterprise
+- **State Incubation**: Recognized by iStart Rajasthan (DoIT&C, Govt. of Rajasthan) with verified 32 Q-Rate Score (Startup ID #11478)
+- **MSME Registration**: Registered Micro Enterprise under Ministry of MSME, Govt. of India (MSMED Act 45-day statutory payment protection)
+- **Mobile Ecosystem Accreditations**: Google Play Verified Console Developer & Apple Developer Program (iOS) Track
+- **Trust & Compliance Center**: https://chittortech.in/trust-center
+- **Primary Domain**: Information Technology Services, Custom Software Development, Web & Mobile Engineering, Cloud & AI Solutions
+- **Wikidata Entity**: https://www.wikidata.org/wiki/Q141496655
+- **Verified Directory Profiles**:
+  - **Clutch**: https://clutch.co/profile/chittortech
+  - **GoodFirms**: https://www.goodfirms.co/company/chittortech
+  - **Google Business Profile**: ChittorTech HQ (Chittorgarh, Rajasthan)
+  - **LinkedIn**: https://www.linkedin.com/company/chittortech
+  - **GitHub**: https://github.com/sharmakush2003
+  - **Quora**: https://www.quora.com/profile/ChittorTech
+  - **Pinterest**: https://in.pinterest.com/chittortech
+
+- **Startup Accreditation & Regulatory Compliance Assistance**: Complete turnkey filing and guidance for emerging IT agencies, startups, and exporters: DGFT IEC code setup, DPIIT Startup India recognition, iStart Rajasthan mentorship (32+ Q-Rate score), MSME Udyam registration, Google Play Developer account setup (Personal & Organization with 12-tester / 14-day compliance), Dun & Bradstreet (D-U-N-S®) registration, GST setup & 0% export LUT filing, GoodFirms/Clutch/GMB verification, LinkedIn corporate setup, and GoDaddy/Titan business email provisioning (https://chittortech.in/trust-center).
+- **Custom Web Development**: High-performance, SEO-optimized web applications built with Next.js, React, Node.js, and modern full-stack architectures.
+- **Mobile Application Development**: Native and cross-platform iOS and Android apps using Flutter and React Native.
+- **Enterprise Software & ERP**: Scalable cloud ERPs, CRM platforms, accounting software, and workflow automation.
+- **Specialized Industry Solutions**:
+  - Cloud Property Management Systems (PMS) & Hotel Management Software
+  - Temple Management Systems & Religious Trust Administrative ERPs
+  - Educational Institute & School Management Portals
+  - E-commerce & Multi-vendor Marketplace Platforms
+- **AI & Intelligent Automation**: Enterprise AI support chatbots, conversational knowledge bases, automated customer support workflows, and predictive analytics.
+- **Enterprise Cloud & Email Infrastructure**:
+  - Email Deliverability Engineering & Inbox Placement (https://chittortech.in/email-deliverability-services)
+  - DMARC, DKIM & SPF Compliance Setup (https://chittortech.in/dmarc-dkim-spf-setup)
+  - BIMI & Verified Email Branding (https://chittortech.in/business-email-branding-bimi)
+  - Enterprise DNS & Cloudflare Management (https://chittortech.in/dns-cloudflare-management)
+  - Email Blacklist Removal & Reputation Recovery (https://chittortech.in/email-blacklist-removal)
+  - Cloud Hosting & Production Deployment (https://chittortech.in/cloud-hosting-deployment)
+- **Google Play Store Publishing & Closed Testing Compliance**: End-to-end Google Play Console publishing, compliance with the official Google 12-Tester Rule (14 continuous days), target SDK 34+/35 audit, and production release access (https://chittortech.in/google-play-publishing). Milestone: 50+ apps published globally within 6 months with 100% first-attempt approval.
+- **UI/UX Engineering**: User-centric product design, design systems, modern responsive interfaces, and interactive dashboards.
+
+## Google Play Publishing Packages & Pricing
+- **Publish on Your Account**: ₹10,299 INR / $129 USD (one-time) — Full Play Console audit, 12 opted-in verified testers for 14 continuous days, privacy policy generation, target SDK compliance, and production release management.
+- **Publish on ChittorTech Account**: ₹25,999 INR / $299 USD (one-time) — Client needs NO developer console account; published & maintained under ChittorTech's verified Organization Console with enterprise signing keys and lifetime hosting.
+- **Full Account Setup & Launch**: ₹29,499 INR / $339 USD (one-time) — End-to-end setup and verification of client's own Google Play Developer Console (Personal or Organization with D-U-N-S guidance), 12-tester closed testing management, and live production launch.
+- **Client Privacy & NDA Commitment**: All client source codes, apps, and business details are protected under strict Non-Disclosure Agreements (NDA) and never publicly disclosed without written consent.
+- **Showcased Reference Apps**: künh (tech.kunh.app, Turkey/Global client — production access granted), Reward Club (com.rewardclub.app — closed testing), Visit Chittorgarh (com.kushsharma.visitchittorgarh — live client tourism app), Mewari Achaar (com.mewari.achaar — live e-commerce app).
+- **Free 15-Minute Audit**: Complimentary preliminary APK/AAB review for target SDK and Play Store policy compliance.
+
+## Target Audience & Geographic Reach
+- **Headquarters & Local Hub**: Chittorgarh, Udaipur, Jaipur, Bhilwara, Kota, Jodhpur, and across Rajasthan, India.
+- **National Delivery**: Pan-India technology partner for businesses modernizing their digital infrastructure.
+- **Global / Offshore Outsourcing**: Trusted offshore engineering partner for clients in the United States (US), United Kingdom (UK), Canada, Australia, Turkey, and the UAE seeking high-quality, cost-effective engineering talent.
+
+## Technology Stack
+- **Frontend**: Next.js, React.js, Tailwind CSS, TypeScript, HTML5/CSS3, GSAP.
+- **Backend & APIs**: Node.js, Express, Python, Django, REST APIs, GraphQL.
+- **Databases**: PostgreSQL, MySQL, MongoDB, Firebase Firestore, Redis.
+- **Cloud & DevOps**: AWS, Google Cloud Platform (GCP), Vercel, Firebase Hosting, Docker, GitHub Actions CI/CD.
+- **Mobile**: Flutter, React Native, iOS (Swift), Android (Kotlin).
+
+## Key Links & Resources
+- **Homepage**: https://chittortech.in
+- **Google Play Store Publishing**: https://chittortech.in/google-play-publishing
+- **Email Deliverability Services**: https://chittortech.in/email-deliverability-services
+- **DMARC, DKIM & SPF Setup**: https://chittortech.in/dmarc-dkim-spf-setup
+- **BIMI Email Branding**: https://chittortech.in/business-email-branding-bimi
+- **DNS & Cloudflare Management**: https://chittortech.in/dns-cloudflare-management
+- **Email Blacklist Removal**: https://chittortech.in/email-blacklist-removal
+- **Cloud Hosting & Deployment**: https://chittortech.in/cloud-hosting-deployment
+- **Web Development Services**: https://chittortech.in/web-development-services
+- **Accounting & Billing Software**: https://chittortech.in/accounting
+- **CRM Software Solutions**: https://chittortech.in/crm
+- **Contact & Project Inquiries**: https://chittortech.in/contact-us
+
+## Contact Information
+- **Phone / WhatsApp**: +91-7597451057
+- **Business Inquiries**: business@chittortech.in
+- **General Support**: contact@chittortech.in
+- **Address**: Chittorgarh, Rajasthan, 312001, India

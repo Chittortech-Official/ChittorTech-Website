@@ -1,0 +1,720 @@
+/* ==========================================================================
+   ChittorTech Premium Design System & Stylesheet (Clean, Original, Optimized)
+   ========================================================================== */
+
+:root {
+  --primary-color: #291fbc;
+  --primary-dark: #1e1b4b;
+  --secondary-color: #3b82f6;
+  --accent-color: #06b6d4;
+  --dark-slate: #0f172a;
+  --light-bg: #f8fafc;
+  --border-color: rgba(226, 232, 240, 0.8);
+  --text-main: #334155;
+  --text-muted: #64748b;
+  --white: #ffffff;
+  
+  --primary-gradient: linear-gradient(135deg, #1e1b4b 0%, #291fbc 60%, #3b82f6 100%);
+  --accent-gradient: linear-gradient(135deg, #e06930 0%, #fbc145 100%);
+  --gold-gradient: linear-gradient(to right, #e06930, #fbc145);
+  
+  --border-radius: 12px;
+  --border-radius-lg: 20px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   Base resets & typography
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-main);
+  background-color: var(--white);
+  line-height: 1.6;
+}
+
+p {
+  margin: 0 0 15px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-top: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* ==========================================================================
+   Header & Navigation (Clean mega-menu and lists)
+   ========================================================================== */
+header {
+  position: relative;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  z-index: 1000;
+}
+
+.navbar-brand img {
+  max-height: 55px;
+}
+
+.navbar-nav .nav-link {
+  font-weight: 600;
+  color: var(--primary-dark) !important;
+  padding: 22px 16px !important;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navbar-nav .nav-link i {
+  font-size: 13px;
+  transition: transform 0.25s ease;
+  color: inherit;
+}
+
+.navbar-nav .nav-item:hover > .nav-link {
+  color: var(--primary-color) !important;
+}
+
+.navbar-nav .nav-item:hover > .nav-link i {
+  transform: rotate(180deg);
+}
+
+/* Mega Menu & Submenu */
+.mega-menu, .sub-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  padding: 25px;
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+  z-index: 999;
+}
+
+.mega-menu {
+  width: 1140px;
+}
+
+.sub-menu {
+  width: 260px;
+  left: 0;
+  transform: translateY(10px);
+  padding: 10px 0;
+}
+
+.nav-item:hover .mega-menu,
+.nav-item:hover .sub-menu {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.nav-item:hover .sub-menu {
+  transform: translateY(0);
+}
+
+.mega-menu-wrap {
+  border-right: 1px solid var(--border-color);
+  padding: 10px 15px;
+  height: 100%;
+}
+
+.col-md-3:last-child .mega-menu-wrap,
+.col-md-4:last-child .mega-menu-wrap {
+  border-right: none;
+}
+
+.mega-menu-wrap strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mega-menu-wrap ul li a, .sub-menu li a {
+  font-size: 15px;
+  color: var(--text-main) !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px !important;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.mega-menu-wrap ul li a:hover, .sub-menu li a:hover {
+  color: var(--primary-color) !important;
+  background: rgba(41, 31, 188, 0.04);
+  transform: translateX(4px);
+}
+
+/* Call to Action Right Button */
+.right-btn ul {
+  display: flex;
+  gap: 15px;
+}
+
+.right-btn ul li a, .btn-hero-primary {
+  color: var(--white) !important;
+  background: var(--accent-gradient);
+  padding: 12px 24px !important;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(224, 105, 48, 0.2);
+}
+
+.right-btn ul li a:hover, .btn-hero-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(224, 105, 48, 0.35);
+}
+
+/* ==========================================================================
+   Home Hero Banner & Animations
+   ========================================================================= */
+section.home-banner-sec {
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+  padding: 110px 0;
+  position: relative;
+}
+
+.animated-box h2 {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  line-height: 1.25;
+  color: var(--primary-dark);
+}
+
+.animated-box p {
+  font-size: 18px;
+  margin: 18px 0;
+}
+
+.animated-box a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-gradient);
+  color: var(--white);
+  padding: 12px 28px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(224, 105, 48, 0.2);
+}
+
+.animated-box a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(224, 105, 48, 0.35);
+}
+
+/* ==========================================================================
+   Grid & Core Feature System
+   ========================================================================== */
+.why-choose-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.grid-item, .holds-box, .services-box, .key-box, .erp-features-box {
+  background: var(--white);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.grid-item:hover, .holds-box:hover, .services-box:hover, .key-box:hover, .erp-features-box:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: rgba(41, 31, 188, 0.1);
+}
+
+.heading-wrap {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 50px;
+}
+
+.heading-wrap h2 {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 800;
+}
+
+.heading-wrap h2 span {
+  color: var(--primary-color);
+}
+
+/* ==========================================================================
+   Modular Styles for Specific Layouts (Kirana, Bridal, Textile, Resort, etc.)
+   ========================================================================== */
+
+/* Bridal & Boutique Section Banner overrides */
+.bridal-store {
+  padding: 40px;
+  background: var(--primary-gradient);
+  text-align: center;
+  border-radius: var(--border-radius-lg);
+  color: var(--white);
+}
+
+.bridal-store h2, .bridal-store h1 {
+  font-size: 32px;
+  color: var(--white);
+}
+
+.bridal-store p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.bridal-wrap ul li {
+  margin-bottom: 12px;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Clothing & Apparel Retail custom content wrap */
+.clothing-stores-text {
+  padding: 20px 0;
+}
+
+.clothing-stores-text h4, .clothing-stores-text h3, .clothing-stores-text h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.clothing-stores-text ul {
+  padding-left: 20px;
+  margin-top: 15px;
+}
+
+.clothing-stores-text ul li {
+  font-size: 16px;
+  line-height: 2.2;
+  color: var(--text-main);
+  list-style-type: disc;
+}
+
+/* Key box overrides (Manufacturing pages) */
+.manufacturing-key .key-box {
+  border: 1px solid var(--primary-color);
+  height: 100%;
+}
+
+.manufacturing-key .key-box h3 {
+  color: var(--primary-color);
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.manufacturing-key .key-box ul {
+  padding-left: 20px;
+}
+
+.manufacturing-key .key-box ul li {
+  font-size: 15px;
+  line-height: 1.9;
+  list-style-type: square;
+}
+
+/* Case study modules */
+.case-studies-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.case-study-card {
+  padding: 30px;
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  border-left: 5px solid var(--primary-color);
+  transition: var(--transition);
+}
+
+.case-study-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+}
+
+.case-study-card h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.case-study-card p {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+/* Testimonials System */
+.testimonial-card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 35px;
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.testimonial-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+.testimonial-quote {
+  font-size: 16px;
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--text-main);
+  position: relative;
+  padding-left: 30px;
+}
+
+.testimonial-quote::before {
+  content: '“';
+  font-size: 50px;
+  color: var(--primary-color);
+  position: absolute;
+  left: 0;
+  top: -15px;
+}
+
+.testimonial-author {
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-top: 15px;
+  display: block;
+}
+
+/* Accounting specific cards (Simplifying ERP layouts) */
+.simplifying-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+}
+
+.simplifying-wrap figure {
+  margin: 0;
+  height: 260px;
+}
+
+.simplifying-wrap figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.simplifying-wrap .simplifying-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.1) 100%);
+  padding: 30px 20px 20px;
+  color: var(--white);
+}
+
+.simplifying-wrap .simplifying-text h6 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Pricing Matrix
+   ========================================================================== */
+.pricing-card {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 35px 25px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  border-top: 5px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.pricing-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+}
+
+.pricing-card.basic { border-top-color: #10b981; }
+.pricing-card.standard { border-top-color: #f59e0b; }
+.pricing-card.premium { border-top-color: #ef4444; }
+
+.pricing-card h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.pricing-features {
+  margin: 25px 0;
+}
+
+.pricing-features li {
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border-color);
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.price {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.price span {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Tabs & Interactive Elements
+   ========================================================================== */
+.innovative-tabs .nav-tabs {
+  border: none;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.innovative-tabs .nav-tabs .nav-link {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px;
+  font-weight: 600;
+  background: var(--white);
+  color: var(--text-main);
+  padding: 10px 20px;
+}
+
+.innovative-tabs .nav-tabs .nav-link.active,
+.innovative-tabs .nav-tabs .nav-link:hover {
+  background: var(--primary-gradient) !important;
+  color: var(--white) !important;
+  border-color: transparent !important;
+}
+
+/* FAQ / Accordion custom style */
+.faq-template .accordion-item {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius) !important;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.faq-template .accordion-button {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  padding: 18px 24px;
+  background: var(--white);
+}
+
+.faq-template .accordion-button:not(.collapsed) {
+  background: rgba(41, 31, 188, 0.03);
+  color: var(--primary-color);
+  box-shadow: none;
+}
+
+.faq-template .accordion-body {
+  padding: 20px 24px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Tables & Process steps
+   ========================================================================== */
+.features-table {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  background: var(--white);
+}
+
+.features-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.features-table thead {
+  background: var(--primary-color);
+  color: var(--white);
+}
+
+.features-table thead td {
+  padding: 20px;
+  font-weight: 700;
+}
+
+.features-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.features-table tbody td {
+  padding: 18px 20px;
+  font-size: 15px;
+}
+
+.features-table tbody tr td:first-child {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+/* Step Process wrapper */
+.step-box-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.step-box {
+  text-align: center;
+  background: var(--white);
+  padding: 30px 20px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.step-box img {
+  width: 50px;
+  margin-bottom: 15px;
+}
+
+/* Contact layout forms */
+.contact-details form {
+  padding: 30px;
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
+}
+
+.contact-details form .form-control {
+  border: none;
+  border-bottom: 2px solid var(--border-color);
+  border-radius: 0;
+  padding: 12px 6px;
+  margin-bottom: 25px;
+}
+
+.contact-details form .form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: none;
+}
+
+.contact-details form .btn {
+  background: var(--accent-gradient);
+  color: var(--white);
+  border: none;
+  padding: 12px 30px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+footer.live-footer {
+  background: var(--dark-slate);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 80px 0 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+footer.live-footer h4, footer.live-footer h2 {
+  color: var(--white) !important;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+footer.live-footer a {
+  color: rgba(255, 255, 255, 0.7);
+  transition: var(--transition);
+}
+
+footer.live-footer a:hover {
+  color: var(--white);
+}
+
+.footer-copyright-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 30px 0 0;
+  margin-top: 50px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Media Queries & Responsive Fixes
+   ========================================================================== */
+@media (max-width: 991px) {
+  .mega-menu, .sub-menu {
+    position: static !important;
+    width: 100% !important;
+    transform: none !important;
+    box-shadow: none !important;
+    display: none;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .nav-item.open > .mega-menu,
+  .nav-item.open > .sub-menu,
+  .nav-item:hover > .mega-menu,
+  .nav-item:hover > .sub-menu {
+    display: block;
+  }
+}

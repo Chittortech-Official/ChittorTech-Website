@@ -1,0 +1,726 @@
+/* 
+================================================================
+CHITTORTECH PREMIUM PRODUCTS STYLESHEET
+Specifically designed for POS, ERP, CRM, Inventory, etc.
+================================================================
+*/
+
+:root {
+  --primary-color: #0ca678;
+  --primary-gradient: linear-gradient(135deg, #0ca678 0%, #099268 100%);
+  --accent-color: #ff0084;
+  --accent-gradient: linear-gradient(135deg, #ff0084 0%, #ff5722 100%);
+  --dark-bg: #090e1a;
+  --dark-gradient: linear-gradient(145deg, #0b1528 0%, #112240 100%);
+  --slate-text: #a8b2d1;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --hover-shadow: 0 20px 45px rgba(12, 166, 120, 0.15);
+  --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Section Enhancements */
+section {
+  padding: 90px 0 !important;
+  overflow: hidden;
+}
+
+/* HERO SECTION OVERHAUL */
+.bridal-store-sec {
+  background-color: #f8fafc !important;
+  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px) !important;
+  background-size: 24px 24px !important;
+  color: #0f172a !important;
+  padding: 120px 0 100px !important;
+  position: relative;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.bridal-store-sec::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(12, 166, 120, 0.12) 0%, rgba(255, 0, 132, 0.06) 50%, transparent 100%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bridal-store {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.bridal-store h1,
+.bridal-store h2 {
+  color: #0f172a !important;
+}
+
+.bridal-store h1 {
+  font-size: 3rem !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.5px;
+  margin-bottom: 25px !important;
+  text-transform: none !important;
+}
+
+.bridal-store h2 {
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 20px !important;
+  text-transform: none !important;
+}
+
+.bridal-store h1 span,
+.heading-wrap h2 span {
+  background: linear-gradient(135deg, #ff0084, #ff5722);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline;
+}
+
+.bridal-store p {
+  font-size: 1.2rem !important;
+  line-height: 1.75 !important;
+  color: #475569 !important;
+  margin-bottom: 40px !important;
+  font-weight: 500;
+}
+
+.bridal-store .btn-wrap {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.bridal-store .schedule-btn {
+  background: var(--primary-gradient) !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  padding: 14px 32px !important;
+  border-radius: 50px !important;
+  text-decoration: none !important;
+  transition: var(--transition-smooth) !important;
+  box-shadow: 0 4px 15px rgba(12, 166, 120, 0.25) !important;
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid transparent !important;
+}
+
+.bridal-store .schedule-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(12, 166, 120, 0.4) !important;
+  color: #fff !important;
+}
+
+.bridal-store .schedule-btn:nth-child(2) {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 2px solid #cbd5e1 !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03) !important;
+}
+
+.bridal-store .schedule-btn:nth-child(2):hover {
+  border-color: #94a3b8 !important;
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* CHALLENGES & SOLUTIONS SECTION */
+.why-choose-sec {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.heading-wrap h2 {
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: #0f172a !important;
+  margin-bottom: 20px;
+}
+
+.expertise-img img {
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+  transition: var(--transition-smooth);
+}
+
+.expertise-img:hover img {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12) !important;
+}
+
+.expertise-wrap h5 {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: var(--primary-color) !important;
+  margin-bottom: 25px;
+}
+
+.expertise-wrap ul {
+  padding-left: 0px !important;
+  list-style: none !important;
+}
+
+.expertise-wrap ul li {
+  position: relative;
+  padding-left: 30px !important;
+  margin-bottom: 24px !important;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  color: #334155 !important;
+}
+
+.expertise-wrap ul li::before {
+  content: "\f00c";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  top: 3px;
+  color: var(--primary-color);
+  font-size: 16px;
+  background: rgba(12, 166, 120, 0.1);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expertise-wrap ul li strong {
+  color: #0f172a !important;
+  font-size: 17px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+/* FLIP CARDS FEATURE SECTION */
+.accounting-sec {
+  background: #ffffff !important;
+}
+
+.desktop-industries .row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.desktop-industries .row > [class*="col-"] {
+  display: flex;
+  align-items: stretch;
+}
+
+.desktop-industries .boxes {
+  background: var(--glass-bg) !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: var(--transition-smooth) !important;
+  width: 100%;
+  height: calc(100% - 24px) !important;
+  padding: 30px 20px !important;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.desktop-industries .boxes::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+.desktop-industries .boxes:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--hover-shadow) !important;
+  border-color: rgba(12, 166, 120, 0.2) !important;
+}
+
+.desktop-industries .boxes:hover::before {
+  opacity: 1;
+}
+
+/* Overriding bootstrap/custom flip card container to be clean flat cards */
+.flip-container,
+.flip-card,
+.flip-card-inner,
+.flip-card-back {
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  backface-visibility: visible !important;
+}
+
+.flip-card-back img {
+  width: 54px !important;
+  height: 54px !important;
+  margin-bottom: 20px !important;
+  filter: drop-shadow(0 4px 6px rgba(12, 166, 120, 0.15));
+}
+
+.flip-card-back h4 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 12px !important;
+}
+
+.flip-card-back p {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: #64748b !important;
+  margin: 0 !important;
+}
+
+/* HOW IT SIMPLIFIES / GRID CARDS */
+.clothing-stores-sec {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.clothing-stores-sec.software-sec {
+  background: #ffffff !important;
+}
+
+.clothing-stores-text h2 {
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin-bottom: 20px;
+}
+
+.clothing-stores-text p {
+  font-size: 1.1rem !important;
+  line-height: 1.6 !important;
+  color: #475569 !important;
+  margin-bottom: 35px;
+}
+
+.erp-item-wrap.inventory-wrap {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 24px !important;
+  margin-top: 40px !important;
+}
+
+.erp-item-wrap .erp-item,
+.erp-item-wrap.inventory-wrap .erp-item {
+  width: auto !important;
+  margin: 0 !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 25px !important;
+  box-shadow: var(--card-shadow) !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.erp-item-wrap .erp-item:hover,
+.erp-item-wrap.inventory-wrap .erp-item:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.07) !important;
+  border-color: rgba(12, 166, 120, 0.2) !important;
+}
+
+.erp-item-wrap .erp-item h4,
+.erp-item-wrap.inventory-wrap .erp-item h4 {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 10px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.erp-item-wrap .erp-item h4::before,
+.erp-item-wrap.inventory-wrap .erp-item h4::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-color);
+}
+
+.erp-item-wrap .erp-item p,
+.erp-item-wrap.inventory-wrap .erp-item p {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: #64748b !important;
+  margin: 0 !important;
+}
+
+/* Key Advantages list */
+.clothing-stores-text ul {
+  padding-left: 0px !important;
+  list-style: none !important;
+}
+
+.clothing-stores-text ul li {
+  position: relative;
+  padding-left: 28px !important;
+  margin-bottom: 16px !important;
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  color: #334155 !important;
+}
+
+.clothing-stores-text ul li::before {
+  content: "\f058";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  left: 0;
+  top: 2px;
+  color: var(--primary-color);
+  font-size: 16px;
+}
+
+.clothing-stores-text ul li strong {
+  color: #0f172a !important;
+}
+
+/* CORE FEATURES WIDGETS */
+.manufacturing-key {
+  background: #f8fafc !important;
+}
+
+.manufacturing-key .key-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  padding: 35px 30px !important;
+  box-shadow: var(--card-shadow) !important;
+  height: 100%;
+  transition: var(--transition-smooth);
+}
+
+.manufacturing-key .key-box:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--hover-shadow) !important;
+  border-color: rgba(12, 166, 120, 0.2) !important;
+}
+
+.manufacturing-key .key-box h3 {
+  font-size: 1.3rem !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  margin-bottom: 15px !important;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+
+.manufacturing-key .key-box p {
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  color: #64748b !important;
+  margin-bottom: 15px;
+}
+
+.manufacturing-key .key-box ul {
+  padding-left: 0px !important;
+  list-style: none !important;
+  margin-bottom: 0px !important;
+}
+
+.manufacturing-key .key-box ul li {
+  position: relative;
+  padding-left: 20px !important;
+  margin-bottom: 10px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: #334155 !important;
+}
+
+.manufacturing-key .key-box ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* BUSINESS IMPACT BADGES */
+.why-choose-wrap ul {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 20px !important;
+  justify-content: center !important;
+  padding-left: 0px !important;
+  list-style: none !important;
+  margin-top: 40px;
+}
+
+.why-choose-wrap ul li {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 30px 20px !important;
+  width: calc(25% - 20px) !important;
+  min-width: 220px !important;
+  text-align: center;
+  box-shadow: var(--card-shadow) !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.why-choose-wrap ul li:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: var(--hover-shadow) !important;
+}
+
+.why-choose-wrap ul li figure {
+  margin-bottom: 15px !important;
+}
+
+.why-choose-wrap ul li figure img {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.why-choose-wrap ul li h3 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  line-height: 1.4 !important;
+}
+
+/* FAQ SECTION ACCORDION */
+.faq-template {
+  background: #ffffff !important;
+}
+
+.faq-section {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.faq-section #faqAccordion .accordion-item {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  margin-bottom: 16px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02) !important;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+}
+
+.faq-section #faqAccordion .accordion-item:hover {
+  border-color: rgba(12, 166, 120, 0.3) !important;
+}
+
+.faq-section #faqAccordion .accordion-button {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  padding: 20px 24px !important;
+  box-shadow: none !important;
+  transition: var(--transition-smooth);
+}
+
+.faq-section #faqAccordion .accordion-button:not(.collapsed) {
+  color: var(--primary-color) !important;
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.faq-section #faqAccordion .accordion-body {
+  font-size: 15px !important;
+  line-height: 1.6 !important;
+  color: #475569 !important;
+  padding: 20px 24px !important;
+  background: #ffffff !important;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 991px) {
+  section {
+    padding: 60px 0 !important;
+  }
+  
+  .bridal-store-sec {
+    padding: 70px 0 60px !important;
+  }
+  
+  .bridal-store h1 {
+    font-size: 2.25rem !important;
+  }
+  
+  .bridal-store p {
+    font-size: 1.1rem !important;
+  }
+  
+  .heading-wrap h2 {
+    font-size: 1.8rem !important;
+  }
+  
+  .why-choose-wrap ul li {
+    width: calc(50% - 20px) !important;
+  }
+}
+
+@media (max-width: 576px) {
+  section {
+    padding: 35px 0 !important;
+  }
+  
+  .bridal-store-sec {
+    padding: 45px 0 35px !important;
+  }
+  
+  .bridal-store h1 {
+    font-size: 1.85rem !important;
+  }
+  
+  .why-choose-wrap ul li {
+    width: 100% !important;
+  }
+  
+  .bridal-store .btn-wrap {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .bridal-store .schedule-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* COMPARISON TABLE STYLING */
+.comparison-section {
+  background: #ffffff !important;
+}
+
+.comp-table-responsive {
+  margin-top: 40px;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: var(--card-shadow);
+  border: 1px solid #e2e8f0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.comp-table {
+  width: 100%;
+  min-width: 750px;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.comp-table th, .comp-table td {
+  padding: 18px 24px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 15px;
+}
+
+.comp-table th {
+  background: #0f172a;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.comp-table td:nth-child(2) {
+  background: #f8fafc;
+}
+
+.comp-table td:nth-child(3) {
+  background: rgba(12, 166, 120, 0.03);
+}
+
+.comp-table tr:last-child td {
+  border-bottom: none;
+}
+
+.comp-table td strong {
+  color: #0f172a;
+}
+
+.comp-status-yes {
+  color: var(--primary-color);
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comp-status-no {
+  color: #ef4444;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comp-status-limited {
+  color: #f59e0b;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* LEGAL DISCLAIMER STYLING */
+.legal-disclaimer-sec {
+  background: #f1f5f9 !important;
+  padding: 40px 0 !important;
+  border-top: 1px solid #cbd5e1;
+}
+
+.legal-disclaimer-box {
+  background: #ffffff;
+  border-left: 4px solid #64748b;
+  padding: 24px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.legal-disclaimer-box h5 {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.legal-disclaimer-text {
+  font-size: 13px !important;
+  line-height: 1.65 !important;
+  color: #475569 !important;
+  text-align: justify;
+  margin: 0 !important;
+}
+

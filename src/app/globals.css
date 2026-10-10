@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ─── Global Print Engine Hardening ─── */
+@media print {
+  header,
+  footer,
+  .ct-header,
+  .ct-footer-wrap,
+  .ct-mobile-drawer,
+  .ct-strip,
+  .ct-float-wa,
+  .ct-float-contact,
+  .chatbot-container,
+  .chatbot-toggle,
+  .whatsapp-icon,
+  .contact-floating,
+  .chat-floating,
+  .chat-popup,
+  #trialModal,
+  .modal,
+  .modal-backdrop {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    top: -99999px !important;
+    left: -99999px !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* ─── Global Modern Date Picker Polish ─── */
+input[type="date"] {
+  font-family: inherit;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 3px;
+  opacity: 0.85;
+  transition: all 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}

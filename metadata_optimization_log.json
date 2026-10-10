@@ -1,0 +1,554 @@
+[
+  {
+    "folder": "accounting",
+    "file": "src\\app\\accounting\\layout.js",
+    "oldTitle": "Accounting Software India | GST Billing & Finance Management | ChittorTech",
+    "newTitle": "Best GST Accounting Software in India for Small Business | ChittorTech",
+    "oldDesc": "GST-compliant accounting software for Indian SMEs. Manage accounts, invoicing, ledgers, balance sheets, and tax filings with ChittorTech",
+    "newDesc": "Simplify tax filing and bookkeeping with the best GST accounting software in India. Manage ledgers, cash flow, balance sheets, and generate reports instantly. Get started today."
+  },
+  {
+    "folder": "after-sale-service",
+    "file": "src\\app\\after-sale-service\\layout.js",
+    "oldTitle": "After Sale Service Management India | Service CRM Software | ChittorTech",
+    "newTitle": "Best After Sale Service Management in India | Service CRM Software | ChittorTech",
+    "oldDesc": "After-sale service and warranty management software for Indian businesses. Track service requests, AMC contracts, technician assignments, spare parts, and customer satisfaction.",
+    "newDesc": "Streamline operations with the best after sale service management in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "ai-manufacturing",
+    "file": "src\\app\\ai-manufacturing\\layout.js",
+    "oldTitle": "AI Manufacturing Software India | Smart Factory Solutions | ChittorTech",
+    "newTitle": "Best AI Manufacturing Software in India | Smart Factory Solutions | ChittorTech",
+    "oldDesc": "AI-powered manufacturing management software for Indian factories. Production planning, quality control, machine monitoring, workforce management, and supply chain automation.",
+    "newDesc": "Streamline operations with the best ai manufacturing software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "android-application",
+    "file": "src\\app\\android-application\\layout.js",
+    "oldTitle": "Android App Development India | Mobile App Development | ChittorTech",
+    "newTitle": "Best Android App Development in India | Mobile App Development | ChittorTech",
+    "oldDesc": "Custom Android application development for Indian businesses. From retail apps to enterprise solutions, ChittorTech builds scalable, user-friendly Android apps at affordable prices.",
+    "newDesc": "Grow your business online with the best android app development in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  },
+  {
+    "folder": "book-store",
+    "file": "src\\app\\book-store\\layout.js",
+    "oldTitle": "Book Store Software India | Library & Book Shop Billing | ChittorTech",
+    "newTitle": "Best Book Store Software in India | Library & Book Shop Billing | ChittorTech",
+    "oldDesc": "Book store and library management software for Indian booksellers. ISBN-based inventory, author/publisher tracking, rental management, GST billing, and school book set management.",
+    "newDesc": "Boost your sales with the best book store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "boutique-store",
+    "file": "src\\app\\boutique-store\\layout.js",
+    "oldTitle": "Boutique Store Software India | Fashion Boutique POS System | ChittorTech",
+    "newTitle": "Best Boutique Store Software in India | Fashion Boutique POS System | ChittorTech",
+    "oldDesc": "Premium boutique management software for Indian fashion stores. Style-wise inventory, customer wishlists, loyalty programmes, GST billing, and designer collection management.",
+    "newDesc": "Boost your sales with the best boutique store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "bridal-store",
+    "file": "src\\app\\bridal-store\\layout.js",
+    "oldTitle": "Bridal Store Software India | Wedding Shop Billing & Management | ChittorTech",
+    "newTitle": "Best Bridal Store Software in India | Wedding Shop Billing & Management | ChittorTech",
+    "oldDesc": "Complete billing and management software for bridal stores and wedding boutiques in India. Track bridal orders, trial appointments, alterations, advance payments, and delivery schedules.",
+    "newDesc": "Boost your sales with the best bridal store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "consumer-goods",
+    "file": "src\\app\\consumer-goods\\layout.js",
+    "oldTitle": "Consumer Goods Distribution Software India | FMCG Management | ChittorTech",
+    "newTitle": "Best Consumer Goods Distribution Software in India | FMCG Management | ChittorTech",
+    "oldDesc": "Distribution management software for consumer goods and FMCG companies in India. Manage distributor networks, order processing, route planning, van sales, and sales team performance.",
+    "newDesc": "Streamline operations with the best consumer goods distribution software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "convenience-store",
+    "file": "src\\app\\convenience-store\\layout.js",
+    "oldTitle": "Convenience Store Software India | Quick Retail POS | ChittorTech",
+    "newTitle": "Best Convenience Store Software in India | Quick Retail POS | ChittorTech",
+    "oldDesc": "Fast and reliable POS software for convenience stores and quick retail shops in India. Instant billing, stock management, multiple payment modes, and GST compliance.",
+    "newDesc": "Boost your sales with the best convenience store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "cosmetic-store",
+    "file": "src\\app\\cosmetic-store\\layout.js",
+    "oldTitle": "Cosmetic Store Software India | Beauty Shop Billing System | ChittorTech",
+    "newTitle": "Best Cosmetic Store Software in India | Beauty Shop Billing System | ChittorTech",
+    "oldDesc": "Beauty and cosmetic store management software for Indian retailers. Manage skincare, makeup, hair products, brand-wise stock, GST billing, and customer beauty profiles.",
+    "newDesc": "Boost your sales with the best cosmetic store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "crm",
+    "file": "src\\app\\crm\\layout.js",
+    "oldTitle": "CRM Software India | Customer Relationship Management | ChittorTech",
+    "newTitle": "Best CRM Software in India | Lead Management CRM System | ChittorTech",
+    "oldDesc": "Powerful CRM software for Indian businesses. Manage leads, sales pipeline, customer interactions, and follow-ups with ChittorTech",
+    "newDesc": "Close more deals with the best Sales CRM software in India. Track leads, automate pipeline follow-ups, manage customer queries, and boost your sales team's productivity. Start a free trial."
+  },
+  {
+    "folder": "custom-crm-solutions",
+    "file": "src\\app\\custom-crm-solutions\\layout.js",
+    "oldTitle": "Custom CRM Solutions India | Tailored CRM Development | ChittorTech",
+    "newTitle": "Best Custom CRM Solutions in India | Tailored CRM Development | ChittorTech",
+    "oldDesc": "Get a fully customised CRM solution built for your unique business needs. ChittorTech develops bespoke CRM systems for Indian companies across sales, support, and service industries.",
+    "newDesc": "Streamline operations with the best custom crm solutions in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "departmental-hypermarket-store",
+    "file": "src\\app\\departmental-hypermarket-store\\layout.js",
+    "oldTitle": "Departmental Hypermarket Software India | Enterprise Retail POS | ChittorTech",
+    "newTitle": "Best Departmental Hypermarket Software in India | Enterprise Retail POS | ChittorTech",
+    "oldDesc": "Enterprise-grade software for departmental hypermarkets in India. Centralized inventory, multi-floor billing, customer loyalty, staff scheduling, and comprehensive business analytics.",
+    "newDesc": "Boost your sales with the best departmental hypermarket software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "departmental-store",
+    "file": "src\\app\\departmental-store\\layout.js",
+    "oldTitle": "Departmental Store Software India | Multi-Section Retail POS | ChittorTech",
+    "newTitle": "Best Departmental Store Software in India | Multi-Section Retail POS | ChittorTech",
+    "oldDesc": "Departmental store management software for Indian multi-section retail outlets. Manage clothing, electronics, groceries, and more with unified billing and inventory tracking.",
+    "newDesc": "Boost your sales with the best departmental store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "dharamshala-billing-system",
+    "file": "src\\app\\dharamshala-billing-system\\layout.js",
+    "oldTitle": "Dharamshala Billing Software India | Pilgrimage Guest House Management | ChittorTech",
+    "newTitle": "Best Dharamshala Billing Software in India | Guest House Management | ChittorTech",
+    "oldDesc": "Billing and management software for dharamshalas, pilgrimage rest houses, and religious guest houses in India. Easy check-in, donation tracking, and occupancy management.",
+    "newDesc": "Manage check-ins, advance bookings, donation receipts, and inventory with the best Dharamshala billing software in India. Fully secure and custom-built for guest houses."
+  },
+  {
+    "folder": "digital-marketing-services",
+    "file": "src\\app\\digital-marketing-services\\layout.js",
+    "oldTitle": "Digital Marketing Services India | Online Marketing Agency | ChittorTech",
+    "newTitle": "Best Digital Marketing Services in India | Online Marketing Agency | ChittorTech",
+    "oldDesc": "Grow your business online with ChittorTech",
+    "newDesc": "Grow your business online with the best digital marketing services in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  },
+  {
+    "folder": "e-commerce-website-development",
+    "file": "src\\app\\e-commerce-website-development\\layout.js",
+    "oldTitle": "E-Commerce Website Development India | Online Store Design | ChittorTech",
+    "newTitle": "Best E-Commerce Website Development in India | Online Store Design | ChittorTech",
+    "oldDesc": "Build a powerful e-commerce store with ChittorTech. Custom online shopping websites with payment gateway integration, GST billing, product management, and mobile-first design.",
+    "newDesc": "Streamline operations with the best e-commerce website development in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "education",
+    "file": "src\\app\\education\\layout.js",
+    "oldTitle": "Education Management Software India | EdTech Solutions | ChittorTech",
+    "newTitle": "Best Education Management Software in India | EdTech Solutions | ChittorTech",
+    "oldDesc": "Digital solutions for the education sector in India. LMS, online classes, student portals, fee management, and institution administration tools for schools, colleges, and coaching centres.",
+    "newDesc": "Streamline operations with the best education management software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "electronics-smartphones",
+    "file": "src\\app\\electronics-smartphones\\layout.js",
+    "oldTitle": "Electronics & Smartphone Store Software India | Mobile Shop POS | ChittorTech",
+    "newTitle": "Best Electronics & Smartphone Store Software in India | Mobile Shop POS | ChittorTech",
+    "oldDesc": "Electronics and mobile phone store management software for Indian retailers. IMEI tracking, warranty management, repair service billing, GST invoicing, and brand-wise inventory.",
+    "newDesc": "Streamline operations with the best electronics & smartphone store software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "employee-background-verification",
+    "file": "src\\app\\employee-background-verification\\layout.js",
+    "oldTitle": "Employee Background Verification India | Digital BGV Services | ChittorTech",
+    "newTitle": "Best Employee Background Verification in India | Digital BGV Services | ChittorTech",
+    "oldDesc": "Fast and reliable employee background verification services for Indian companies. Criminal record check, education verification, employment history, and address verification. API integration available.",
+    "newDesc": "Streamline operations with the best employee background verification in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "erp",
+    "file": "src\\app\\erp\\layout.js",
+    "oldTitle": "ERP Software India | Cloud ERP System for SMEs | ChittorTech",
+    "newTitle": "Best Cloud ERP Software in India for SMEs | ERP System | ChittorTech",
+    "oldDesc": "ChittorTech",
+    "newDesc": "Scale your business with the best Cloud ERP software in India. Automate manufacturing, inventory control, GST billing, HR, and accounting on a single secure platform. Request a free demo."
+  },
+  {
+    "folder": "footwear-store",
+    "file": "src\\app\\footwear-store\\layout.js",
+    "oldTitle": "Footwear Store Software India | Shoe Shop Billing System | ChittorTech",
+    "newTitle": "Best Footwear Store Software in India | Shoe Shop Billing System | ChittorTech",
+    "oldDesc": "Footwear shop billing and inventory software for Indian shoe retailers. Size/colour-wise stock, brand management, GST invoicing, customer loyalty, and supplier tracking.",
+    "newDesc": "Boost your sales with the best footwear store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "fruits-vegetable-shop",
+    "file": "src\\app\\fruits-vegetable-shop\\layout.js",
+    "oldTitle": "Fruits & Vegetable Shop Software India | Fresh Produce POS | ChittorTech",
+    "newTitle": "Best Fruits & Vegetable Shop Software in India | Fresh Produce POS | ChittorTech",
+    "oldDesc": "Billing software for fruits and vegetable shops in India. Weight-based billing, daily price updates, perishable stock management, GST invoicing, and vendor payment tracking.",
+    "newDesc": "Boost your sales with the best fruits & vegetable shop software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "garments",
+    "file": "src\\app\\garments\\layout.js",
+    "oldTitle": "Garment Store Software India | Clothing Shop Billing & Inventory | ChittorTech",
+    "newTitle": "Best Garment Store Software in India | Clothing Shop Billing & Inventory | ChittorTech",
+    "oldDesc": "Billing and inventory management software for garment and clothing stores in India. Size/colour-wise stock tracking, GST billing, fashion retail analytics, and customer purchase history.",
+    "newDesc": "Boost your sales with the best garment store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "gift-shop",
+    "file": "src\\app\\gift-shop\\layout.js",
+    "oldTitle": "Gift Shop Software India | Gift Store Billing & Inventory | ChittorTech",
+    "newTitle": "Best Gift Shop Software in India | Gift Store Billing & Inventory | ChittorTech",
+    "oldDesc": "Gift shop billing and management software for Indian gift retailers. Manage gift items, hampers, wrapping, seasonal inventory, corporate gifting orders, and GST invoicing.",
+    "newDesc": "Boost your sales with the best gift shop software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "gift-toy-sports-shop",
+    "file": "src\\app\\gift-toy-sports-shop\\layout.js",
+    "oldTitle": "Gift Toy & Sports Shop Software India | Combo Retail POS | ChittorTech",
+    "newTitle": "Best Gift Toy & Sports Shop Software in India | Combo Retail POS | ChittorTech",
+    "oldDesc": "All-in-one POS software for gift, toy, and sports combination stores in India. Multi-category inventory, barcode billing, GST compliance, and sales performance analytics.",
+    "newDesc": "Boost your sales with the best gift toy & sports shop software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "grocery-store",
+    "file": "src\\app\\grocery-store\\layout.js",
+    "oldTitle": "Grocery Store Management Software India | Supermarket Billing | ChittorTech",
+    "newTitle": "Best Grocery Store Management Software in India | Supermarket Billing | ChittorTech",
+    "oldDesc": "Complete grocery store management software for Indian retail. Barcode scanning, expiry tracking, GST billing, supplier management, and inventory control for grocery shops.",
+    "newDesc": "Boost your sales with the best grocery store management software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "hardware-shopping-store",
+    "file": "src\\app\\hardware-shopping-store\\layout.js",
+    "oldTitle": "Hardware Shopping Store Software India | DIY Retail POS | ChittorTech",
+    "newTitle": "Best Hardware Shopping Store Software in India | DIY Retail POS | ChittorTech",
+    "oldDesc": "Comprehensive billing and inventory software for hardware shopping stores in India. Multi-category product management, trade customer billing, GST compliance, and purchase order management.",
+    "newDesc": "Boost your sales with the best hardware shopping store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "hardware-store",
+    "file": "src\\app\\hardware-store\\layout.js",
+    "oldTitle": "Hardware Store Software India | Building Material Shop Billing | ChittorTech",
+    "newTitle": "Best Hardware Store Software in India | Building Material Shop Billing | ChittorTech",
+    "oldDesc": "Hardware and building material store software for Indian retailers. Manage tools, pipes, fittings, paints, and electrical items with unit-wise billing, GST, and supplier management.",
+    "newDesc": "Boost your sales with the best hardware store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "home-decor-furniture",
+    "file": "src\\app\\home-decor-furniture\\layout.js",
+    "oldTitle": "Home Decor & Furniture Software India | Interior Store Billing | ChittorTech",
+    "newTitle": "Best Home Decor & Furniture Software in India | Interior Store Billing | ChittorTech",
+    "oldDesc": "Home decor and furniture store management software for Indian retailers. SKU-wise tracking, room-set inventory, installation scheduling, GST billing, and customer order management.",
+    "newDesc": "Streamline operations with the best home decor & furniture software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "hospitals",
+    "file": "src\\app\\hospitals\\layout.js",
+    "oldTitle": "Hospital Management Software India | Healthcare HMS | ChittorTech",
+    "newTitle": "Best Hospital Management Software in India | Healthcare HMS | ChittorTech",
+    "oldDesc": "Comprehensive hospital management software for Indian clinics and hospitals. Patient records, OPD/IPD management, billing, pharmacy, lab, and appointment scheduling in one system.",
+    "newDesc": "Streamline operations with the best hospital management software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "hotel-management-system",
+    "file": "src\\app\\hotel-management-system\\layout.js",
+    "oldTitle": "Hotel Management Software India | HMS for Hotels | ChittorTech",
+    "newTitle": "Best Hotel Management Software in India | HMS & Hotel Billing | ChittorTech",
+    "oldDesc": "Complete hotel management software for Indian hotels, resorts, and guest houses. Front desk, housekeeping, billing, online booking integration, and real-time room management. Free demo.",
+    "newDesc": "Automate check-ins, room booking, billing, and housekeeping with the best Hotel Management System (HMS) in India. Streamline front desk operations and maximize room revenue."
+  },
+  {
+    "folder": "hotel-room-booking-system",
+    "file": "src\\app\\hotel-room-booking-system\\layout.js",
+    "oldTitle": "Hotel Room Booking System India | Online Reservation Software | ChittorTech",
+    "newTitle": "Best Hotel Room Booking System in India | Online Reservation Software | ChittorTech",
+    "oldDesc": "Online hotel room booking system for Indian properties. Real-time availability, direct bookings, OTA integration, payment gateway, and automated confirmation. Reduce commission costs.",
+    "newDesc": "Streamline operations with the best hotel room booking system in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "hypermarket",
+    "file": "src\\app\\hypermarket\\layout.js",
+    "oldTitle": "Hypermarket Software India | Large Retail Store Management | ChittorTech",
+    "newTitle": "Best Hypermarket Software in India | Large Retail Store Management | ChittorTech",
+    "oldDesc": "Hypermarket management software for large Indian retail chains. Multi-department billing, inventory management across categories, staff management, and real-time sales reporting.",
+    "newDesc": "Boost your sales with the best hypermarket software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "imitation-jewellery",
+    "file": "src\\app\\imitation-jewellery\\layout.js",
+    "oldTitle": "Imitation Jewellery Software India | Artificial Jewellery Shop POS | ChittorTech",
+    "newTitle": "Best Imitation Jewellery Software in India | Artificial Jewellery Shop POS | ChittorTech",
+    "oldDesc": "Billing and inventory software for imitation and artificial jewellery shops in India. Design-wise stock, gold/silver-plated item tracking, GST invoicing, and wholesale billing.",
+    "newDesc": "Boost your sales with the best imitation jewellery software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "india-temple",
+    "file": "src\\app\\india-temple\\layout.js",
+    "oldTitle": "Temple Management Software India | Religious Trust Software | ChittorTech",
+    "newTitle": "Best Temple Management Software in India | Religious Trust Software | ChittorTech",
+    "oldDesc": "Digital management software for Hindu temples and religious trusts in India. Manage donations, prasad bookings, events, visitors, and financial accounts with ease.",
+    "newDesc": "Streamline operations with the best temple management software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "industrial-products",
+    "file": "src\\app\\industrial-products\\layout.js",
+    "oldTitle": "Industrial Products Software India | B2B Wholesale Management | ChittorTech",
+    "newTitle": "Best Industrial Products Software in India | B2B Wholesale Management | ChittorTech",
+    "oldDesc": "Industrial products and wholesale business management software for Indian B2B companies. Manage bulk orders, credit accounts, trade discounts, purchase orders, and GST invoicing.",
+    "newDesc": "Streamline operations with the best industrial products software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "inventory",
+    "file": "src\\app\\inventory\\layout.js",
+    "oldTitle": "Inventory Management Software India | Stock Control | ChittorTech",
+    "newTitle": "Best Inventory Management Software in India | Stock Control System | ChittorTech",
+    "oldDesc": "Real-time inventory management software for Indian businesses. Track stock, manage warehouses, automate reorders, and reduce losses. Ideal for retail, wholesale, and manufacturing.",
+    "newDesc": "Avoid stockouts and track inventory in real-time with the best warehouse & stock control software in India. Automated reordering, barcode tracking, and multi-location management."
+  },
+  {
+    "folder": "invoicing",
+    "file": "src\\app\\invoicing\\layout.js",
+    "oldTitle": "Invoicing Software India | GST Invoice Generator | ChittorTech",
+    "newTitle": "Best GST Invoicing & Billing Software in India | ChittorTech",
+    "oldDesc": "Create professional GST invoices instantly with ChittorTech",
+    "newDesc": "Generate professional, tax-compliant GST bills instantly with the best invoicing software in India. Send automatic payment reminders, manage accounts receivable & get paid faster."
+  },
+  {
+    "folder": "kirana-store",
+    "file": "src\\app\\kirana-store\\layout.js",
+    "oldTitle": "Kirana Store Billing Software India | Local Shop POS System | ChittorTech",
+    "newTitle": "Best Kirana Store Billing Software in India | Local Shop POS System | ChittorTech",
+    "oldDesc": "Simple and affordable billing software for kirana stores and local grocery shops in India. Fast billing, GST invoicing, stock management, credit tracking, and daily reports.",
+    "newDesc": "Boost your sales with the best kirana store billing software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "lead-management",
+    "file": "src\\app\\lead-management\\layout.js",
+    "oldTitle": "Lead Management Software India | Sales Lead Tracking | ChittorTech",
+    "newTitle": "Best Lead Management Software in India | Sales Lead Tracking | ChittorTech",
+    "oldDesc": "Capture, track, and convert more leads with ChittorTech",
+    "newDesc": "Streamline operations with the best lead management software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "liquor-store",
+    "file": "src\\app\\liquor-store\\layout.js",
+    "oldTitle": "Liquor Store Software India | Wine Shop Billing & Inventory | ChittorTech",
+    "newTitle": "Best Liquor Store Software in India | Wine Shop Billing & Inventory | ChittorTech",
+    "oldDesc": "Liquor store billing and inventory management software for Indian wine and spirit shops. Brand-wise stock, age-restricted sales compliance, GST invoicing, and supplier purchase management.",
+    "newDesc": "Boost your sales with the best liquor store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "logistics",
+    "file": "src\\app\\logistics\\layout.js",
+    "oldTitle": "Logistics Management Software India | Transport & Fleet Management | ChittorTech",
+    "newTitle": "Best Logistics Management Software in India | Transport & Fleet Management | ChittorTech",
+    "oldDesc": "End-to-end logistics management software for Indian transport companies. Vehicle tracking, trip management, freight billing, driver records, and supply chain visibility in real time.",
+    "newDesc": "Streamline operations with the best logistics management software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "minimart",
+    "file": "src\\app\\minimart\\layout.js",
+    "oldTitle": "Minimart Billing Software India | Small Store POS System | ChittorTech",
+    "newTitle": "Best Minimart Billing Software in India | Small Store POS System | ChittorTech",
+    "oldDesc": "Easy-to-use minimart billing software for small Indian grocery and convenience stores. Fast checkout, GST billing, stock alerts, and daily sales summary reports.",
+    "newDesc": "Streamline operations with the best minimart billing software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "modern-responsive-website-design",
+    "file": "src\\app\\modern-responsive-website-design\\layout.js",
+    "oldTitle": "Responsive Website Design India | Modern UI/UX Design | ChittorTech",
+    "newTitle": "Best Responsive Website Design in India | Modern UI/UX Design | ChittorTech",
+    "oldDesc": "Get a stunning, mobile-responsive website design for your business. ChittorTech creates modern, fast-loading websites with excellent UI/UX that convert visitors into customers.",
+    "newDesc": "Streamline operations with the best responsive website design in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "off-page-seo-services",
+    "file": "src\\app\\off-page-seo-services\\layout.js",
+    "oldTitle": "Off-Page SEO Services India | Link Building & Authority | ChittorTech",
+    "newTitle": "Best Off-Page SEO Services in India | Link Building & Authority | ChittorTech",
+    "oldDesc": "Build domain authority and drive more organic traffic with ChittorTech",
+    "newDesc": "Grow your business online with the best off-page seo services in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  },
+  {
+    "folder": "omnichannel",
+    "file": "src\\app\\omnichannel\\layout.js",
+    "oldTitle": "Omnichannel Retail Software India | Unified Commerce Platform | ChittorTech",
+    "newTitle": "Best Omnichannel Retail Software in India | Unified Commerce Platform | ChittorTech",
+    "oldDesc": "Sell seamlessly across online and offline channels with ChittorTech",
+    "newDesc": "Streamline operations with the best omnichannel retail software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "on-page-seo-services",
+    "file": "src\\app\\on-page-seo-services\\layout.js",
+    "oldTitle": "On-Page SEO Services India | Website Optimization Experts | ChittorTech",
+    "newTitle": "Best On-Page SEO Services in India | Website Optimization Experts | ChittorTech",
+    "oldDesc": "Improve your website",
+    "newDesc": "Grow your business online with the best on-page seo services in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  },
+  {
+    "folder": "online-booking-admin-portal",
+    "file": "src\\app\\online-booking-admin-portal\\layout.js",
+    "oldTitle": "Online Booking Admin Portal India | Hotel Reservation Management | ChittorTech",
+    "newTitle": "Best Online Booking Admin Portal in India | Hotel Reservation Management | ChittorTech",
+    "oldDesc": "Powerful admin portal for managing hotel and property online bookings. View reservations, manage room inventory, process payments, and generate reports in real time.",
+    "newDesc": "Streamline operations with the best online booking admin portal in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "payroll",
+    "file": "src\\app\\payroll\\layout.js",
+    "oldTitle": "Payroll Software India | HR & Salary Management System | ChittorTech",
+    "newTitle": "Best Payroll Software in India | HR & Salary Management System | ChittorTech",
+    "oldDesc": "Automated payroll software for Indian businesses. Manage salaries, PF, ESI, TDS, attendance, and leave management. Compliant with Indian labour laws. Free demo available.",
+    "newDesc": "Streamline operations with the best payroll software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "pet-shop",
+    "file": "src\\app\\pet-shop\\layout.js",
+    "oldTitle": "Pet Shop Software India | Pet Store Billing & Management | ChittorTech",
+    "newTitle": "Best Pet Shop Software in India | Pet Store Billing & Management | ChittorTech",
+    "oldDesc": "Pet shop management software for Indian pet retailers. Manage pets, food, accessories, medicines, and grooming services. GST billing, stock tracking, and customer pet profiles.",
+    "newDesc": "Boost your sales with the best pet shop software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "pharma",
+    "file": "src\\app\\pharma\\layout.js",
+    "oldTitle": "Pharma Distribution Software India | Medical Billing System | ChittorTech",
+    "newTitle": "Best Pharma Distribution Software in India | Medical Billing System | ChittorTech",
+    "oldDesc": "Pharmacy and pharmaceutical distribution software for Indian medicine shops and distributors. Drug inventory, expiry tracking, GST billing, and sales reports. Compliant with Indian regulations.",
+    "newDesc": "Boost your sales with the best pharma distribution software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "pos",
+    "file": "src\\app\\pos\\layout.js",
+    "oldTitle": "POS Software India | Point of Sale System for Retail | ChittorTech",
+    "newTitle": "Best Retail POS Billing Software in India | GST POS System | ChittorTech",
+    "oldDesc": "Fast and reliable POS software for retail shops, supermarkets, and restaurants in India. Billing, inventory, GST, barcode, and customer management in one system. Book a demo.",
+    "newDesc": "Get the best Retail POS billing software in India. Perfect for retail stores, supermarkets & restaurants with barcode billing, inventory, GST compliance & offline mode. Book a free demo."
+  },
+  {
+    "folder": "readymade-garment",
+    "file": "src\\app\\readymade-garment\\layout.js",
+    "oldTitle": "Readymade Garment Software India | RMG Retail Billing System | ChittorTech",
+    "newTitle": "Best Readymade Garment Software in India | RMG Retail Billing System | ChittorTech",
+    "oldDesc": "Readymade garment retail software for Indian clothing brands and manufacturers. Piece-wise billing, size/colour inventory, brand-wise reporting, and GST-compliant invoicing.",
+    "newDesc": "Boost your sales with the best readymade garment software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "resort-guest-house-software",
+    "file": "src\\app\\resort-guest-house-software\\layout.js",
+    "oldTitle": "Resort & Guest House Software India | Property Management System | ChittorTech",
+    "newTitle": "Best Resort & Guest House Software in India | Property Management System | ChittorTech",
+    "oldDesc": "All-in-one software for resorts, guest houses, and boutique properties in India. Manage bookings, billing, housekeeping, staff, and guests with ChittorTech",
+    "newDesc": "Streamline operations with the best resort & guest house software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "retaile-store",
+    "file": "src\\app\\retaile-store\\layout.js",
+    "oldTitle": "Retail Store Management Software India | Multi-Store POS | ChittorTech",
+    "newTitle": "Best Retail Store Management Software in India | Multi-Store POS | ChittorTech",
+    "oldDesc": "Retail store management software for single and multi-outlet Indian retailers. Centralized billing, inter-store stock transfers, unified customer data, and chain-wide sales analytics.",
+    "newDesc": "Boost your sales with the best retail store management software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "schools-educational-institutions",
+    "file": "src\\app\\schools-educational-institutions\\layout.js",
+    "oldTitle": "School Management Software India | ERP for Schools & Colleges | ChittorTech",
+    "newTitle": "Best School Management Software in India | ERP for Schools & Colleges | ChittorTech",
+    "oldDesc": "Complete school management ERP for Indian educational institutions. Admissions, attendance, fee management, results, timetable, and parent communication in one platform.",
+    "newDesc": "Streamline operations with the best school management software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "search-engine-optimization",
+    "file": "src\\app\\search-engine-optimization\\layout.js",
+    "oldTitle": "SEO Services India | Search Engine Optimization Company | ChittorTech",
+    "newTitle": "Best SEO Services in India | Search Engine Optimization Company | ChittorTech",
+    "oldDesc": "Rank higher on Google with ChittorTech",
+    "newDesc": "Grow your business online with the best seo services in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  },
+  {
+    "folder": "shopping-mall",
+    "file": "src\\app\\shopping-mall\\layout.js",
+    "oldTitle": "Shopping Mall Software India | Mall Management System | ChittorTech",
+    "newTitle": "Best Shopping Mall Software in India | Mall Management System | ChittorTech",
+    "oldDesc": "Comprehensive shopping mall management software for Indian malls. Tenant management, common area billing, visitor analytics, parking management, and mall-wide sales reporting.",
+    "newDesc": "Boost your sales with the best shopping mall software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "smart-retail",
+    "file": "src\\app\\smart-retail\\layout.js",
+    "oldTitle": "Smart Retail Software India | AI-Powered Retail Analytics | ChittorTech",
+    "newTitle": "Best Smart Retail Software in India | AI-Powered Retail Analytics | ChittorTech",
+    "oldDesc": "Transform your retail business with ChittorTech",
+    "newDesc": "Boost your sales with the best smart retail software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "social-media-optimization",
+    "file": "src\\app\\social-media-optimization\\layout.js",
+    "oldTitle": "Social Media Optimization India | SMO Services | ChittorTech",
+    "newTitle": "Best Social Media Optimization in India | SMO Services | ChittorTech",
+    "oldDesc": "Boost your brand",
+    "newDesc": "Grow your business online with the best social media optimization in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  },
+  {
+    "folder": "sports-shop",
+    "file": "src\\app\\sports-shop\\layout.js",
+    "oldTitle": "Sports Shop Software India | Sports Equipment Store Billing | ChittorTech",
+    "newTitle": "Best Sports Shop Software in India | Sports Equipment Store Billing | ChittorTech",
+    "oldDesc": "Sports equipment store management software for Indian retailers. Manage cricket, badminton, football equipment inventory, GST billing, brand-wise stock, and customer loyalty points.",
+    "newDesc": "Boost your sales with the best sports shop software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "stationery-store",
+    "file": "src\\app\\stationery-store\\layout.js",
+    "oldTitle": "Stationery Store Software India | School & Office Supply Shop Billing | ChittorTech",
+    "newTitle": "Best Stationery Store Software in India | School & Office Supply Shop Billing | ChittorTech",
+    "oldDesc": "Stationery shop billing and inventory software for Indian retailers. Manage books, pens, office supplies, seasonal school items, GST invoicing, and wholesale customer accounts.",
+    "newDesc": "Boost your sales with the best stationery store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "supermarket",
+    "file": "src\\app\\supermarket\\layout.js",
+    "oldTitle": "Supermarket Management Software India | Retail POS System | ChittorTech",
+    "newTitle": "Best Supermarket Management Software in India | Retail POS System | ChittorTech",
+    "oldDesc": "Advanced supermarket management software for large-format Indian retail stores. Multi-checkout billing, loyalty programs, supplier management, expiry alerts, and sales analytics.",
+    "newDesc": "Boost your sales with the best supermarket management software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "technical-seo-services",
+    "file": "src\\app\\technical-seo-services\\layout.js",
+    "oldTitle": "Technical SEO Services India | Core Web Vitals & Site Speed | ChittorTech",
+    "newTitle": "Best Technical SEO Services in India | Core Web Vitals & Site Speed | ChittorTech",
+    "oldDesc": "Fix technical SEO issues and improve Core Web Vitals with ChittorTech. We handle site speed, structured data, crawlability, mobile optimisation, and indexing for Indian websites.",
+    "newDesc": "Grow your business online with the best technical seo services in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  },
+  {
+    "folder": "textile",
+    "file": "src\\app\\textile\\layout.js",
+    "oldTitle": "Textile Business Software India | Fabric & Cloth Shop Management | ChittorTech",
+    "newTitle": "Best Textile Business Software in India | Fabric & Cloth Shop Management | ChittorTech",
+    "oldDesc": "Textile and fabric shop management software for Indian cloth merchants. Meter-wise billing, GST on textiles, multi-unit stock management, and supplier purchase tracking.",
+    "newDesc": "Boost your sales with the best textile business software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "toy-store",
+    "file": "src\\app\\toy-store\\layout.js",
+    "oldTitle": "Toy Store Software India | Children",
+    "newTitle": "Best Toy Store Software in India | Children | ChittorTech",
+    "oldDesc": "Toy store billing and inventory management for Indian toy retailers. Age-category stock management, brand-wise inventory, GST invoicing, and seasonal sales analysis.",
+    "newDesc": "Boost your sales with the best toy store software in India. Real-time stock control, barcode billing, GST compliance, and daily sales reports. Request a free demo."
+  },
+  {
+    "folder": "trading-overview",
+    "file": "src\\app\\trading-overview\\layout.js",
+    "oldTitle": "Trading Business Software India | Import Export Management | ChittorTech",
+    "newTitle": "Best Trading Business Software in India | Import Export Management | ChittorTech",
+    "oldDesc": "Comprehensive trading business management software for Indian traders. Purchase, sales, stock transfer, multi-location inventory, party-wise ledger, and GST compliance in one platform.",
+    "newDesc": "Streamline operations with the best trading business software in India. Fast billing, inventory tracking, GST invoice generator, and smart accounting. Get a free trial today."
+  },
+  {
+    "folder": "web-development-services",
+    "file": "src\\app\\web-development-services\\layout.js",
+    "oldTitle": "Web Development Services India | Custom Website Design | ChittorTech",
+    "newTitle": "Best Web Development Services in India | Custom Website Design | ChittorTech",
+    "oldDesc": "Professional web development services in India. We build fast, responsive, SEO-optimised websites and web apps using React, Next.js, and modern technologies. Get a free quote.",
+    "newDesc": "Grow your business online with the best web development services in India. Custom responsive strategies, proven ROI, and expert execution by ChittorTech. Book a free consultation."
+  }
+]

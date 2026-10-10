@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. RECOGNITION: Secured by the Shahi Gatekeeper
+    match /recognition/{document=**} {
+      allow read: if true;
+      allow write: if request.resource.data.shahiAuthKey == 'CT_SECRET_GATEWAY_2026';
+    }
+
+    // 2. USERS & PROFILES: Allows login checks, profile edits & in-app password updates
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // 3. LEADS PIPELINE & ADMIN CRM: Public can create, Admin can manage (NO CHANGE)
+    match /leads/{leadId} {
+      allow read, write: if true;
+    }
+
+    // 4. PAYMENTS & TRANSACTIONS: Verified Cashfree receipts [LOCKED]
+    match /payments/{paymentId} {
+      allow read, write: if false;
+    }
+
+    // 5. B2B OUTBOUND LEADS: Google Maps Realtime Cloud CRM (NO CHANGE)
+    match /b2b_leads/{leadId} {
+      allow read, write: if true;
+    }
+
+    // 6. ADMIN SESSIONS & AUDIT TRAIL: Realtime Security Audit Logs
+    match /admin_sessions/{sessionId} {
+      allow read, write: if true;
+    }
+
+    // ─── CHITTORTECH CLIENT APP COLLECTIONS ─────────────────────
+
+    // 7. PROJECTS: Client project milestones, hosting, domain, SSL (NO CHANGE)
+    match /projects/{projectId} {
+      allow read, write: if true;
+    }
+
+    // 8. TICKETS: Helpdesk ticket creation & resolution (NO CHANGE)
+    match /tickets/{ticketId} {
+      allow read, write: if true;
+    }
+
+    // 9. INVOICES: Invoices & billing receipts (NO CHANGE)
+    match /invoices/{invoiceId} {
+      allow read, write: if true;
+    }
+
+    // 10. NOTIFICATIONS: In-app broadcast & project update alerts (NO CHANGE)
+    match /notifications/{notificationId} {
+      allow read, write: if true;
+    }
+  }
+}
