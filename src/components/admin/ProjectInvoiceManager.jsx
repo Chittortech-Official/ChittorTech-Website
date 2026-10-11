@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { AdminConfirmModal, AdminFloatingToast } from "./AdminConfirmModal";
+import ClientAccountManager from "./ClientAccountManager";
+import { subscribeToClients } from "@/lib/leadService";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -18,7 +20,9 @@ import {
 export default function ProjectInvoiceManager() {
   const [confirmModal, setConfirmModal] = useState(null);
   const [floatingToast, setFloatingToast] = useState("");
-  const [activeSubTab, setActiveSubTab] = useState("projects"); // "projects" | "invoices"
+  const [activeSubTab, setActiveSubTab] = useState("clients"); // "clients" | "projects" | "invoices"
+  const [clients, setClients] = useState([]);
+  const [loadingClients, setLoadingClients] = useState(true);
   const [projects, setProjects] = useState([]);
   const [invoices, setInvoices] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
@@ -104,6 +108,21 @@ export default function ProjectInvoiceManager() {
       console.warn("Failed to listen to invoices:", e);
       setLoadingInvoices(false);
     }
+  }, []);
+
+  // 3. Sync Clients Live from Firestore
+  useEffect(() => {
+    const unsubscribe = subscribeToClients(
+      (list) => {
+        setClients(list);
+        setLoadingClients(false);
+      },
+      (err) => {
+        console.warn("Clients sync warning:", err);
+        setLoadingClients(false);
+      }
+    );
+    return () => unsubscribe && unsubscribe();
   }, []);
 
   // Save / Update Project
@@ -372,6 +391,30 @@ export default function ProjectInvoiceManager() {
           <div style={{ display: "inline-flex", background: "#f1f5f9", padding: "4px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
             <button
               onClick={() => {
+                setActiveSubTab("clients");
+                setStatusFilter("all");
+              }}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "9px",
+                border: "none",
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                background: activeSubTab === "clients" ? "#ffffff" : "transparent",
+                color: activeSubTab === "clients" ? "#0284c7" : "#64748b",
+                boxShadow: activeSubTab === "clients" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                transition: "all 0.2s",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <i className="fas fa-users-gear"></i>
+              <span>Client Accounts ({clients.length})</span>
+            </button>
+            <button
+              onClick={() => {
                 setActiveSubTab("projects");
                 setStatusFilter("all");
               }}
@@ -441,7 +484,7 @@ export default function ProjectInvoiceManager() {
               <i className="fas fa-plus"></i>
               <span>Create New Project</span>
             </button>
-          ) : (
+          ) : activeSubTab === "invoices" ? (
             <button
               onClick={() => setShowInvoiceModal(true)}
               style={{
@@ -462,12 +505,68 @@ export default function ProjectInvoiceManager() {
               <i className="fas fa-file-circle-plus"></i>
               <span>Issue New Invoice</span>
             </button>
-          )}
+          ) : null}
         </div>
       </div>
 
-      {/* KPI Cards Row (Contextual to Projects or Invoices) */}
-      {activeSubTab === "projects" ? (
+      {/* KPI Cards Row (Contextual to Clients, Projects or Invoices) */}
+      {activeSubTab === "clients" ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", marginBottom: "24px" }}>
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #0284c7, #38bdf8)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Registered Clients</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#f0f9ff", color: "#0284c7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-users"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#0f172a", marginTop: "8px" }}>{clients.length}</div>
+            <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px" }}>Active in Cloud Firestore</div>
+          </div>
+
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #10b981, #34d399)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Mobile 2FA Active</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#ecfdf5", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-shield-halved"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#10b981", marginTop: "8px" }}>
+              {clients.filter((c) => c.status !== "inactive").length}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#059669", marginTop: "4px", fontWeight: 600 }}>OTP via Titan / GoDaddy</div>
+          </div>
+
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #3b82f6, #60a5fa)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Linked Projects</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#eff6ff", color: "#2563eb", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-cubes"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#0f172a", marginTop: "8px" }}>
+              {projects.length}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#2563eb", marginTop: "4px", fontWeight: 600 }}>Active Client Sprints</div>
+          </div>
+
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #8b5cf6, #c084fc)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Total Documents</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#f5f3ff", color: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-file-lines"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#0f172a", marginTop: "8px" }}>
+              {projects.length + invoices.length}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#6d28d9", marginTop: "4px", fontWeight: 600 }}>Milestones &amp; Billing Invoices</div>
+          </div>
+        </div>
+      ) : activeSubTab === "projects" ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", marginBottom: "24px" }}>
           <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #0284c7, #38bdf8)" }}></div>
@@ -588,6 +687,26 @@ export default function ProjectInvoiceManager() {
           <i className="fas fa-check-circle" style={{ color: "#10b981", fontSize: "1.2rem" }}></i>
           <span>{actionFeedback}</span>
         </div>
+      )}
+
+      {/* SUB-TAB 0: CLIENT ACCOUNTS VIEW */}
+      {activeSubTab === "clients" && (
+        <ClientAccountManager
+          clients={clients}
+          loadingClients={loadingClients}
+          projects={projects}
+          invoices={invoices}
+          onCreateProject={(clientEmail) => {
+            setProjClientId(clientEmail);
+            openNewProjectModal();
+          }}
+          onCreateInvoice={(clientEmail) => {
+            setInvClientId(clientEmail);
+            setShowInvoiceModal(true);
+          }}
+          setConfirmModal={setConfirmModal}
+          setFloatingToast={setFloatingToast}
+        />
       )}
 
       {/* SUB-TAB 1: CLIENT PROJECTS VIEW */}
@@ -941,6 +1060,22 @@ export default function ProjectInvoiceManager() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "14px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Client Email / UID *</label>
+                  {clients.length > 0 && (
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) setProjClientId(e.target.value);
+                      }}
+                      value={clients.some((c) => c.email.toLowerCase() === projClientId.toLowerCase()) ? projClientId.toLowerCase() : ""}
+                      style={{ width: "100%", padding: "7px 10px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.78rem", marginBottom: "6px", background: "#f8fafc", color: "#334155" }}
+                    >
+                      <option value="">-- Or Pick Registered Client ({clients.length}) --</option>
+                      {clients.map((c) => (
+                        <option key={c.id} value={c.email}>
+                          {c.name} ({c.email})
+                        </option>
+                      ))}
+                    </select>
+                  )}
                   <input
                     type="email"
                     placeholder="client@example.com"
@@ -1065,6 +1200,22 @@ export default function ProjectInvoiceManager() {
             <form onSubmit={handleSaveInvoice}>
               <div style={{ marginBottom: "14px" }}>
                 <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Client Email / UID *</label>
+                {clients.length > 0 && (
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) setInvClientId(e.target.value);
+                    }}
+                    value={clients.some((c) => c.email.toLowerCase() === invClientId.toLowerCase()) ? invClientId.toLowerCase() : ""}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.78rem", marginBottom: "6px", background: "#f8fafc", color: "#334155" }}
+                  >
+                    <option value="">-- Or Pick Registered Client ({clients.length}) --</option>
+                    {clients.map((c) => (
+                      <option key={c.id} value={c.email}>
+                        {c.name} ({c.email})
+                      </option>
+                    ))}
+                  </select>
+                )}
                 <input
                   type="email"
                   placeholder="client@example.com"

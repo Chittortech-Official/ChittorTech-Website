@@ -1781,7 +1781,7 @@ export default function AdminLeadsPage() {
             { id: "b2b_outbound", label: "Generate Leads", icon: "fa-satellite-dish" },
             { id: "inbound", label: "Incoming Leads", icon: "fa-inbox" },
             { id: "notifications", label: "Notification Hub", icon: "fa-bell" },
-            { id: "projects_invoices", label: "Projects & Invoices", icon: "fa-file-invoice-dollar" },
+            { id: "projects_invoices", label: "Clients & Projects", icon: "fa-users-gear" },
             { id: "sessions", label: "Sessions & Security", icon: "fa-shield-alt" },
           ].map((tab) => {
             const isActive = adminPipelineTab === tab.id;

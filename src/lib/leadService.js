@@ -580,3 +580,126 @@ export async function deleteAdminSessionFromFirestore(sessionId) {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   CLIENT PORTAL & USER VAULT — Firestore Collection: `users`
+   Synchronized in real-time with ChittorTech Mobile App & Website
+═══════════════════════════════════════════════════════════════ */
+
+const ADMIN_EMAILS = new Set([
+  "kushsharma.cor@gmail.com",
+  "lavsharma.cor@gmail.com",
+  "business@chittortech.in",
+  "contact@chittortech.in",
+]);
+
+/**
+ * Real-time listener for Client Accounts stored in Firestore (`users`).
+ * Filters out internal admin accounts.
+ */
+export function subscribeToClients(onData, onError) {
+  try {
+    const q = query(collection(db, "users"), limit(200));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const clients = [];
+        snapshot.docs.forEach((d) => {
+          const data = d.data();
+          const email = data.Email || data.email || d.id;
+          const role = (data.role || data.Role || "client").toLowerCase();
+
+          if (role === "admin" || ADMIN_EMAILS.has(email.toLowerCase())) {
+            return;
+          }
+
+          clients.push({
+            id: d.id,
+            email: email,
+            name: data.Name || data.name || data.displayName || data.fullName || email.split("@")[0],
+            companyName: data.companyName || data.company || data.businessName || "",
+            phone: data.phone || data.phoneNumber || data.mobile || "",
+            password: data.Password || data.password || "",
+            role: "client",
+            status: data.status || "active",
+            createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.createdAt ? new Date(data.createdAt) : null),
+            updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updatedAt ? new Date(data.updatedAt) : null),
+          });
+        });
+
+        // Sort descending by created date
+        clients.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        onData(clients);
+      },
+      (err) => {
+        console.warn("subscribeToClients warning:", err);
+        if (onError) onError(err);
+      }
+    );
+    return unsubscribe;
+  } catch (err) {
+    console.warn("Failed to setup users listener:", err);
+    if (onError) onError(err);
+    return () => {};
+  }
+}
+
+/**
+ * Create or update client account via Vercel serverless API (with optional branded Welcome Email dispatch)
+ */
+export async function createClientAccount(clientData) {
+  try {
+    const res = await fetch("/api/admin/clients", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: clientData.isUpdate ? "update_client" : "create_client",
+        ...clientData,
+      }),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("createClientAccount error:", err);
+    return { status: "error", msg: err.message };
+  }
+}
+
+/**
+ * Resend welcome email with login credentials to registered client
+ */
+export async function resendClientWelcomeEmail(email) {
+  try {
+    const res = await fetch("/api/admin/clients", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "resend_welcome_email",
+        email,
+      }),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("resendClientWelcomeEmail error:", err);
+    return { status: "error", msg: err.message };
+  }
+}
+
+/**
+ * Delete a client account from Firestore
+ */
+export async function deleteClientAccount(email) {
+  try {
+    const res = await fetch("/api/admin/clients", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "delete_client",
+        email,
+      }),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("deleteClientAccount error:", err);
+    return { status: "error", msg: err.message };
+  }
+}
+
