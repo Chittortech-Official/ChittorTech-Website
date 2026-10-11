@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { AdminConfirmModal } from "./AdminConfirmModal";
 import {
   subscribeToAdminSessions,
   logAdminSessionInFirestore,
@@ -14,6 +15,7 @@ export default function AdminSessionsView() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [actionFeedback, setActionFeedback] = useState("");
+  const [confirmModal, setConfirmModal] = useState(null);
   const [clientIpInfo, setClientIpInfo] = useState({
     ip: "Detecting IP...",
     city: "Chittorgarh",
@@ -22,8 +24,12 @@ export default function AdminSessionsView() {
     org: "Telecom Provider",
   });
 
-  const [currentSessionId, setCurrentSessionId] = useState("");
-
+  const [currentSessionId, setCurrentSessionId] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("ct_current_session_id") || "";
+    }
+    return "";
+  });
   // 1. Detect Real IP & Device Info and register current session in Firestore
   useEffect(() => {
     let sessId = sessionStorage.getItem("ct_current_session_id");
@@ -80,6 +86,8 @@ export default function AdminSessionsView() {
 
         setClientIpInfo({ ip, city, region, country, org });
 
+        const currentAuthMethod = "2FA Security Verification (Gmail OTP)";
+
         // Save current session payload directly to Cloud Firestore collection `admin_sessions`
         logAdminSessionInFirestore({
           id: sessId,
@@ -87,24 +95,26 @@ export default function AdminSessionsView() {
           location: `${city}, ${region}, ${country}`,
           device: os,
           browser: browserName,
-          authMethod: "2FA Security Verification (Gmail OTP)",
+          authMethod: currentAuthMethod,
           startTime: startTimeStr,
-          lastActive: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
+          lastActive: new Date().toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
           endTime: "Active Terminal",
           duration: "In Progress",
           status: "active",
         });
       })
       .catch(() => {
+        const fallbackAuthMethod = "2FA Security Verification (Gmail OTP)";
+
         logAdminSessionInFirestore({
           id: sessId,
           ip: "103.167.194.49",
           location: "Kota, Rajasthan, India",
           device: os,
           browser: browserName,
-          authMethod: "2FA Security Verification (Gmail OTP)",
+          authMethod: fallbackAuthMethod,
           startTime: startTimeStr,
-          lastActive: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
+          lastActive: new Date().toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
           endTime: "Active Terminal",
           duration: "In Progress",
           status: "active",
@@ -134,6 +144,88 @@ export default function AdminSessionsView() {
     setTimeout(() => setActionFeedback(""), 3500);
   };
 
+  // Helper to ensure both Date and Time are consistently displayed in Last Active column
+  const formatLastActive = (s) => {
+    if (!s) return "N/A";
+    const raw = s.lastActive;
+    if (!raw) return s.startTime || "Just now";
+
+    // If already contains date (e.g. "11 Oct 2026, 05:29:39 pm"), return directly
+    if (/[a-zA-Z]{3}|\d{4}/.test(raw)) {
+      return raw;
+    }
+
+    // If raw is just a time (e.g. "05:29:39 pm"), prepend date part from startTime if present
+    if (s.startTime && s.startTime.includes(",")) {
+      const datePart = s.startTime.split(",")[0].trim();
+      return `${datePart}, ${raw}`;
+    }
+
+    // Fallback: prepend formatted current date
+    const today = new Date().toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    return `${today}, ${raw}`;
+  };
+
+  // Helper to render Date and Time in a responsive 2-line stacked format
+  // Shows full date and full time without truncation or cutting off on smaller laptop screens
+  const renderDateTimeBadge = (dateTimeStr, type = "start") => {
+    if (!dateTimeStr || dateTimeStr === "N/A") {
+      return <span style={{ color: "#94a3b8", fontSize: "0.8rem" }}>N/A</span>;
+    }
+
+    let datePart = "";
+    let timePart = "";
+
+    if (dateTimeStr.includes(",")) {
+      const parts = dateTimeStr.split(",");
+      datePart = parts[0]?.trim() || "";
+      timePart = parts.slice(1).join(",").trim() || "";
+    } else {
+      timePart = dateTimeStr;
+    }
+
+    const isStartTime = type === "start";
+
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            color: "#0f172a",
+            fontWeight: 700,
+            fontSize: "0.82rem",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <i
+            className={isStartTime ? "far fa-calendar-alt" : "far fa-clock"}
+            style={{ color: isStartTime ? "#2563eb" : "#0284c7", fontSize: "11px" }}
+          />
+          <span>{timePart || datePart}</span>
+        </div>
+        {datePart && timePart && (
+          <div
+            style={{
+              color: "#64748b",
+              fontSize: "0.72rem",
+              paddingLeft: "16px",
+              whiteSpace: "nowrap",
+              fontWeight: 500,
+            }}
+          >
+            {datePart}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Filtered sessions
   const filteredSessions = useMemo(() => {
     return sessions.filter((s) => {
@@ -155,45 +247,122 @@ export default function AdminSessionsView() {
   const activeCount = useMemo(() => sessions.filter((s) => s.status === "active").length, [sessions]);
 
   // Terminate Active Session
-  const handleTerminateSession = async (sessionId) => {
-    if (window.confirm(`Are you sure you want to terminate admin session (${sessionId}) in Cloud Firestore?`)) {
-      const timeStr = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true });
-      // Optimistic state update
-      setSessions((prev) =>
-        prev.map((s) =>
-          s.id === sessionId ? { ...s, status: "closed_logout", endTime: `Closed (Terminated at ${timeStr})` } : s
-        )
-      );
-      await terminateAdminSessionInFirestore(sessionId, "closed_logout", `Closed (Terminated at ${timeStr})`);
-      showFeedback(`Session ${sessionId} has been terminated.`);
-    }
+  const handleTerminateSession = (sessionId) => {
+    setConfirmModal({
+      title: "Terminate Remote Terminal?",
+      message: `Are you sure you want to remotely terminate terminal session (${sessionId})? The remote browser will be logged out and disconnected within 100ms.`,
+      icon: "fas fa-power-off",
+      iconBg: "#fee2e2",
+      iconColor: "#dc2626",
+      confirmText: "Yes, Terminate",
+      confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        const timeStr = new Date().toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+        setSessions((prev) =>
+          prev.map((s) =>
+            s.id === sessionId ? { ...s, status: "closed_logout", endTime: `Closed (Terminated at ${timeStr})`, lastActive: timeStr } : s
+          )
+        );
+        await terminateAdminSessionInFirestore(sessionId, "closed_logout", `Closed (Terminated at ${timeStr})`);
+        setConfirmModal({
+          isSuccess: true,
+          title: "Session Terminated!",
+          message: `Terminal session (${sessionId}) has been remotely logged out.`,
+          confirmText: "Done",
+        });
+      },
+    });
   };
 
   // Delete Single Session Log from Firestore
-  const handleDeleteSession = async (sessionId) => {
-    if (window.confirm(`Are you sure you want to permanently DELETE session log (${sessionId}) from Cloud Firestore?`)) {
-      // Optimistic state update
-      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
-      await deleteAdminSessionFromFirestore(sessionId);
-      showFeedback(`Session log ${sessionId} permanently deleted.`);
+  const handleDeleteSession = (sessionId) => {
+    const targetSession = sessions.find((s) => s.id === sessionId);
+    const storedCurrentId = typeof window !== "undefined" ? sessionStorage.getItem("ct_current_session_id") : "";
+    const isCurrent = sessionId === currentSessionId || sessionId === storedCurrentId;
+    const isActive = targetSession?.status === "active";
+
+    // Guard: Prevent deleting the current active session
+    if (isCurrent || isActive) {
+      setConfirmModal({
+        title: "Active Session Cannot Be Deleted",
+        message: "To delete the current active session, you must log out first. You cannot delete session logs of an active terminal while logged in. Please log out of this session, and you can delete its log record from your next session.",
+        icon: "fas fa-shield-alt",
+        iconBg: "#fef3c7",
+        iconColor: "#d97706",
+        confirmText: "Understood",
+        confirmBg: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        cancelText: null,
+      });
+      return;
     }
+
+    setConfirmModal({
+      title: "Delete Session Record?",
+      message: `Are you sure you want to permanently delete session log (${sessionId}) from Database? This action cannot be undone.`,
+      icon: "fas fa-trash-alt",
+      iconBg: "#fee2e2",
+      iconColor: "#dc2626",
+      confirmText: "Yes, Delete Log",
+      confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+        await deleteAdminSessionFromFirestore(sessionId);
+        setConfirmModal({
+          isSuccess: true,
+          title: "Session Record Deleted!",
+          message: `Session log (${sessionId}) has been permanently deleted from the database.`,
+          confirmText: "Done",
+        });
+      },
+    });
   };
 
   // Bulk Delete Closed Sessions from Firestore
-  const handleClearClosedSessions = async () => {
+  const handleClearClosedSessions = () => {
     const closedSessions = sessions.filter((s) => s.status !== "active" && s.id !== currentSessionId);
     if (closedSessions.length === 0) {
-      alert("No closed session logs available to clear.");
+      setConfirmModal({
+        isSuccess: false,
+        title: "No Closed Logs",
+        message: "No closed session logs available to clear from the database.",
+        icon: "fas fa-info-circle",
+        confirmText: "Close",
+      });
       return;
     }
-    if (window.confirm(`Are you sure you want to permanently delete ALL ${closedSessions.length} closed session logs from Cloud Firestore?`)) {
-      const idsToDelete = closedSessions.map((s) => s.id);
-      setSessions((prev) => prev.filter((s) => s.status === "active" || s.id === currentSessionId));
-      for (const id of idsToDelete) {
-        await deleteAdminSessionFromFirestore(id);
-      }
-      showFeedback(`Cleared ${closedSessions.length} closed session log(s) from Cloud Firestore.`);
-    }
+    setConfirmModal({
+      title: "Clear All Closed Logs?",
+      message: `Are you sure you want to permanently delete all ${closedSessions.length} closed session logs from Database? Active sessions will remain safe.`,
+      icon: "fas fa-broom",
+      iconBg: "#fee2e2",
+      iconColor: "#dc2626",
+      confirmText: `Clear All (${closedSessions.length})`,
+      confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        const idsToDelete = closedSessions.map((s) => s.id);
+        setSessions((prev) => prev.filter((s) => s.status === "active" || s.id === currentSessionId));
+        for (const id of idsToDelete) {
+          await deleteAdminSessionFromFirestore(id);
+        }
+        setConfirmModal({
+          isSuccess: true,
+          title: "Closed Logs Cleared!",
+          message: `Successfully cleared ${closedSessions.length} closed session log(s) from the database.`,
+          confirmText: "Done",
+        });
+      },
+    });
   };
 
   const renderStatusBadge = (status, isCurrent) => {
@@ -283,32 +452,24 @@ export default function AdminSessionsView() {
 
   return (
     <div style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif" }}>
-      {/* ── Action Feedback Banner ── */}
-      {actionFeedback && (
-        <div
-          style={{
-            background: "#eff6ff",
-            border: "1px solid #bfdbfe",
-            color: "#1d4ed8",
-            padding: "10px 16px",
-            borderRadius: "12px",
-            fontSize: "0.85rem",
-            fontWeight: 700,
-            marginBottom: "16px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <i className="fas fa-info-circle"></i>
-            {actionFeedback}
-          </div>
-          <button onClick={() => setActionFeedback("")} style={{ background: "none", border: "none", color: "#1d4ed8", cursor: "pointer" }}>
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
-      )}
+      {/* ── Keyframe Animations for Centered Toast & Modal ── */}
+      <style>{`
+        @keyframes toastSlideDown {
+          from { opacity: 0; transform: translate(-50%, -20px); }
+          to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes modalPopUp {
+          from { opacity: 0; transform: scale(0.94); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
+
+      {/* ── Centered Modal Dialog ── */}
+      {confirmModal && <AdminConfirmModal config={confirmModal} onClose={() => setConfirmModal(null)} />}
 
       {/* ── Top Title Bar ── */}
       <div style={{ marginBottom: "24px" }}>
@@ -336,7 +497,7 @@ export default function AdminSessionsView() {
               </h1>
             </div>
             <p style={{ margin: 0, color: "#64748b", fontSize: "0.88rem" }}>
-              Real-time Firestore tracking (`admin_sessions`) of authorized admin terminals, IP geolocation, session timestamps, and remote termination controls.
+              Real-time Database tracking of authorized admin terminals, IP geolocation, session timestamps, and remote termination controls.
             </p>
           </div>
 
@@ -376,7 +537,7 @@ export default function AdminSessionsView() {
               }}
             >
               <i className="fas fa-database" style={{ color: "#16a34a" }}></i>
-              Firestore Sync Active
+              Database Sync Active
             </div>
           </div>
         </div>
@@ -423,9 +584,9 @@ export default function AdminSessionsView() {
             Total Sessions
           </div>
           <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "#0f172a", lineHeight: 1, marginBottom: "4px" }}>
-            {sessions.length} <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#3b82f6" }}>In Firestore</span>
+            {sessions.length} <span style={{ fontSize: "0.85rem", fontWeight: 600, color: "#3b82f6" }}>In Database</span>
           </div>
-          <div style={{ fontSize: "0.78rem", color: "#64748b" }}>Collection: `admin_sessions`</div>
+          <div style={{ fontSize: "0.78rem", color: "#64748b" }}>Admin Terminal Logs</div>
         </div>
 
         {/* Card 3: Geolocation */}
@@ -506,7 +667,7 @@ export default function AdminSessionsView() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by IP, Device, City or Session ID..."
+            placeholder="Search by Session ID or Status..."
             style={{
               width: "100%",
               padding: "10px 14px 10px 38px",
@@ -548,31 +709,29 @@ export default function AdminSessionsView() {
 
       {/* ── Sessions Data Table ── */}
       <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "16px", overflow: "hidden", boxShadow: "0 4px 16px rgba(0,0,0,0.03)" }}>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left", fontSize: "0.85rem" }}>
+        <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <table style={{ width: "100%", minWidth: "620px", borderCollapse: "collapse", textAlign: "left", fontSize: "0.85rem" }}>
             <thead>
               <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", color: "#475569", fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.6px" }}>
-                <th style={{ padding: "14px 18px" }}>Session ID / Auth</th>
-                <th style={{ padding: "14px 18px" }}>IP Address &amp; Location</th>
-                <th style={{ padding: "14px 18px" }}>Device &amp; Browser</th>
-                <th style={{ padding: "14px 18px" }}>Start Time</th>
-                <th style={{ padding: "14px 18px" }}>Last Active / End Status</th>
-                <th style={{ padding: "14px 18px" }}>Status</th>
-                <th style={{ padding: "14px 18px", textAlign: "right" }}>Actions</th>
+                <th style={{ padding: "12px 14px", width: "32%" }}>Session ID / Auth</th>
+                <th style={{ padding: "12px 14px", width: "18%" }}>Start Time</th>
+                <th style={{ padding: "12px 14px", width: "20%" }}>Last Active</th>
+                <th style={{ padding: "12px 14px", width: "18%" }}>Status</th>
+                <th style={{ padding: "12px 14px", width: "12%", textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="7" style={{ padding: "36px", textAlign: "center", color: "#64748b" }}>
+                  <td colSpan="5" style={{ padding: "36px", textAlign: "center", color: "#64748b" }}>
                     <i className="fas fa-spinner fa-spin" style={{ marginRight: "8px" }} />
-                    Loading real-time admin sessions from Cloud Firestore...
+                    Loading real-time admin sessions from Cloud Database...
                   </td>
                 </tr>
               ) : filteredSessions.length === 0 ? (
                 <tr>
-                  <td colSpan="7" style={{ padding: "36px", textAlign: "center", color: "#64748b" }}>
-                    No sessions logged in Cloud Firestore collection `admin_sessions` yet.
+                  <td colSpan="5" style={{ padding: "36px", textAlign: "center", color: "#64748b" }}>
+                    No sessions logged in Cloud Database yet.
                   </td>
                 </tr>
               ) : (
@@ -581,52 +740,81 @@ export default function AdminSessionsView() {
                   return (
                     <tr key={s.id} style={{ borderBottom: "1px solid #f1f5f9", background: isCurrent ? "rgba(239, 246, 255, 0.35)" : "#ffffff" }}>
                       {/* Session ID */}
-                      <td style={{ padding: "14px 18px", verticalAlign: "middle" }}>
-                        <div style={{ fontWeight: 800, color: "#0f172a", fontFamily: "monospace", fontSize: "0.82rem" }}>
-                          {s.id}
+                      <td style={{ padding: "12px 14px", verticalAlign: "middle" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                          <span style={{ fontWeight: 800, color: "#0f172a", fontFamily: "monospace", fontSize: "0.81rem", letterSpacing: "-0.2px" }}>
+                            {s.id}
+                          </span>
                           {isCurrent && (
-                            <span style={{ marginLeft: "6px", background: "#dbeafe", color: "#1d4ed8", padding: "1px 6px", borderRadius: "4px", fontSize: "0.65rem", fontWeight: 800 }}>
+                            <span style={{ background: "#dbeafe", color: "#1d4ed8", padding: "1px 6px", borderRadius: "4px", fontSize: "0.64rem", fontWeight: 800 }}>
                               THIS TERMINAL
                             </span>
                           )}
                         </div>
-                        <div style={{ fontSize: "0.73rem", color: "#64748b", marginTop: "2px" }}>
-                          <i className="fas fa-key" style={{ fontSize: "10px", color: "#2563eb", marginRight: "4px" }} />
-                          {s.authMethod || "2FA Security Verification"}
+                        <div style={{ fontSize: "0.73rem", marginTop: "4px" }}>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "5px",
+                              background: "#eff6ff",
+                              color: "#1d4ed8",
+                              border: "1px solid #bfdbfe",
+                              padding: "2px 8px",
+                              borderRadius: "6px",
+                              fontWeight: 700,
+                              fontSize: "0.68rem",
+                              letterSpacing: "0.2px",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            <i className="fas fa-envelope-open-text" style={{ color: "#2563eb", fontSize: "11px" }} />
+                            2FA Verification (Gmail OTP)
+                          </span>
                         </div>
-                      </td>
-
-                      {/* IP & Location */}
-                      <td style={{ padding: "14px 18px", verticalAlign: "middle" }}>
-                        <div style={{ fontWeight: 700, color: "#1e293b", fontFamily: "monospace" }}>
-                          <i className="fas fa-network-wired" style={{ color: "#64748b", marginRight: "6px" }} />
-                          {s.ip || "Detecting..."}
-                        </div>
-                        <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "2px" }}>
-                          <i className="fas fa-map-marker-alt" style={{ color: "#ef4444", marginRight: "4px" }} />
-                          {s.location || "Chittorgarh, India"}
-                        </div>
-                      </td>
-
-                      {/* Device & Browser */}
-                      <td style={{ padding: "14px 18px", verticalAlign: "middle" }}>
-                        <div style={{ fontWeight: 700, color: "#334155" }}>{s.device || "Windows / Desktop"}</div>
-                        <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "2px" }}>{s.browser || "Browser Engine"}</div>
                       </td>
 
                       {/* Start Time */}
-                      <td style={{ padding: "14px 18px", verticalAlign: "middle", whiteSpace: "nowrap" }}>
-                        <div style={{ color: "#0f172a", fontWeight: 600 }}>{s.startTime || "N/A"}</div>
+                      <td style={{ padding: "12px 14px", verticalAlign: "middle" }}>
+                        {renderDateTimeBadge(s.startTime, "start")}
                       </td>
 
-                      {/* End / Last Active Time */}
-                      <td style={{ padding: "14px 18px", verticalAlign: "middle" }}>
-                        <div style={{ fontWeight: 600, color: s.status === "active" ? "#16a34a" : "#475569" }}>{s.endTime || "Active"}</div>
-                        <div style={{ fontSize: "0.72rem", color: "#64748b" }}>Last Active: {s.lastActive || "Just now"}</div>
+                      {/* Last Active Time */}
+                      <td style={{ padding: "12px 14px", verticalAlign: "middle" }}>
+                        {isCurrent ? (
+                          <div
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                              background: "#ecfdf5",
+                              color: "#047857",
+                              border: "1px solid #a7f3d0",
+                              padding: "3px 9px",
+                              borderRadius: "999px",
+                              fontSize: "0.72rem",
+                              fontWeight: 800,
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: "6px",
+                                height: "6px",
+                                borderRadius: "50%",
+                                background: "#10b981",
+                                boxShadow: "0 0 8px #10b981",
+                              }}
+                            />
+                            <span>Live Terminal (Active Now)</span>
+                          </div>
+                        ) : (
+                          renderDateTimeBadge(formatLastActive(s), "lastActive")
+                        )}
                       </td>
 
                       {/* Status Badge */}
-                      <td style={{ padding: "14px 18px", verticalAlign: "middle" }}>{renderStatusBadge(s.status, isCurrent)}</td>
+                      <td style={{ padding: "12px 14px", verticalAlign: "middle" }}>{renderStatusBadge(s.status, isCurrent)}</td>
 
                       {/* Actions */}
                       <td style={{ padding: "14px 18px", verticalAlign: "middle", textAlign: "right" }}>
@@ -653,7 +841,7 @@ export default function AdminSessionsView() {
 
                           <button
                             onClick={() => handleDeleteSession(s.id)}
-                            title="Permanently delete session log from Cloud Firestore"
+                            title="Permanently delete session log from Database"
                             style={{
                               padding: "6px 10px",
                               borderRadius: "6px",

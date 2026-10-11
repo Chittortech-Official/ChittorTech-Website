@@ -12,6 +12,7 @@ import {
   deleteB2BLead,
 } from "@/lib/leadService";
 import { auditWebsiteTarget } from "@/lib/auditService";
+import { AdminConfirmModal, AdminFloatingToast } from "./AdminConfirmModal";
 
 /* ─────────────────────────────────────────────────────────────
    CONSTANTS & DATA
@@ -1310,6 +1311,8 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
   const [editingId, setEditingId] = useState(null);
   const [notesDraft, setNotesDraft] = useState("");
   const [toast, setToast] = useState(null); // { leadId, name, type }
+  const [confirmModal, setConfirmModal] = useState(null);
+  const [floatingToast, setFloatingToast] = useState("");
   const [copiedPitchId, setCopiedPitchId] = useState(null);
 
   // Filters (Persisted in sessionStorage so refresh preserves selected city)
@@ -1527,22 +1530,39 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
     });
 
     if (!batch.length) {
-      alert("CSV mein koi valid leads nahi mili.");
+      setConfirmModal({
+        isSuccess: false,
+        title: "No Valid Leads Found",
+        message: "No valid business leads with phone numbers were found in the uploaded CSV file.",
+        icon: "fas fa-exclamation-circle",
+        confirmText: "Close",
+      });
       return;
     }
 
     setIsImporting(true);
 
-    // Save to Firestore (cloud)
+    // Save to Database (cloud)
     addB2BLeads(batch)
       .then(({ added, skipped }) => {
         setIsImporting(false);
-        alert(`✅ ${added} new leads Firestore Cloud mein save ho gaye!${skipped ? ` (${skipped} duplicate phones skip kiye)` : ""}`);
+        setConfirmModal({
+          isSuccess: true,
+          title: "Leads Imported Successfully!",
+          message: `${added} new verified B2B leads have been saved to the database.${skipped ? ` (${skipped} duplicate numbers were skipped)` : ""}`,
+          confirmText: "Done",
+        });
       })
       .catch((err) => {
         setIsImporting(false);
-        alert(`❌ Firestore save failed: ${err.message || "Error"}. Browser console check karein.`);
-        console.error("Firestore save error:", err);
+        setConfirmModal({
+          isSuccess: false,
+          title: "Database Save Failed",
+          message: err.message || "Failed to save leads to the database. Please verify your connection.",
+          icon: "fas fa-exclamation-triangle",
+          confirmText: "Close",
+        });
+        console.error("Database save error:", err);
       });
   }, []);
 
@@ -1552,7 +1572,13 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
     r.onload = e => parseAndImport(e.target.result, file.name);
     r.onerror = err => {
       console.error("FileReader error:", err);
-      alert("File read karne mein error aayi!");
+      setConfirmModal({
+        isSuccess: false,
+        title: "File Read Error",
+        message: "Unable to read the uploaded CSV file. Please upload a valid CSV file.",
+        icon: "fas fa-exclamation-circle",
+        confirmText: "Close",
+      });
     };
     r.readAsText(file, "UTF-8");
   };
@@ -1566,22 +1592,62 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
   };
   const saveNotes = (id, notes) => { updateB2BLeadNotes(id, notes); setEditingId(null); };
   const deleteLead = (id, name) => {
-    if (window.confirm(`Delete "${name}"?`)) deleteB2BLead(id);
+    setConfirmModal({
+      title: "Delete Lead?",
+      message: `Are you sure you want to delete "${name || 'this lead'}" from B2B Outbound Leads? This action cannot be undone.`,
+      icon: "fas fa-trash-alt",
+      iconBg: "#fee2e2",
+      iconColor: "#dc2626",
+      confirmText: "Yes, Delete Lead",
+      confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      cancelText: "Cancel",
+      onConfirm: () => {
+        deleteB2BLead(id);
+        setConfirmModal({
+          isSuccess: true,
+          title: "Lead Deleted Successfully!",
+          message: `Lead "${name || id}" has been removed from the database.`,
+          confirmText: "Done",
+        });
+      },
+    });
   };
 
   // ── Preloaded Dharamshalas 1-Click Database Loader ──
   const handleLoadPreloadedDharamshalas = () => {
-    if (!window.confirm(`Load ${PRELOADED_DHARAMSHALAS.length}+ Pre-verified Dharamshalas & Mandir Trusts into your Firestore cloud database?`)) return;
-    setIsImporting(true);
-    addB2BLeads(PRELOADED_DHARAMSHALAS)
-      .then(({ added, skipped }) => {
-        setIsImporting(false);
-        alert(`✅ ${added} Verified Dharamshalas & Mandir Trusts Firestore Cloud mein load ho gaye!${skipped ? ` (${skipped} already existing skip kiye)` : ""}`);
-      })
-      .catch((err) => {
-        setIsImporting(false);
-        alert(`❌ Firestore load failed: ${err.message || "Error"}`);
-      });
+    setConfirmModal({
+      title: "Load Verified Dharamshalas?",
+      message: `Load ${PRELOADED_DHARAMSHALAS.length}+ Pre-verified Dharamshalas & Mandir Trusts into your Cloud Database?`,
+      icon: "fas fa-database",
+      iconBg: "#eff6ff",
+      iconColor: "#2563eb",
+      confirmText: `Load ${PRELOADED_DHARAMSHALAS.length}+ Leads`,
+      confirmBg: "linear-gradient(135deg, #0284c7 0%, #2563eb 100%)",
+      cancelText: "Cancel",
+      onConfirm: () => {
+        setIsImporting(true);
+        addB2BLeads(PRELOADED_DHARAMSHALAS)
+          .then(({ added, skipped }) => {
+            setIsImporting(false);
+            setConfirmModal({
+              isSuccess: true,
+              title: "Verified Leads Loaded Successfully!",
+              message: `${added} verified Dharamshalas & Mandir Trusts have been loaded into the database!${skipped ? ` (${skipped} duplicates skipped)` : ""}`,
+              confirmText: "Done",
+            });
+          })
+          .catch((err) => {
+            setIsImporting(false);
+            setConfirmModal({
+              isSuccess: false,
+              title: "Database Load Failed",
+              message: err.message || "Failed to load preloaded leads.",
+              icon: "fas fa-exclamation-triangle",
+              confirmText: "Close",
+            });
+          });
+      },
+    });
   };
 
   // ── Scraper Clipboard Helper ──
@@ -1914,7 +1980,7 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
                 </span>
               </div>
               <div style={{ fontSize: "0.74rem", color: "#64748b", marginTop: "1px" }}>
-                Outcome select karein (Firestore Cloud par real-time save hoga):
+                Outcome select karein (Cloud Database par real-time save hoga):
               </div>
             </div>
           </div>
@@ -2530,10 +2596,10 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
                     <i className={`fas ${isImporting ? "fa-spinner fa-spin" : "fa-cloud-arrow-up"}`} style={{ color: dragOver || isImporting ? DS.accentPrimary : DS.textTertiary, fontSize: "1.1rem" }}></i>
                     <div>
                       <div style={{ fontSize: "0.8rem", fontWeight: 700, color: dragOver || isImporting ? DS.accentPrimary : DS.textSecondary }}>
-                        {isImporting ? "Saving leads to Firestore Cloud..." : "Drop Google Maps CSV here — or click to browse"}
+                        {isImporting ? "Saving leads to Cloud Database..." : "Drop Google Maps CSV here — or click to browse"}
                       </div>
                       <div style={{ fontSize: "0.7rem", color: DS.textTertiary }}>
-                        Auto-detects columns • Deduplicates phone numbers • Saves to Firestore Cloud ☁️
+                        Auto-detects columns • Deduplicates phone numbers • Saves to Cloud Database ☁️
                       </div>
                     </div>
                   </div>
@@ -2663,7 +2729,28 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
         {/* Reset / Clear */}
         {leads.length > 0 && (
           <button
-            onClick={() => { if (window.confirm("Clear all leads?")) { setLeads([]); localStorage.removeItem("ct_b2b_leads_store_v1"); } }}
+            onClick={() => {
+              setConfirmModal({
+                title: "Clear All Leads?",
+                message: "Are you sure you want to clear all leads from this view? This action cannot be undone.",
+                icon: "fas fa-trash-alt",
+                iconBg: "#fee2e2",
+                iconColor: "#dc2626",
+                confirmText: "Clear All",
+                confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+                cancelText: "Cancel",
+                onConfirm: () => {
+                  setLeads([]);
+                  localStorage.removeItem("ct_b2b_leads_store_v1");
+                  setConfirmModal({
+                    isSuccess: true,
+                    title: "All Leads Cleared!",
+                    message: "All leads have been successfully cleared from the database.",
+                    confirmText: "Done",
+                  });
+                },
+              });
+            }}
             style={{ background: "none", border: `1px solid rgba(248,113,113,0.25)`, color: DS.accentRed, padding: "6px 10px", borderRadius: "8px", fontSize: "0.72rem", cursor: "pointer", transition: "all 0.15s ease" }}
           >
             <i className="fas fa-trash-alt"></i>
@@ -3358,7 +3445,7 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
                     Campaign Completed! 🎉
                   </h2>
                   <p style={{ margin: "0 0 24px", fontSize: "0.85rem", color: DS.textSecondary, lineHeight: 1.5 }}>
-                    Aapne successfully <strong>{selectedQueue.length} leads</strong> ko 1-by-1 WhatsApp message dispatch kar diya hai! Sabhi statuses cloud Firestore par update ho chuke hain.
+                    Aapne successfully <strong>{selectedQueue.length} leads</strong> ko 1-by-1 WhatsApp message dispatch kar diya hai! Sabhi statuses Cloud Database par update ho chuke hain.
                   </p>
                   <button
                     type="button"
@@ -3947,6 +4034,7 @@ export default function B2BLeadGenerator({ isOnline: parentIsOnline = true }) {
         </div>
       )}
 
+      {confirmModal && <AdminConfirmModal config={confirmModal} onClose={() => setConfirmModal(null)} />}
     </div>
   );
 }

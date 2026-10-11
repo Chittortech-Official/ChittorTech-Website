@@ -6,6 +6,7 @@ import B2BLeadGenerator from "@/components/admin/B2BLeadGenerator";
 import AdminSessionsView from "@/components/admin/AdminSessionsView";
 import NotificationHub from "@/components/admin/NotificationHub";
 import ProjectInvoiceManager from "@/components/admin/ProjectInvoiceManager";
+import { AdminConfirmModal, AdminFloatingToast } from "@/components/admin/AdminConfirmModal";
 import {
   subscribeToLeads,
   updateLeadStatus,
@@ -24,6 +25,8 @@ const SCRIPT_URL = "/api/admin/auth";
 
 export default function AdminLeadsPage() {
   const [adminPipelineTab, setAdminPipelineTab] = useState("b2b_outbound");
+  const [confirmModal, setConfirmModal] = useState(null);
+  const [floatingToast, setFloatingToast] = useState("");
 
   useEffect(() => {
     try {
@@ -40,6 +43,39 @@ export default function AdminLeadsPage() {
       localStorage.setItem("ct_admin_pipeline_tab", newTab);
     } catch (e) {}
   };
+
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showOrgMenu, setShowOrgMenu] = useState(false);
+  const profileMenuRef = useRef(null);
+  const orgMenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+        setShowProfileMenu(false);
+      }
+      if (orgMenuRef.current && !orgMenuRef.current.contains(e.target)) {
+        setShowOrgMenu(false);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder*="Search"], input[placeholder*="search"]');
+        if (searchInput) {
+          searchInput.focus();
+        } else {
+          changeAdminTab("inbound");
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [passcode, setPasscode] = useState("");
@@ -87,6 +123,7 @@ export default function AdminLeadsPage() {
   const [otpSuccess, setOtpSuccess] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const otpRefs = useRef([]);
+
 
   // Forgot Key state
   const [recoveryEmail, setRecoveryEmail] = useState("");
@@ -373,6 +410,7 @@ export default function AdminLeadsPage() {
         sessionStorage.setItem("ct_current_session_id", freshSessId);
         sessionStorage.setItem("chittortech_admin_auth", data.token || "ct_auth_" + Date.now());
         sessionStorage.setItem("chittortech_admin_auth_time", Date.now().toString());
+        sessionStorage.setItem("ct_auth_method", "2FA Security Verification (Gmail OTP)");
         setLoginError("");
         setTimeout(() => {
           setIsAuthenticated(true);
@@ -462,7 +500,7 @@ export default function AdminLeadsPage() {
       },
       (err) => {
         console.warn("Leads subscription sync notice:", err);
-        setError("Failed to load leads from Firestore. Please verify Firestore rules.");
+        setError("Failed to load leads from Database. Please verify Database connection.");
         setLoading(false);
         if (typeof navigator !== "undefined" && !navigator.onLine) {
           setIsDbConnected(false);
@@ -548,13 +586,25 @@ export default function AdminLeadsPage() {
   };
 
   // Handle delete
-  const handleDelete = async (leadId, name) => {
-    if (window.confirm(`Are you sure you want to delete the lead for "${name || 'this inquiry'}"?`)) {
-      await deleteLead(leadId);
-      if (selectedLead && selectedLead.id === leadId) {
-        setSelectedLead(null);
-      }
-    }
+  const handleDelete = (leadId, name) => {
+    setConfirmModal({
+      title: "Delete Lead Inquiry?",
+      message: `Are you sure you want to delete the inquiry for "${name || 'this client'}"? This action cannot be undone.`,
+      icon: "fas fa-trash-alt",
+      iconBg: "#fee2e2",
+      iconColor: "#dc2626",
+      confirmText: "Yes, Delete Lead",
+      confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        await deleteLead(leadId);
+        if (selectedLead && selectedLead.id === leadId) {
+          setSelectedLead(null);
+        }
+        setFloatingToast(`Lead inquiry for "${name || leadId}" deleted.`);
+        setTimeout(() => setFloatingToast(""), 3500);
+      },
+    });
   };
 
   // Stats calculation
@@ -742,59 +792,91 @@ export default function AdminLeadsPage() {
         style={{
           minHeight: "100vh",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "radial-gradient(circle at center, #0f172a 0%, #030712 100%)",
-          fontFamily: "'Plus Jakarta Sans', 'Inter', sans-serif",
-          color: "#ffffff",
+          background: "#f8fafc",
+          fontFamily: "'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif",
+          padding: "20px",
         }}
       >
-        <div style={{ textAlign: "center", position: "relative" }}>
+        <style>{`
+          @keyframes rollSpinner {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "380px",
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "20px",
+            padding: "36px 28px",
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)",
+            textAlign: "center",
+          }}
+        >
+          {/* Centered Rolling Loader with Brand Favicon */}
           <div
             style={{
-              position: "absolute",
-              top: "-40px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "140px",
-              height: "140px",
-              background: "radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, transparent 70%)",
-              filter: "blur(20px)",
-              pointerEvents: "none",
-            }}
-          />
-          <img
-            src="/favicon.png"
-            alt="ChittorTech"
-            style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "16px",
-              marginBottom: "20px",
-              boxShadow: "0 0 25px rgba(59, 130, 246, 0.4)",
               position: "relative",
+              width: "70px",
+              height: "70px",
+              margin: "0 auto 20px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
-          <div
+          >
+            {/* Smooth Rolling Outer Ring */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                border: "3.5px solid #e2e8f0",
+                borderTopColor: "#0284c7",
+                borderRightColor: "#0284c7",
+                animation: "rollSpinner 0.8s linear infinite",
+              }}
+            />
+            {/* Center Logo */}
+            <img
+              src="/favicon.png"
+              alt="ChittorTech"
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "8px",
+                display: "block",
+              }}
+            />
+          </div>
+
+          <h3
             style={{
-              width: "40px",
-              height: "40px",
-              border: "3px solid rgba(255, 255, 255, 0.1)",
-              borderTopColor: "#38bdf8",
-              borderRadius: "50%",
-              animation: "spin 0.8s linear infinite",
-              margin: "0 auto 16px",
+              fontSize: "1.15rem",
+              fontWeight: 800,
+              color: "#0f172a",
+              margin: "0 0 6px 0",
+              letterSpacing: "-0.3px",
             }}
-          />
-          <p style={{ color: "#f8fafc", fontSize: "0.95rem", fontWeight: 700, margin: "0 0 6px 0", letterSpacing: "-0.2px" }}>
-            Verifying Admin Session
-          </p>
-          <p style={{ color: "#64748b", fontSize: "0.8rem", margin: 0 }}>
-            ChittorTech™ Secure Enclave
+          >
+            Loading Admin Console
+          </h3>
+          <p
+            style={{
+              fontSize: "0.85rem",
+              color: "#64748b",
+              margin: 0,
+              fontWeight: 500,
+            }}
+          >
+            Verifying secure session &amp; database...
           </p>
         </div>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
@@ -974,7 +1056,7 @@ export default function AdminLeadsPage() {
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                  <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#1e293b" }}>Firestore Cloud Sync</span>
+                  <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#1e293b" }}>Cloud Database Sync</span>
                   <span style={{ width: "26px", height: "26px", borderRadius: "8px", background: "#f5f3ff", color: "#7c3aed", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <i className="fas fa-database" style={{ fontSize: "11px" }}></i>
                   </span>
@@ -1210,7 +1292,7 @@ export default function AdminLeadsPage() {
                   <i className="fas fa-shield-alt" style={{ color: "#16a34a", fontSize: "12px", flexShrink: 0 }}></i>
                   <span>End-to-End Encrypted • Dual 2FA Verification</span>
                 </div>
-
+                
                 {loginError && (
                   <div style={loginStyles.errorAlert}>
                     <i className="fas fa-exclamation-circle" style={{ flexShrink: 0, fontSize: "14px" }}></i>
@@ -1629,276 +1711,310 @@ export default function AdminLeadsPage() {
         paddingBottom: "60px",
       }}
     >
-      {/* Top Navbar */}
+      {/* Unified Sleek App Bar (60px Vercel/Linear Style) */}
+      
+      <style>{`
+        @media (max-width: 1480px) {
+          .admin-header-clock {
+            display: none !important;
+          }
+        }
+        @media (max-width: 1080px) {
+          .admin-nav-tabs-container {
+            overflow-x: auto !important;
+            max-width: calc(100vw - 110px) !important;
+            scrollbar-width: none !important;
+          }
+          .admin-nav-tabs-container::-webkit-scrollbar {
+            display: none !important;
+          }
+        }
+      `}</style>
       <nav
         id="admin-top-nav"
         style={{
-          background: "#ffffff",
+          background: "rgba(255, 255, 255, 0.94)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
           borderBottom: "1px solid #e2e8f0",
           color: "#0f172a",
-          padding: "12px 32px",
+          padding: "0 20px",
+          height: "60px",
           position: "sticky",
           top: 0,
           zIndex: 100,
-          boxShadow: "0 1px 4px rgba(15,23,42,0.06)",
+          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.04)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "16px",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
-              <img
-                src="/favicon.png"
-                alt="ChittorTech"
-                style={{ width: "32px", height: "32px", borderRadius: "8px" }}
-              />
-              <span style={{ color: "#0f172a", fontWeight: 800, fontSize: "1.15rem", letterSpacing: "-0.3px" }}>
-                ChittorTech<span style={{ color: "#6366f1" }}>™</span> Admin Console
-              </span>
-            </Link>
-            {isDbConnected && isOnline ? (
-              <span
+        {/* Left: Brand Logo & Title */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
+          <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "10px" }}>
+            <img
+              src="/favicon.png"
+              alt="ChittorTech"
+              style={{ width: "32px", height: "32px", borderRadius: "8px", boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
+            />
+            <span style={{ color: "#0f172a", fontWeight: 800, fontSize: "1.05rem", letterSpacing: "-0.3px" }}>
+              ChittorTech<span style={{ color: "#0284c7" }}>™</span> Console
+            </span>
+          </Link>
+        </div>
+
+        {/* Center: Sleek Segmented Navigation Pills */}
+        <div
+          className="admin-nav-tabs-container"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            background: "#f1f5f9",
+            padding: "3px",
+            borderRadius: "10px",
+            border: "1px solid #e2e8f0",
+            gap: "2px",
+          }}
+        >
+          {[
+            { id: "b2b_outbound", label: "Generate Leads", icon: "fa-satellite-dish" },
+            { id: "inbound", label: "Incoming Leads", icon: "fa-inbox" },
+            { id: "notifications", label: "Notification Hub", icon: "fa-bell" },
+            { id: "projects_invoices", label: "Projects & Invoices", icon: "fa-file-invoice-dollar" },
+            { id: "sessions", label: "Sessions & Security", icon: "fa-shield-alt" },
+          ].map((tab) => {
+            const isActive = adminPipelineTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => changeAdminTab(tab.id)}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: "6px",
-                  background: "rgba(22, 163, 74, 0.10)",
-                  color: "#166534",
-                  fontSize: "0.75rem",
-                  fontWeight: 700,
-                  padding: "3px 10px",
-                  borderRadius: "20px",
-                  border: "1px solid rgba(22, 163, 74, 0.25)",
+                  gap: "7px",
+                  height: "32px",
+                  padding: "0 12px",
+                  borderRadius: "7px",
+                  fontSize: "0.82rem",
+                  fontWeight: isActive ? 700 : 600,
+                  cursor: "pointer",
+                  border: "none",
+                  whiteSpace: "nowrap",
+                  transition: "all 0.15s ease",
+                  background: isActive ? "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)" : "transparent",
+                  color: isActive ? "#ffffff" : "#64748b",
+                  boxShadow: isActive ? "0 2px 8px rgba(2, 132, 199, 0.28)" : "none",
+                }}
+                onMouseOver={(e) => {
+                  if (!isActive) e.currentTarget.style.color = "#0f172a";
+                }}
+                onMouseOut={(e) => {
+                  if (!isActive) e.currentTarget.style.color = "#64748b";
                 }}
               >
-                <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22c55e" }} />
-                Database Connected
-              </span>
-            ) : (
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  background: "rgba(239, 68, 68, 0.12)",
-                  color: "#b91c1c",
-                  fontSize: "0.75rem",
-                  fontWeight: 800,
-                  padding: "3px 10px",
-                  borderRadius: "20px",
-                  border: "1px solid rgba(239, 68, 68, 0.35)",
-                }}
-              >
-                <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#ef4444" }} />
-                Database Disconnected
-              </span>
-            )}
+                <i className={`fas ${tab.icon}`} style={{ fontSize: "0.78rem", color: isActive ? "#bae6fd" : "#0284c7" }}></i>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right: Search, Live IST Clock & Logo Profile Menu */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
+          {/* Live IST Time & Date (Auto-hides on compact/laptop screens) */}
+          <div
+            className="admin-header-clock"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: "8px",
+              padding: "5px 12px",
+              fontSize: "0.78rem",
+              color: "#334155",
+            }}
+            title="Live Indian Standard Time (IST)"
+          >
+            <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#10b981", boxShadow: "0 0 6px #10b981" }} />
+            {currentDate && <span style={{ color: "#64748b", fontSize: "0.75rem", fontWeight: 600 }}>{currentDate}</span>}
+            {currentDate && <span style={{ width: "1px", height: "12px", background: "#cbd5e1" }} />}
+            <span style={{ color: "#0f172a", fontFamily: "monospace", fontSize: "0.82rem", fontWeight: 800, letterSpacing: "0.3px" }}>
+              {currentTime || "IST"}
+            </span>
+            <span style={{ fontSize: "0.68rem", color: "#0284c7", fontWeight: 800, background: "#eff6ff", padding: "1px 5px", borderRadius: "4px" }}>
+              IST
+            </span>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <a
-              href="https://chittor-tech-certificate-generator-eight.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
+          {/* Logo Profile Avatar & Dropdown */}
+          <div style={{ position: "relative" }} ref={profileMenuRef}>
+            <button
+              type="button"
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
               style={{
-                background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                color: "#ffffff",
-                padding: "7px 14px",
-                borderRadius: "8px",
-                fontSize: "0.85rem",
-                fontWeight: 700,
+                width: "36px",
+                height: "36px",
+                borderRadius: "50%",
+                background: "#ffffff",
+                border: "2px solid #e2e8f0",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                cursor: "pointer",
+                padding: "2px",
+                overflow: "hidden",
                 display: "flex",
                 alignItems: "center",
-                gap: "6px",
-                textDecoration: "none",
-                boxShadow: "0 2px 8px rgba(217, 119, 6, 0.35)",
+                justifyContent: "center",
                 transition: "transform 0.15s ease",
               }}
+              title="Admin Account & Menu"
             >
-              <i className="fas fa-award"></i> Generate Certificate
-            </a>
-            <Link
-              href="/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: "#475569",
-                fontSize: "0.85rem",
-                textDecoration: "none",
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "6px 12px",
-                borderRadius: "8px",
-                background: "#f1f5f9",
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              <i className="fas fa-external-link-alt"></i> View Website
-            </Link>
-            <button
-              onClick={handleLogout}
-              title="Logout from Admin Dashboard"
-              style={{
-                background: "#dc2626",
-                border: "none",
-                color: "#ffffff",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                fontSize: "0.85rem",
-                fontWeight: 700,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                boxShadow: "0 2px 8px rgba(220, 38, 38, 0.35)",
-                transition: "all 0.2s ease",
-              }}
-              onMouseOver={(e) => (e.currentTarget.style.background = "#b91c1c")}
-              onMouseOut={(e) => (e.currentTarget.style.background = "#dc2626")}
-            >
-              <i className="fas fa-sign-out-alt"></i> Logout
+              <img
+                src="/favicon.png"
+                alt="ChittorTech Logo"
+                style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }}
+              />
             </button>
+
+            {showProfileMenu && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 8px)",
+                  right: 0,
+                  width: "240px",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "12px",
+                  boxShadow: "0 12px 30px -4px rgba(15, 23, 42, 0.15)",
+                  padding: "6px",
+                  zIndex: 200,
+                }}
+              >
+                <div style={{ padding: "8px 10px", borderBottom: "1px solid #f1f5f9", marginBottom: "4px" }}>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 800, color: "#0f172a" }}>ChittorTech Administrator</div>
+                  <div style={{ fontSize: "0.72rem", color: "#64748b" }}>business@chittortech.in</div>
+                  <div style={{ marginTop: "4px", display: "inline-block", background: "#eff6ff", padding: "1px 6px", borderRadius: "4px", fontSize: "0.68rem", fontWeight: 700, color: "#0284c7" }}>
+                    Super Admin
+                  </div>
+                </div>
+
+                <a
+                  href="https://chittor-tech-certificate-generator-eight.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "7px 10px",
+                    borderRadius: "7px",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    color: "#334155",
+                    textDecoration: "none",
+                    transition: "background 0.15s ease",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.background = "#f8fafc")}
+                  onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <i className="fas fa-award" style={{ color: "#d97706", width: "16px" }}></i>
+                  <span>Generate Certificate ↗</span>
+                </a>
+
+                <Link
+                  href="/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "7px 10px",
+                    borderRadius: "7px",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    color: "#334155",
+                    textDecoration: "none",
+                    transition: "background 0.15s ease",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.background = "#f8fafc")}
+                  onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <i className="fas fa-external-link-alt" style={{ color: "#64748b", width: "16px" }}></i>
+                  <span>View Public Website ↗</span>
+                </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    changeAdminTab("sessions");
+                  }}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "7px 10px",
+                    borderRadius: "7px",
+                    fontSize: "0.8rem",
+                    fontWeight: 600,
+                    color: "#334155",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "background 0.15s ease",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.background = "#f8fafc")}
+                  onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <i className="fas fa-shield-alt" style={{ color: "#0284c7", width: "16px" }}></i>
+                  <span>Security &amp; Sessions</span>
+                </button>
+
+                <div style={{ height: "1px", background: "#f1f5f9", margin: "4px 0" }} />
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    handleLogout();
+                  }}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "7px 10px",
+                    borderRadius: "7px",
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
+                    color: "#dc2626",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    transition: "background 0.15s ease",
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.background = "#fef2f2")}
+                  onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+                >
+                  <i className="fas fa-sign-out-alt" style={{ color: "#dc2626", width: "16px" }}></i>
+                  <span>Sign Out</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>
 
+
       {/* Main Container */}
-      <main style={{ maxWidth: "1440px", margin: "0 auto", padding: "28px 24px" }}>
-        {/* TOP LEVEL 3-PIPELINE SELECTOR */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "10px",
-            background: "#ffffff",
-            padding: "8px",
-            borderRadius: "16px",
-            border: "1.5px solid #e2e8f0",
-            marginBottom: "24px",
-            boxShadow: "0 4px 18px -2px rgba(15, 23, 42, 0.05)",
-          }}
-        >
-          {/* Tab 1: Generate Leads */}
-          <button
-            onClick={() => changeAdminTab("b2b_outbound")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              padding: "12px 18px",
-              borderRadius: "12px",
-              fontSize: "0.92rem",
-              fontWeight: 800,
-              cursor: "pointer",
-              border: adminPipelineTab === "b2b_outbound" ? "1px solid rgba(2, 132, 199, 0.3)" : "1px solid #f1f5f9",
-              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-              background: adminPipelineTab === "b2b_outbound" ? "linear-gradient(135deg, #0284c7, #0369a1)" : "#f8fafc",
-              color: adminPipelineTab === "b2b_outbound" ? "#ffffff" : "#475569",
-              boxShadow: adminPipelineTab === "b2b_outbound" ? "0 4px 14px rgba(2, 132, 199, 0.28)" : "none",
-            }}
-          >
-            <i className="fas fa-satellite-dish" style={{ fontSize: "1rem", color: adminPipelineTab === "b2b_outbound" ? "#bae6fd" : "#0284c7" }}></i>
-            <span>Generate Leads</span>
-          </button>
-
-          {/* Tab 2: Incoming Leads */}
-          <button
-            onClick={() => changeAdminTab("inbound")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              padding: "12px 18px",
-              borderRadius: "12px",
-              fontSize: "0.92rem",
-              fontWeight: 800,
-              cursor: "pointer",
-              border: adminPipelineTab === "inbound" ? "1px solid rgba(2, 132, 199, 0.3)" : "1px solid #f1f5f9",
-              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-              background: adminPipelineTab === "inbound" ? "linear-gradient(135deg, #0284c7, #0369a1)" : "#f8fafc",
-              color: adminPipelineTab === "inbound" ? "#ffffff" : "#475569",
-              boxShadow: adminPipelineTab === "inbound" ? "0 4px 14px rgba(2, 132, 199, 0.28)" : "none",
-            }}
-          >
-            <i className="fas fa-inbox" style={{ fontSize: "1rem", color: adminPipelineTab === "inbound" ? "#bae6fd" : "#0284c7" }}></i>
-            <span>Incoming Leads</span>
-          </button>
-
-          {/* Tab 3: Notification Hub */}
-          <button
-            onClick={() => changeAdminTab("notifications")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              padding: "12px 14px",
-              borderRadius: "12px",
-              fontSize: "0.9rem",
-              fontWeight: 800,
-              cursor: "pointer",
-              border: adminPipelineTab === "notifications" ? "1px solid rgba(2, 132, 199, 0.3)" : "1px solid #f1f5f9",
-              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-              background: adminPipelineTab === "notifications" ? "linear-gradient(135deg, #0284c7, #0369a1)" : "#f8fafc",
-              color: adminPipelineTab === "notifications" ? "#ffffff" : "#475569",
-              boxShadow: adminPipelineTab === "notifications" ? "0 4px 14px rgba(2, 132, 199, 0.28)" : "none",
-            }}
-          >
-            <i className="fas fa-bell" style={{ fontSize: "1rem", color: adminPipelineTab === "notifications" ? "#bae6fd" : "#0284c7" }}></i>
-            <span>Notification Hub</span>
-          </button>
-
-          {/* Tab 4: Projects & Invoices */}
-          <button
-            onClick={() => changeAdminTab("projects_invoices")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              padding: "12px 14px",
-              borderRadius: "12px",
-              fontSize: "0.9rem",
-              fontWeight: 800,
-              cursor: "pointer",
-              border: adminPipelineTab === "projects_invoices" ? "1px solid rgba(2, 132, 199, 0.3)" : "1px solid #f1f5f9",
-              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-              background: adminPipelineTab === "projects_invoices" ? "linear-gradient(135deg, #0284c7, #0369a1)" : "#f8fafc",
-              color: adminPipelineTab === "projects_invoices" ? "#ffffff" : "#475569",
-              boxShadow: adminPipelineTab === "projects_invoices" ? "0 4px 14px rgba(2, 132, 199, 0.28)" : "none",
-            }}
-          >
-            <i className="fas fa-file-invoice-dollar" style={{ fontSize: "1rem", color: adminPipelineTab === "projects_invoices" ? "#bae6fd" : "#0284c7" }}></i>
-            <span>Projects &amp; Invoices</span>
-          </button>
-
-          {/* Tab 5: Sessions & Security */}
-          <button
-            onClick={() => changeAdminTab("sessions")}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "10px",
-              padding: "12px 18px",
-              borderRadius: "12px",
-              fontSize: "0.92rem",
-              fontWeight: 800,
-              cursor: "pointer",
-              border: adminPipelineTab === "sessions" ? "1px solid rgba(2, 132, 199, 0.3)" : "1px solid #f1f5f9",
-              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-              background: adminPipelineTab === "sessions" ? "linear-gradient(135deg, #0284c7, #0369a1)" : "#f8fafc",
-              color: adminPipelineTab === "sessions" ? "#ffffff" : "#475569",
-              boxShadow: adminPipelineTab === "sessions" ? "0 4px 14px rgba(2, 132, 199, 0.28)" : "none",
-            }}
-          >
-            <i className="fas fa-shield-alt" style={{ fontSize: "1rem", color: adminPipelineTab === "sessions" ? "#bae6fd" : "#0284c7" }}></i>
-            <span>Sessions &amp; Security</span>
-          </button>
-        </div>
+      <main style={{ maxWidth: "1440px", margin: "0 auto", padding: "20px 24px" }}>
 
         {(!isOnline || !isDbConnected) ? (
           <div
@@ -1934,7 +2050,7 @@ export default function AdminLeadsPage() {
               Database Disconnected
             </h2>
             <p style={{ fontSize: "0.88rem", color: "#64748b", margin: "0 auto 22px", maxWidth: "460px", lineHeight: 1.55 }}>
-              Aapka internet connection band hai ya Cloud Firestore se connect nahi ho pa raha hai. Data protection ke liye offline mode me leads display band kar diya gaya hai.
+              Aapka internet connection band hai ya Cloud Database se connect nahi ho pa raha hai. Data protection ke liye offline mode me leads display band kar diya gaya hai.
             </p>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
               <button
@@ -2231,7 +2347,7 @@ export default function AdminLeadsPage() {
             {loading ? (
               <div style={{ padding: "60px 20px", textAlign: "center", color: "#64748b" }}>
                 <i className="fas fa-spinner fa-spin" style={{ fontSize: "1.8rem", color: "#2563eb", marginBottom: "12px" }}></i>
-                <div>Loading real-time leads from Firestore...</div>
+                <div>Loading real-time leads from Database...</div>
               </div>
             ) : filteredLeads.length === 0 ? (
               <div style={{ padding: "60px 20px", textAlign: "center", color: "#64748b" }}>
@@ -2640,6 +2756,7 @@ export default function AdminLeadsPage() {
             </button>
           </div>
         )}
+        {confirmModal && <AdminConfirmModal config={confirmModal} onClose={() => setConfirmModal(null)} />}
       </main>
     </div>
   );

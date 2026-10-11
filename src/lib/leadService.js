@@ -532,7 +532,7 @@ export async function addAdminSessionActivityInFirestore(sessionId, activityObj)
     const sessionRef = doc(db, "admin_sessions", sessionId);
     await updateDoc(sessionRef, {
       activities: arrayUnion(activityObj),
-      lastActive: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
+      lastActive: new Date().toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
       updatedAt: serverTimestamp(),
     });
     return true;
@@ -554,7 +554,7 @@ export async function terminateAdminSessionInFirestore(sessionId, statusType = "
       {
         status: statusType,
         endTime: endTimeMsg,
-        lastActive: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
+        lastActive: new Date().toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }),
         updatedAt: serverTimestamp(),
       },
       { merge: true }

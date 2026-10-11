@@ -39,6 +39,23 @@ export default function AdminLayout({ children }) {
           font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
           -webkit-font-smoothing: antialiased !important;
         }
+
+        /* Responsive Admin Header & Clock Behavior */
+        @media (max-width: 1480px) {
+          .admin-header-clock {
+            display: none !important;
+          }
+        }
+        @media (max-width: 860px) {
+          .admin-nav-tabs-container {
+            overflow-x: auto !important;
+            max-width: calc(100vw - 110px) !important;
+            scrollbar-width: none !important;
+          }
+          .admin-nav-tabs-container::-webkit-scrollbar {
+            display: none !important;
+          }
+        }
       `}</style>
       <div id="admin-portal-root" style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
         {children}

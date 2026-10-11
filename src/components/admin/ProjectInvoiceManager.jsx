@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { AdminConfirmModal, AdminFloatingToast } from "./AdminConfirmModal";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -15,6 +16,8 @@ import {
 } from "firebase/firestore";
 
 export default function ProjectInvoiceManager() {
+  const [confirmModal, setConfirmModal] = useState(null);
+  const [floatingToast, setFloatingToast] = useState("");
   const [activeSubTab, setActiveSubTab] = useState("projects"); // "projects" | "invoices"
   const [projects, setProjects] = useState([]);
   const [invoices, setInvoices] = useState([]);
@@ -127,17 +130,33 @@ export default function ProjectInvoiceManager() {
     try {
       if (editingProject) {
         await updateDoc(doc(db, "projects", editingProject.id), payload);
-        setActionFeedback(`Project "${projName}" updated successfully!`);
+        closeProjectModal();
+        setConfirmModal({
+          isSuccess: true,
+          title: "Project Updated Successfully!",
+          message: `Project "${projName}" details have been updated in the database.`,
+          confirmText: "Done",
+        });
       } else {
         const docKey = "proj_" + Date.now().toString(36);
         payload.createdAt = serverTimestamp();
         await setDoc(doc(db, "projects", docKey), payload);
-        setActionFeedback(`New project "${projName}" registered in Mobile App!`);
+        closeProjectModal();
+        setConfirmModal({
+          isSuccess: true,
+          title: "Project Registered Successfully!",
+          message: `New client project "${projName}" has been successfully registered in the database.`,
+          confirmText: "Done",
+        });
       }
-      closeProjectModal();
-      setTimeout(() => setActionFeedback(""), 4500);
     } catch (err) {
-      alert("Error saving project: " + err.message);
+      setConfirmModal({
+        isSuccess: false,
+        title: "Project Save Error",
+        message: err.message || "Failed to save project.",
+        icon: "fas fa-exclamation-triangle",
+        confirmText: "Close",
+      });
     }
   };
 
@@ -174,15 +193,36 @@ export default function ProjectInvoiceManager() {
     setEditingProject(null);
   };
 
-  const handleDeleteProject = async (id, name) => {
-    if (!confirm(`Are you sure you want to delete project "${name}"?`)) return;
-    try {
-      await deleteDoc(doc(db, "projects", id));
-      setActionFeedback(`Project "${name}" removed.`);
-      setTimeout(() => setActionFeedback(""), 3500);
-    } catch (err) {
-      alert("Error deleting project: " + err.message);
-    }
+  const handleDeleteProject = (id, name) => {
+    setConfirmModal({
+      title: "Delete Project?",
+      message: `Are you sure you want to delete project "${name}"? This action cannot be undone.`,
+      icon: "fas fa-trash-alt",
+      iconBg: "#fee2e2",
+      iconColor: "#dc2626",
+      confirmText: "Yes, Delete Project",
+      confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await deleteDoc(doc(db, "projects", id));
+          setConfirmModal({
+            isSuccess: true,
+            title: "Project Deleted Successfully!",
+            message: `Project "${name}" has been permanently deleted from the database.`,
+            confirmText: "Done",
+          });
+        } catch (err) {
+          setConfirmModal({
+            isSuccess: false,
+            title: "Delete Failed",
+            message: err.message || "Failed to delete project.",
+            icon: "fas fa-exclamation-triangle",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
   };
 
   // Issue Invoice
@@ -217,10 +257,20 @@ export default function ProjectInvoiceManager() {
       setInvTitle("");
       setInvAmount("");
       setInvDueDate("");
-      setActionFeedback(`Invoice ${invNum} issued! Client can view & pay in Mobile App.`);
-      setTimeout(() => setActionFeedback(""), 4500);
+      setConfirmModal({
+        isSuccess: true,
+        title: "Invoice Generated Successfully!",
+        message: `Invoice (${invNum}) has been created in the database and linked to the client record.`,
+        confirmText: "Done",
+      });
     } catch (err) {
-      alert("Error generating invoice: " + err.message);
+      setConfirmModal({
+        isSuccess: false,
+        title: "Invoice Generation Error",
+        message: err.message || "Failed to generate invoice.",
+        icon: "fas fa-exclamation-triangle",
+        confirmText: "Close",
+      });
     }
   };
 
@@ -235,15 +285,36 @@ export default function ProjectInvoiceManager() {
     }
   };
 
-  const handleDeleteInvoice = async (id, invNum) => {
-    if (!confirm(`Delete invoice ${invNum}?`)) return;
-    try {
-      await deleteDoc(doc(db, "invoices", id));
-      setActionFeedback(`Invoice removed.`);
-      setTimeout(() => setActionFeedback(""), 3000);
-    } catch (err) {
-      alert("Error deleting invoice: " + err.message);
-    }
+  const handleDeleteInvoice = (id, invNum) => {
+    setConfirmModal({
+      title: "Delete Invoice?",
+      message: `Are you sure you want to delete invoice ${invNum}? This action cannot be undone.`,
+      icon: "fas fa-trash-alt",
+      iconBg: "#fee2e2",
+      iconColor: "#dc2626",
+      confirmText: "Yes, Delete Invoice",
+      confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+      cancelText: "Cancel",
+      onConfirm: async () => {
+        try {
+          await deleteDoc(doc(db, "invoices", id));
+          setConfirmModal({
+            isSuccess: true,
+            title: "Invoice Deleted Successfully!",
+            message: `Invoice ${invNum || ""} has been permanently deleted from the database.`,
+            confirmText: "Done",
+          });
+        } catch (err) {
+          setConfirmModal({
+            isSuccess: false,
+            title: "Delete Failed",
+            message: err.message || "Failed to delete invoice.",
+            icon: "fas fa-exclamation-triangle",
+            confirmText: "Close",
+          });
+        }
+      },
+    });
   };
 
   // Financial Metrics
@@ -1075,6 +1146,7 @@ export default function ProjectInvoiceManager() {
           </div>
         </div>
       )}
+      {confirmModal && <AdminConfirmModal config={confirmModal} onClose={() => setConfirmModal(null)} />}
     </div>
   );
 }
