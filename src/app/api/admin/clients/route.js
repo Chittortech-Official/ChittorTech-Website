@@ -28,108 +28,256 @@ const ADMIN_EMAILS = [
 ];
 
 function generateWelcomeEmailHtml({ name, email, password, companyName }) {
-  return `<!DOCTYPE html>
-<html lang="en">
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to ChittorTech Client Portal</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 0; color: #1e293b; }
-    .wrapper { max-width: 580px; margin: 30px auto; background: #ffffff; border-radius: 20px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
-    .header { background: linear-gradient(135deg, #0A2540 0%, #0369A1 60%, #0284C7 100%); padding: 36px 30px; text-align: center; color: #ffffff; }
-    .badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); color: #ffffff; font-size: 11px; font-weight: 800; letter-spacing: 1px; padding: 5px 14px; border-radius: 20px; text-transform: uppercase; margin-bottom: 14px; }
-    .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.3px; }
-    .header p { margin: 8px 0 0; font-size: 13.5px; color: rgba(255,255,255,0.9); }
-    .content { padding: 32px 30px; }
-    .greeting { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
-    .intro { font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 24px; }
-    .creds-card { background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 14px; padding: 20px; margin-bottom: 26px; }
-    .creds-title { font-size: 12px; font-weight: 800; color: #0369a1; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
-    .cred-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid #e0f2fe; font-size: 13.5px; }
-    .cred-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .cred-label { color: #64748b; font-weight: 600; }
-    .cred-val { color: #0f172a; font-weight: 800; font-family: 'Courier New', monospace; font-size: 14.5px; background: #ffffff; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
-    .steps-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 22px; margin-bottom: 24px; }
-    .steps-title { font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
-    .step-item { display: flex; gap: 12px; margin-bottom: 14px; font-size: 13.5px; line-height: 1.5; color: #334155; }
-    .step-item:last-child { margin-bottom: 0; }
-    .step-num { width: 24px; height: 24px; border-radius: 50%; background: #0284c7; color: #ffffff; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .security-alert { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 14px 16px; border-radius: 8px; font-size: 12.5px; color: #92400e; line-height: 1.5; margin-bottom: 24px; }
-    .cta-btn { display: inline-block; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff !important; text-decoration: none; padding: 13px 26px; border-radius: 10px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35); text-align: center; }
-    .footer { background: #f8fafc; padding: 24px 30px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; line-height: 1.6; }
+  <style type="text/css">
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0; padding: 0; width: 100% !important; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    @media only screen and (max-width: 620px) {
+      .email-container { width: 100% !important; max-width: 100% !important; }
+      .content-padding { padding: 24px 18px !important; }
+      .header-padding { padding: 30px 18px !important; }
+      .cred-label-cell { display: block !important; width: 100% !important; padding-bottom: 4px !important; text-align: left !important; }
+      .cred-val-cell { display: block !important; width: 100% !important; padding-top: 0 !important; text-align: left !important; }
+    }
   </style>
 </head>
-<body>
-  <div class="wrapper">
-    <div class="header">
-      <div class="badge">🚀 CORPORATE CLIENT ONBOARDING</div>
-      <h1>ChittorTech Client Portal</h1>
-      <p>Secure IT Infrastructure · Project Control Room · Real-Time Deliverables</p>
-    </div>
-    <div class="content">
-      <div class="greeting">Welcome aboard, ${name}! 👋</div>
-      <div class="intro">
-        Your dedicated enterprise account has been successfully configured in the <strong>ChittorTech Ecosystem</strong>${companyName ? ` for <strong>${companyName}</strong>` : ""}. You can now monitor live development milestones, view deliverables, check billing invoices, and connect with your engineering team directly from our official Android mobile app.
-      </div>
-
-      <div class="creds-card">
-        <div class="creds-title">🔑 Your Secure Login Credentials</div>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr style="border-bottom: 1px solid #e0f2fe;">
-            <td style="padding: 8px 0; color: #64748b; font-size: 13px; font-weight: 600;">Corporate Email:</td>
-            <td style="padding: 8px 0; text-align: right; color: #0284c7; font-weight: 800; font-size: 14px;">${email}</td>
-          </tr>
-          <tr style="border-bottom: 1px solid #e0f2fe;">
-            <td style="padding: 8px 0; color: #64748b; font-size: 13px; font-weight: 600;">Initial Password:</td>
-            <td style="padding: 8px 0; text-align: right; color: #0f172a; font-weight: 800; font-family: 'Courier New', monospace; font-size: 15px;">${password}</td>
-          </tr>
+<body style="margin: 0; padding: 0; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+  <!-- Outer Wrapper Table -->
+  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f1f5f9" style="background-color: #f1f5f9; width: 100%; margin: 0; padding: 30px 0;">
+    <tr>
+      <td align="center" valign="top">
+        <!-- Main Card Container -->
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" class="email-container" style="max-width: 600px; width: 100%; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);">
+          
+          <!-- Header Banner -->
           <tr>
-            <td style="padding: 8px 0; color: #64748b; font-size: 13px; font-weight: 600;">Authorized Role:</td>
-            <td style="padding: 8px 0; text-align: right; color: #059669; font-weight: 800; font-size: 13px;">Corporate Client (2FA Protected)</td>
+            <td align="center" class="header-padding" style="background: #0a2540 linear-gradient(135deg, #071927 0%, #0a2540 55%, #0284c7 100%); padding: 36px 30px; text-align: center;">
+              <!-- Pill Badge -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin-bottom: 14px;">
+                <tr>
+                  <td style="background-color: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 5px 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #e0f2fe; text-transform: uppercase;">
+                    🚀 CORPORATE CLIENT ONBOARDING
+                  </td>
+                </tr>
+              </table>
+              <h1 style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: -0.3px; line-height: 30px;">
+                ChittorTech Client Portal
+              </h1>
+              <p style="margin: 8px 0 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #cbd5e1; line-height: 18px;">
+                Secure IT Infrastructure &middot; Project Control Room &middot; Real-Time Deliverables
+              </p>
+            </td>
           </tr>
+
+          <!-- Main Content Body -->
+          <tr>
+            <td class="content-padding" style="padding: 32px 30px; background-color: #ffffff;">
+              <!-- Personal Greeting -->
+              <h2 style="margin: 0 0 12px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 19px; font-weight: 800; color: #0f172a; line-height: 26px;">
+                Welcome aboard, ${name}! 👋
+              </h2>
+              <p style="margin: 0 0 24px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #475569; line-height: 23px;">
+                Your dedicated enterprise account has been successfully configured in the <strong style="color: #0f172a;">ChittorTech Ecosystem</strong>${companyName ? ` for <strong style="color: #0284c7;">${companyName}</strong>` : ""}. You can now monitor live development milestones, view project deliverables, verify invoices, and collaborate with your engineering team directly from our official Android mobile app.
+              </p>
+
+              <!-- Credentials Card -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 26px; overflow: hidden;">
+                <tr>
+                  <td colspan="2" style="padding: 13px 18px; background-color: #f1f5f9; border-bottom: 1.5px solid #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 800; color: #0369a1; letter-spacing: 0.8px; text-transform: uppercase;">
+                    🔑 YOUR SECURE LOGIN CREDENTIALS
+                  </td>
+                </tr>
+                <!-- Email Row -->
+                <tr>
+                  <td class="cred-label-cell" valign="middle" style="padding: 13px 18px; border-bottom: 1px solid #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; color: #64748b;">
+                    Corporate Email:
+                  </td>
+                  <td class="cred-val-cell" align="right" valign="middle" style="padding: 13px 18px; border-bottom: 1px solid #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 800; color: #0284c7;">
+                    ${email}
+                  </td>
+                </tr>
+                <!-- Password Row -->
+                <tr>
+                  <td class="cred-label-cell" valign="middle" style="padding: 13px 18px; border-bottom: 1px solid #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; color: #64748b;">
+                    Initial Password:
+                  </td>
+                  <td class="cred-val-cell" align="right" valign="middle" style="padding: 13px 18px; border-bottom: 1px solid #e2e8f0;">
+                    <span style="display: inline-block; background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 12px; font-family: 'SF Mono', Consolas, 'Courier New', monospace; font-size: 15px; font-weight: 800; color: #0f172a; letter-spacing: 1px;">
+                      ${password}
+                    </span>
+                  </td>
+                </tr>
+                <!-- Role Row -->
+                <tr>
+                  <td class="cred-label-cell" valign="middle" style="padding: 13px 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 600; color: #64748b;">
+                    Authorized Role:
+                  </td>
+                  <td class="cred-val-cell" align="right" valign="middle" style="padding: 13px 18px;">
+                    <span style="display: inline-block; background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; padding: 4px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; color: #059669;">
+                      ● Corporate Client (2FA Protected)
+                    </span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Steps Box (Table-based bulletproof layout) -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding-bottom: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
+                    📱 HOW TO ACCESS VIA CHITTORTECH MOBILE APP
+                  </td>
+                </tr>
+                <!-- Step 1 -->
+                <tr>
+                  <td style="padding-bottom: 12px;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td width="26" valign="top" style="vertical-align: top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td width="24" height="24" align="center" valign="middle" style="width: 24px; height: 24px; background-color: #0284c7; color: #ffffff; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 800; text-align: center; line-height: 24px;">1</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="10" style="width: 10px;"></td>
+                        <td valign="middle" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13.5px; line-height: 20px; color: #334155;">
+                          Open the <strong style="color: #0f172a;">ChittorTech Official Android Mobile App</strong> on your smartphone.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Step 2 -->
+                <tr>
+                  <td style="padding-bottom: 12px;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td width="26" valign="top" style="vertical-align: top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td width="24" height="24" align="center" valign="middle" style="width: 24px; height: 24px; background-color: #0284c7; color: #ffffff; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 800; text-align: center; line-height: 24px;">2</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="10" style="width: 10px;"></td>
+                        <td valign="middle" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13.5px; line-height: 20px; color: #334155;">
+                          On the sign-in screen, select the <strong style="color: #0f172a;">Client Portal</strong> tab.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Step 3 -->
+                <tr>
+                  <td style="padding-bottom: 12px;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td width="26" valign="top" style="vertical-align: top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td width="24" height="24" align="center" valign="middle" style="width: 24px; height: 24px; background-color: #0284c7; color: #ffffff; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 800; text-align: center; line-height: 24px;">3</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="10" style="width: 10px;"></td>
+                        <td valign="middle" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13.5px; line-height: 20px; color: #334155;">
+                          Enter your registered email (<code style="background-color: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12.5px; color: #0284c7;">${email}</code>) and your password above.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Step 4 -->
+                <tr>
+                  <td style="padding-bottom: 12px;">
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td width="26" valign="top" style="vertical-align: top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td width="24" height="24" align="center" valign="middle" style="width: 24px; height: 24px; background-color: #0284c7; color: #ffffff; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 800; text-align: center; line-height: 24px;">4</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="10" style="width: 10px;"></td>
+                        <td valign="middle" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13.5px; line-height: 20px; color: #334155;">
+                          Enter the <strong style="color: #0f172a;">6-digit OTP</strong> sent to your email inbox to complete two-factor authentication.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <!-- Step 5 -->
+                <tr>
+                  <td>
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td width="26" valign="top" style="vertical-align: top;">
+                          <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td width="24" height="24" align="center" valign="middle" style="width: 24px; height: 24px; background-color: #0284c7; color: #ffffff; border-radius: 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 800; text-align: center; line-height: 24px;">5</td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="10" style="width: 10px;"></td>
+                        <td valign="middle" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13.5px; line-height: 20px; color: #334155;">
+                          Instantly access live <strong style="color: #0f172a;">Project Sprints, Invoices, SOW Contracts, and 24/7 Helpdesk</strong>.
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Security Advisory Box -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; border-radius: 8px; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 13px 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12.5px; line-height: 19px; color: #92400e;">
+                    <strong style="color: #78350f;">🛡️ Security Advice:</strong> Never share your login credentials with anyone outside your authorized organization. You may update your password at any time from your mobile app Profile settings.
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Action Button (Bulletproof table button) -->
+              <table role="presentation" border="0" cellpadding="0" cellspacing="0" align="center" style="margin: 26px auto 10px auto;">
+                <tr>
+                  <td align="center" bgcolor="#0284c7" style="border-radius: 8px; background-color: #0284c7;">
+                    <a href="https://chittortech.in" target="_blank" style="display: inline-block; padding: 13px 28px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; color: #ffffff; text-decoration: none; border-radius: 8px;">
+                      Visit ChittorTech Website &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 24px 30px; text-align: center;">
+              <p style="margin: 0 0 6px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 700; color: #334155;">
+                ChittorTech IT Systems
+              </p>
+              <p style="margin: 0 0 8px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11.5px; color: #64748b; line-height: 17px;">
+                Empowering Global Businesses with Custom Software, Enterprise Cloud &amp; AI<br />
+                Official Support: <a href="mailto:business@chittortech.in" style="color: #0284c7; text-decoration: none; font-weight: 600;">business@chittortech.in</a> &middot; Chittorgarh &amp; Udaipur, Rajasthan
+              </p>
+              <p style="margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; color: #94a3b8;">
+                &copy; ${new Date().getFullYear()} ChittorTech. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
         </table>
-      </div>
-
-      <div class="steps-box">
-        <div class="steps-title">📱 How to Access via ChittorTech Mobile App</div>
-        <div class="step-item">
-          <div class="step-num">1</div>
-          <div>Open the <strong>ChittorTech Official Android Mobile App</strong> on your smartphone.</div>
-        </div>
-        <div class="step-item">
-          <div class="step-num">2</div>
-          <div>On the sign-in screen, select the <strong>Client Portal</strong> tab.</div>
-        </div>
-        <div class="step-item">
-          <div class="step-num">3</div>
-          <div>Enter your registered email (<code>${email}</code>) and your password above.</div>
-        </div>
-        <div class="step-item">
-          <div class="step-num">4</div>
-          <div>Enter the <strong>6-digit OTP</strong> sent to your email inbox to verify two-factor security.</div>
-        </div>
-        <div class="step-item">
-          <div class="step-num">5</div>
-          <div>Instantly access your live <strong>Project Sprints, Invoices, SOW Contracts, and 24/7 Helpdesk</strong>.</div>
-        </div>
-      </div>
-
-      <div class="security-alert">
-        <strong>🛡️ Security Advice:</strong> Never share your login credentials with anyone outside your authorized organization. You may update your password at any time from your mobile app Profile settings.
-      </div>
-
-      <div style="text-align: center; margin: 24px 0 10px;">
-        <a href="https://chittortech.in" class="cta-btn">Visit ChittorTech Website →</a>
-      </div>
-    </div>
-
-    <div class="footer">
-      <strong>ChittorTech IT Systems</strong> · Empowering Global Businesses with Custom Software &amp; AI<br>
-      Official Support: <a href="mailto:business@chittortech.in" style="color: #0284c7; text-decoration: none;">business@chittortech.in</a> · Chittorgarh &amp; Udaipur, Rajasthan<br>
-      Website: <a href="https://chittortech.in" style="color: #0284c7; text-decoration: none;">https://chittortech.in</a>
-    </div>
-  </div>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>`;
 }
@@ -333,7 +481,12 @@ export async function POST(req) {
 
       const cleanEmail = email.trim().toLowerCase();
       if (adminDb) {
-        await adminDb.collection("users").doc(cleanEmail).delete();
+        await Promise.allSettled([
+          adminDb.collection("users").doc(cleanEmail).delete(),
+          adminDb.collection("projects").doc(cleanEmail).delete(),
+          adminDb.collection("invoices").doc(cleanEmail).delete(),
+          adminDb.collection("tickets").doc(cleanEmail).delete(),
+        ]);
       }
 
       return NextResponse.json({

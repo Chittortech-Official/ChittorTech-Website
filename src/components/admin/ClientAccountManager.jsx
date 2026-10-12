@@ -131,14 +131,41 @@ export default function ClientAccountManager({
                 : ""
             }`,
             confirmText: "Done",
+            confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
           });
         }
       } else {
-        alert(res?.msg || "Failed to save client account.");
+        if (setConfirmModal) {
+          setConfirmModal({
+            isSuccess: false,
+            title: "Save Failed",
+            message: res?.msg || "Failed to save client account.",
+            icon: "fas fa-exclamation-triangle",
+            iconBg: "#fee2e2",
+            iconColor: "#dc2626",
+            confirmText: "Close",
+            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+          });
+        } else {
+          alert(res?.msg || "Failed to save client account.");
+        }
       }
     } catch (err) {
       setSubmitting(false);
-      alert("Error saving client: " + err.message);
+      if (setConfirmModal) {
+        setConfirmModal({
+          isSuccess: false,
+          title: "Error Saving Client",
+          message: err.message,
+          icon: "fas fa-exclamation-triangle",
+          iconBg: "#fee2e2",
+          iconColor: "#dc2626",
+          confirmText: "Close",
+          confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+        });
+      } else {
+        alert("Error saving client: " + err.message);
+      }
     }
   };
 
@@ -148,16 +175,46 @@ export default function ClientAccountManager({
       const res = await resendClientWelcomeEmail(client.email);
       setResendingEmailId(null);
       if (res && res.status === "success") {
-        if (setFloatingToast) {
-          setFloatingToast(`Welcome email resent to ${client.email}!`);
-          setTimeout(() => setFloatingToast(""), 3500);
+        if (setConfirmModal) {
+          setConfirmModal({
+            isSuccess: true,
+            title: "Welcome Email Sent Successfully!",
+            message: `Official login credentials and Android mobile app onboarding guide have been successfully dispatched to ${client.email}.`,
+            icon: "fas fa-check-circle",
+            iconBg: "#ecfdf5",
+            iconColor: "#10b981",
+            confirmText: "Done",
+            confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+          });
         }
       } else {
-        alert(res?.msg || "Failed to resend welcome email.");
+        if (setConfirmModal) {
+          setConfirmModal({
+            isSuccess: false,
+            title: "Email Dispatch Failed",
+            message: res?.msg || "Failed to resend welcome email. Please check your SMTP configuration.",
+            icon: "fas fa-exclamation-triangle",
+            iconBg: "#fee2e2",
+            iconColor: "#dc2626",
+            confirmText: "Close",
+            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+          });
+        }
       }
     } catch (err) {
       setResendingEmailId(null);
-      alert("Error resending email: " + err.message);
+      if (setConfirmModal) {
+        setConfirmModal({
+          isSuccess: false,
+          title: "Email Dispatch Error",
+          message: err.message,
+          icon: "fas fa-exclamation-triangle",
+          iconBg: "#fee2e2",
+          iconColor: "#dc2626",
+          confirmText: "Close",
+          confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+        });
+      }
     }
   };
 
@@ -176,15 +233,39 @@ export default function ClientAccountManager({
         try {
           const res = await deleteClientAccount(client.email);
           if (res && res.status === "success") {
-            if (setFloatingToast) {
-              setFloatingToast(`Client "${client.name}" removed from database.`);
-              setTimeout(() => setFloatingToast(""), 3500);
-            }
+            setConfirmModal({
+              isSuccess: true,
+              title: "Client Account Deleted Successfully!",
+              message: `Client account "${client.name}" (${client.email}) has been permanently deleted from Cloud Firestore.`,
+              icon: "fas fa-check-circle",
+              iconBg: "#ecfdf5",
+              iconColor: "#10b981",
+              confirmText: "Done",
+              confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+            });
           } else {
-            alert(res?.msg || "Failed to delete client.");
+            setConfirmModal({
+              isSuccess: false,
+              title: "Delete Failed",
+              message: res?.msg || "Failed to delete client account.",
+              icon: "fas fa-exclamation-triangle",
+              iconBg: "#fee2e2",
+              iconColor: "#dc2626",
+              confirmText: "Close",
+              confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+            });
           }
         } catch (err) {
-          alert("Error deleting client: " + err.message);
+          setConfirmModal({
+            isSuccess: false,
+            title: "Error Deleting Client",
+            message: err.message,
+            icon: "fas fa-exclamation-triangle",
+            iconBg: "#fee2e2",
+            iconColor: "#dc2626",
+            confirmText: "Close",
+            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+          });
         }
       },
     });

@@ -12,6 +12,7 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  getDoc,
   query,
   onSnapshot,
   serverTimestamp,
@@ -58,19 +59,87 @@ export default function ProjectInvoiceManager() {
 
   const [actionFeedback, setActionFeedback] = useState("");
 
-  // 1. Sync Projects Live from Firestore
+  // 1. Sync Projects Live from Firestore (Single Document Per Client Architecture)
   useEffect(() => {
     try {
       const q = query(collection(db, "projects"));
       const unsubscribe = onSnapshot(
         q,
-        (snap) => {
+        async (snap) => {
           const list = [];
+          const looseDocsToMigrate = [];
+
           snap.forEach((docSnap) => {
-            list.push({ id: docSnap.id, ...docSnap.data() });
+            const data = docSnap.data();
+            const docId = docSnap.id;
+
+            const items = Array.isArray(data.projects)
+              ? data.projects
+              : Array.isArray(data.list)
+              ? data.list
+              : null;
+
+            if (items) {
+              items.forEach((p) => {
+                list.push({
+                  ...p,
+                  docId: docId,
+                  clientId: p.clientId || data.clientId || docId,
+                });
+              });
+            } else {
+              // Legacy loose document (e.g. proj_mv557rij)
+              const clientId = (data.clientId || "").trim().toLowerCase();
+              list.push({
+                id: docId,
+                docId: docId,
+                ...data,
+                clientId: clientId || "unassigned",
+              });
+              if (clientId && clientId.includes("@") && docId !== clientId) {
+                looseDocsToMigrate.push({ docId, data, clientId });
+              }
+            }
           });
+
           setProjects(list);
           setLoadingProjects(false);
+
+          // Auto-migrate legacy loose documents into single client document
+          if (looseDocsToMigrate.length > 0) {
+            for (const item of looseDocsToMigrate) {
+              try {
+                const targetRef = doc(db, "projects", item.clientId);
+                const targetSnap = await getDoc(targetRef);
+                let current = [];
+                if (targetSnap.exists()) {
+                  const td = targetSnap.data();
+                  current = Array.isArray(td.projects) ? [...td.projects] : Array.isArray(td.list) ? [...td.list] : [];
+                }
+                const projObj = {
+                  ...item.data,
+                  id: item.docId,
+                  clientId: item.clientId,
+                  createdAt: item.data.createdAt?.toDate ? item.data.createdAt.toDate().toISOString() : (item.data.createdAt || new Date().toISOString()),
+                  updatedAt: new Date().toISOString(),
+                };
+                if (!current.some((p) => p.id === projObj.id || p.name === projObj.name)) {
+                  current.unshift(projObj);
+                }
+                await setDoc(targetRef, {
+                  clientId: item.clientId,
+                  projects: current,
+                  list: current,
+                  updatedAt: serverTimestamp(),
+                }, { merge: true });
+
+                await deleteDoc(doc(db, "projects", item.docId));
+                console.log(`✅ Migrated project ${item.docId} into projects/${item.clientId}`);
+              } catch (migErr) {
+                console.warn(`Could not migrate project ${item.docId}:`, migErr);
+              }
+            }
+          }
         },
         (err) => {
           console.warn("Projects sync error:", err);
@@ -84,19 +153,87 @@ export default function ProjectInvoiceManager() {
     }
   }, []);
 
-  // 2. Sync Invoices Live from Firestore
+  // 2. Sync Invoices Live from Firestore (Single Document Per Client Architecture)
   useEffect(() => {
     try {
       const q = query(collection(db, "invoices"));
       const unsubscribe = onSnapshot(
         q,
-        (snap) => {
+        async (snap) => {
           const list = [];
+          const looseDocsToMigrate = [];
+
           snap.forEach((docSnap) => {
-            list.push({ id: docSnap.id, ...docSnap.data() });
+            const data = docSnap.data();
+            const docId = docSnap.id;
+
+            const items = Array.isArray(data.invoices)
+              ? data.invoices
+              : Array.isArray(data.list)
+              ? data.list
+              : null;
+
+            if (items) {
+              items.forEach((inv) => {
+                list.push({
+                  ...inv,
+                  docId: docId,
+                  clientId: inv.clientId || data.clientId || docId,
+                });
+              });
+            } else {
+              // Legacy loose document (e.g. inv_mv558t1l)
+              const clientId = (data.clientId || "").trim().toLowerCase();
+              list.push({
+                id: docId,
+                docId: docId,
+                ...data,
+                clientId: clientId || "unassigned",
+              });
+              if (clientId && clientId.includes("@") && docId !== clientId) {
+                looseDocsToMigrate.push({ docId, data, clientId });
+              }
+            }
           });
+
           setInvoices(list);
           setLoadingInvoices(false);
+
+          // Auto-migrate legacy loose documents into single client document
+          if (looseDocsToMigrate.length > 0) {
+            for (const item of looseDocsToMigrate) {
+              try {
+                const targetRef = doc(db, "invoices", item.clientId);
+                const targetSnap = await getDoc(targetRef);
+                let current = [];
+                if (targetSnap.exists()) {
+                  const td = targetSnap.data();
+                  current = Array.isArray(td.invoices) ? [...td.invoices] : Array.isArray(td.list) ? [...td.list] : [];
+                }
+                const invObj = {
+                  ...item.data,
+                  id: item.docId,
+                  clientId: item.clientId,
+                  createdAt: item.data.createdAt?.toDate ? item.data.createdAt.toDate().toISOString() : (item.data.createdAt || new Date().toISOString()),
+                  createdDateString: item.data.createdDateString || new Date().toLocaleDateString("en-IN"),
+                };
+                if (!current.some((i) => i.id === invObj.id || i.invoiceId === invObj.invoiceId)) {
+                  current.unshift(invObj);
+                }
+                await setDoc(targetRef, {
+                  clientId: item.clientId,
+                  invoices: current,
+                  list: current,
+                  updatedAt: serverTimestamp(),
+                }, { merge: true });
+
+                await deleteDoc(doc(db, "invoices", item.docId));
+                console.log(`✅ Migrated invoice ${item.docId} into invoices/${item.clientId}`);
+              } catch (migErr) {
+                console.warn(`Could not migrate invoice ${item.docId}:`, migErr);
+              }
+            }
+          }
         },
         (err) => {
           console.warn("Invoices sync error:", err);
@@ -125,7 +262,7 @@ export default function ProjectInvoiceManager() {
     return () => unsubscribe && unsubscribe();
   }, []);
 
-  // Save / Update Project
+  // Save / Update Project (Stored within Client's Single Document)
   const handleSaveProject = async (e) => {
     e.preventDefault();
     if (!projName.trim() || !projClientId.trim()) {
@@ -133,39 +270,155 @@ export default function ProjectInvoiceManager() {
       return;
     }
 
-    const payload = {
-      name: projName.trim(),
-      clientId: projClientId.trim().toLowerCase(),
-      status: projStatus,
-      currentPhase: projPhase.trim() || "Development Sprint",
-      milestoneProgress: Number(projProgress) || 0,
-      buildKickoffDate: projKickoff.trim() || new Date().toISOString().split("T")[0],
-      launchDate: projLaunch.trim() || "TBD",
-      domain: projDomain.trim() || "Not Configured",
-      hostingProvider: projHosting.trim() || "AWS Cloud",
-      updatedAt: serverTimestamp(),
-    };
+    const targetClientId = projClientId.trim().toLowerCase();
+    const clientDocRef = doc(db, "projects", targetClientId);
 
     try {
+      const snap = await getDoc(clientDocRef);
+      let currentProjects = [];
+      if (snap.exists()) {
+        const d = snap.data();
+        currentProjects = Array.isArray(d.projects) ? [...d.projects] : Array.isArray(d.list) ? [...d.list] : [];
+      }
+
       if (editingProject) {
-        await updateDoc(doc(db, "projects", editingProject.id), payload);
+        const projId = editingProject.id;
+        const existingIdx = currentProjects.findIndex((p) => p.id === projId);
+        const updatedObj = {
+          ...(existingIdx >= 0 ? currentProjects[existingIdx] : editingProject),
+          name: projName.trim(),
+          clientId: targetClientId,
+          status: projStatus,
+          currentPhase: projPhase.trim() || "Development Sprint",
+          milestoneProgress: Number(projProgress) || 0,
+          buildKickoffDate: projKickoff.trim() || new Date().toISOString().split("T")[0],
+          launchDate: projLaunch.trim() || "TBD",
+          domain: projDomain.trim() || "Not Configured",
+          hostingProvider: projHosting.trim() || "AWS Cloud",
+          updatedAt: new Date().toISOString(),
+        };
+
+        if (existingIdx >= 0) {
+          currentProjects[existingIdx] = updatedObj;
+        } else {
+          currentProjects.unshift(updatedObj);
+        }
+
+        // Clean up legacy loose document if it existed
+        if (editingProject.docId && editingProject.docId !== targetClientId) {
+          try { await deleteDoc(doc(db, "projects", editingProject.docId)); } catch (e) {}
+        }
+
+        await setDoc(clientDocRef, {
+          clientId: targetClientId,
+          projects: currentProjects,
+          list: currentProjects,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+
+        // Write notification record to notifications collection
+        try {
+          await addDoc(collection(db, "notifications"), {
+            title: "🚀 Project Milestone Updated: " + projName.trim(),
+            message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + projPhase.trim() + " (" + (Number(projProgress) || 0) + "%)",
+            category: "Project",
+            targetRole: "client",
+            targetEmail: targetClientId,
+            timestamp: serverTimestamp(),
+            type: "UPDATE",
+            target: "SPECIFIC_CLIENT",
+            targetClientId: targetClientId,
+            createdAt: new Date().toISOString(),
+            sentBy: "ChittorTech Admin Console",
+            channel: "FCM_PUSH_AND_INAPP",
+          });
+          fetch("/api/send-fcm-push", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: "🚀 Project Milestone Updated: " + projName.trim(),
+              message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + projPhase.trim() + " (" + (Number(projProgress) || 0) + "%)",
+              type: "UPDATE",
+              target: "SPECIFIC_CLIENT",
+              targetClientId: targetClientId,
+            }),
+          }).catch(() => {});
+        } catch (notifErr) {
+          console.warn("Failed to write project milestone notification:", notifErr);
+        }
+
         closeProjectModal();
         setConfirmModal({
           isSuccess: true,
           title: "Project Updated Successfully!",
-          message: `Project "${projName}" details have been updated in the database.`,
+          message: `Project "${projName}" details have been updated in ${targetClientId}'s vault.`,
           confirmText: "Done",
+          confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
         });
       } else {
-        const docKey = "proj_" + Date.now().toString(36);
-        payload.createdAt = serverTimestamp();
-        await setDoc(doc(db, "projects", docKey), payload);
+        const docKey = "proj_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 6);
+        const newProjectObj = {
+          id: docKey,
+          name: projName.trim(),
+          clientId: targetClientId,
+          status: projStatus,
+          currentPhase: projPhase.trim() || "Development Sprint",
+          milestoneProgress: Number(projProgress) || 0,
+          buildKickoffDate: projKickoff.trim() || new Date().toISOString().split("T")[0],
+          launchDate: projLaunch.trim() || "TBD",
+          domain: projDomain.trim() || "Not Configured",
+          hostingProvider: projHosting.trim() || "AWS Cloud",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+
+        currentProjects.unshift(newProjectObj);
+
+        await setDoc(clientDocRef, {
+          clientId: targetClientId,
+          projects: currentProjects,
+          list: currentProjects,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+
+        // Write notification record to notifications collection
+        try {
+          await addDoc(collection(db, "notifications"), {
+            title: "🚀 Project Configured: " + projName.trim(),
+            message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + (projPhase.trim() || "Development Sprint") + " (" + (Number(projProgress) || 0) + "%)",
+            category: "Project",
+            targetRole: "client",
+            targetEmail: targetClientId,
+            timestamp: serverTimestamp(),
+            type: "UPDATE",
+            target: "SPECIFIC_CLIENT",
+            targetClientId: targetClientId,
+            createdAt: new Date().toISOString(),
+            sentBy: "ChittorTech Admin Console",
+            channel: "FCM_PUSH_AND_INAPP",
+          });
+          fetch("/api/send-fcm-push", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: "🚀 Project Configured: " + projName.trim(),
+              message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + (projPhase.trim() || "Development Sprint") + " (" + (Number(projProgress) || 0) + "%)",
+              type: "UPDATE",
+              target: "SPECIFIC_CLIENT",
+              targetClientId: targetClientId,
+            }),
+          }).catch(() => {});
+        } catch (notifErr) {
+          console.warn("Failed to write project configure notification:", notifErr);
+        }
+
         closeProjectModal();
         setConfirmModal({
           isSuccess: true,
           title: "Project Registered Successfully!",
-          message: `New client project "${projName}" has been successfully registered in the database.`,
+          message: `New client project "${projName}" has been stored into ${targetClientId}'s single document.`,
           confirmText: "Done",
+          confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
         });
       }
     } catch (err) {
@@ -174,7 +427,10 @@ export default function ProjectInvoiceManager() {
         title: "Project Save Error",
         message: err.message || "Failed to save project.",
         icon: "fas fa-exclamation-triangle",
+        iconBg: "#fee2e2",
+        iconColor: "#dc2626",
         confirmText: "Close",
+        confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
       });
     }
   };
@@ -212,7 +468,7 @@ export default function ProjectInvoiceManager() {
     setEditingProject(null);
   };
 
-  const handleDeleteProject = (id, name) => {
+  const handleDeleteProject = (id, name, projectObj) => {
     setConfirmModal({
       title: "Delete Project?",
       message: `Are you sure you want to delete project "${name}"? This action cannot be undone.`,
@@ -224,12 +480,33 @@ export default function ProjectInvoiceManager() {
       cancelText: "Cancel",
       onConfirm: async () => {
         try {
-          await deleteDoc(doc(db, "projects", id));
+          const clientId = (projectObj?.clientId || "").trim().toLowerCase();
+          if (clientId) {
+            const clientDocRef = doc(db, "projects", clientId);
+            const snap = await getDoc(clientDocRef);
+            if (snap.exists()) {
+              const d = snap.data();
+              const currentProjects = Array.isArray(d.projects) ? d.projects : Array.isArray(d.list) ? d.list : [];
+              const remaining = currentProjects.filter((p) => p.id !== id);
+              await setDoc(clientDocRef, {
+                projects: remaining,
+                list: remaining,
+                updatedAt: serverTimestamp(),
+              }, { merge: true });
+            }
+          }
+          if (projectObj?.docId && projectObj.docId !== clientId) {
+            await deleteDoc(doc(db, "projects", projectObj.docId));
+          } else if (id && !clientId) {
+            await deleteDoc(doc(db, "projects", id));
+          }
+
           setConfirmModal({
             isSuccess: true,
             title: "Project Deleted Successfully!",
-            message: `Project "${name}" has been permanently deleted from the database.`,
+            message: `Project "${name}" has been permanently removed from the client vault.`,
             confirmText: "Done",
+            confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
           });
         } catch (err) {
           setConfirmModal({
@@ -237,14 +514,17 @@ export default function ProjectInvoiceManager() {
             title: "Delete Failed",
             message: err.message || "Failed to delete project.",
             icon: "fas fa-exclamation-triangle",
+            iconBg: "#fee2e2",
+            iconColor: "#dc2626",
             confirmText: "Close",
+            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
           });
         }
       },
     });
   };
 
-  // Issue Invoice
+  // Issue Invoice (Stored within Client's Single Document)
   const handleSaveInvoice = async (e) => {
     e.preventDefault();
     if (!invClientId.trim() || !invAmount) {
@@ -252,24 +532,74 @@ export default function ProjectInvoiceManager() {
       return;
     }
 
+    const targetClientId = invClientId.trim().toLowerCase();
+    const clientDocRef = doc(db, "invoices", targetClientId);
+
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     const invNum = `INV-2026-${randomNum}`;
+    const newInvId = "inv_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 6);
 
-    const payload = {
+    const newInvoiceObj = {
+      id: newInvId,
       invoiceId: invNum,
-      clientId: invClientId.trim().toLowerCase(),
+      clientId: targetClientId,
       projectId: invProjName.trim() || "ChittorTech Enterprise Sprint",
       title: invTitle.trim() || "Project Milestone Deliverable",
       amount: Number(invAmount) || 0,
       status: invStatus,
       dueDate: invDueDate || new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0],
-      createdAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
       createdDateString: new Date().toLocaleDateString("en-IN"),
     };
 
     try {
-      const docKey = "inv_" + Date.now().toString(36);
-      await setDoc(doc(db, "invoices", docKey), payload);
+      const snap = await getDoc(clientDocRef);
+      let currentInvoices = [];
+      if (snap.exists()) {
+        const d = snap.data();
+        currentInvoices = Array.isArray(d.invoices) ? [...d.invoices] : Array.isArray(d.list) ? [...d.list] : [];
+      }
+
+      currentInvoices.unshift(newInvoiceObj);
+
+      await setDoc(clientDocRef, {
+        clientId: targetClientId,
+        invoices: currentInvoices,
+        list: currentInvoices,
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+
+      // Write notification record to notifications collection
+      try {
+        await addDoc(collection(db, "notifications"), {
+          title: "📄 New Invoice Issued: " + invNum,
+          message: (invTitle.trim() || "Milestone Deliverable") + " • ₹" + Number(invAmount || 0).toLocaleString("en-IN") + " (" + invStatus + ")",
+          category: "Billing",
+          targetRole: "client",
+          targetEmail: targetClientId,
+          timestamp: serverTimestamp(),
+          type: "UPDATE",
+          target: "SPECIFIC_CLIENT",
+          targetClientId: targetClientId,
+          createdAt: new Date().toISOString(),
+          sentBy: "ChittorTech Admin Console",
+          channel: "FCM_PUSH_AND_INAPP",
+        });
+        fetch("/api/send-fcm-push", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: "📄 New Invoice Issued: " + invNum,
+            message: (invTitle.trim() || "Milestone Deliverable") + " • ₹" + Number(invAmount || 0).toLocaleString("en-IN") + " (" + invStatus + ")",
+            type: "UPDATE",
+            target: "SPECIFIC_CLIENT",
+            targetClientId: targetClientId,
+          }),
+        }).catch(() => {});
+      } catch (notifErr) {
+        console.warn("Failed to write invoice notification:", notifErr);
+      }
+
       setShowInvoiceModal(false);
       setInvClientId("");
       setInvProjName("");
@@ -279,8 +609,9 @@ export default function ProjectInvoiceManager() {
       setConfirmModal({
         isSuccess: true,
         title: "Invoice Generated Successfully!",
-        message: `Invoice (${invNum}) has been created in the database and linked to the client record.`,
+        message: `Invoice (${invNum}) has been saved into ${targetClientId}'s invoices document.`,
         confirmText: "Done",
+        confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
       });
     } catch (err) {
       setConfirmModal({
@@ -288,15 +619,74 @@ export default function ProjectInvoiceManager() {
         title: "Invoice Generation Error",
         message: err.message || "Failed to generate invoice.",
         icon: "fas fa-exclamation-triangle",
+        iconBg: "#fee2e2",
+        iconColor: "#dc2626",
         confirmText: "Close",
+        confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
       });
     }
   };
 
   const toggleInvoiceStatus = async (inv) => {
     const newStatus = inv.status === "PAID" ? "UNPAID" : "PAID";
+    const clientId = (inv.clientId || "").trim().toLowerCase();
+
     try {
-      await updateDoc(doc(db, "invoices", inv.id), { status: newStatus });
+      if (clientId) {
+        const clientDocRef = doc(db, "invoices", clientId);
+        const snap = await getDoc(clientDocRef);
+        if (snap.exists()) {
+          const d = snap.data();
+          const currentInvoices = Array.isArray(d.invoices) ? [...d.invoices] : Array.isArray(d.list) ? [...d.list] : [];
+          const idx = currentInvoices.findIndex((i) => i.id === inv.id || i.invoiceId === inv.invoiceId);
+          if (idx >= 0) {
+            currentInvoices[idx].status = newStatus;
+            await setDoc(clientDocRef, {
+              invoices: currentInvoices,
+              list: currentInvoices,
+              updatedAt: serverTimestamp(),
+            }, { merge: true });
+          }
+        }
+      }
+      if (inv.docId && inv.docId !== clientId) {
+        await updateDoc(doc(db, "invoices", inv.docId), { status: newStatus });
+      }
+
+      // Write notification record for invoice status update
+      try {
+        const invNum = inv.invoiceId || inv.id || "Invoice";
+        const invTitleStr = inv.title || inv.projectName || "Milestone Deliverable";
+        const invAmtNum = Number(inv.amount || 0);
+        await addDoc(collection(db, "notifications"), {
+          title: newStatus === "PAID" ? "✅ Invoice Payment Confirmed: " + invNum : "⏳ Invoice Marked " + newStatus + ": " + invNum,
+          message: (invTitleStr || "Milestone Deliverable") + " • ₹" + invAmtNum.toLocaleString("en-IN") + " (" + newStatus + ")",
+          category: "Billing",
+          targetRole: "client",
+          targetEmail: clientId,
+          timestamp: serverTimestamp(),
+          type: "UPDATE",
+          target: "SPECIFIC_CLIENT",
+          targetClientId: clientId,
+          createdAt: new Date().toISOString(),
+          sentBy: "ChittorTech Admin Console",
+          channel: "FCM_PUSH_AND_INAPP",
+        });
+        fetch("/api/send-fcm-push", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newStatus === "PAID" ? "✅ Invoice Payment Confirmed: " + invNum : "⏳ Invoice Marked " + newStatus + ": " + invNum,
+            message: (invTitleStr || "Milestone Deliverable") + " • ₹" + invAmtNum.toLocaleString("en-IN") + " (" + newStatus + ")",
+            type: "UPDATE",
+            target: "SPECIFIC_CLIENT",
+            targetClientId: clientId,
+          }),
+        }).catch(() => {});
+      } catch (notifErr) {
+        console.warn("Failed to write invoice status notification:", notifErr);
+      }
+
       setActionFeedback(`Invoice ${inv.invoiceId || ""} marked as ${newStatus}!`);
       setTimeout(() => setActionFeedback(""), 3000);
     } catch (err) {
@@ -304,7 +694,7 @@ export default function ProjectInvoiceManager() {
     }
   };
 
-  const handleDeleteInvoice = (id, invNum) => {
+  const handleDeleteInvoice = (id, invNum, invoiceObj) => {
     setConfirmModal({
       title: "Delete Invoice?",
       message: `Are you sure you want to delete invoice ${invNum}? This action cannot be undone.`,
@@ -316,12 +706,33 @@ export default function ProjectInvoiceManager() {
       cancelText: "Cancel",
       onConfirm: async () => {
         try {
-          await deleteDoc(doc(db, "invoices", id));
+          const clientId = (invoiceObj?.clientId || "").trim().toLowerCase();
+          if (clientId) {
+            const clientDocRef = doc(db, "invoices", clientId);
+            const snap = await getDoc(clientDocRef);
+            if (snap.exists()) {
+              const d = snap.data();
+              const currentInvoices = Array.isArray(d.invoices) ? d.invoices : Array.isArray(d.list) ? d.list : [];
+              const remaining = currentInvoices.filter((i) => i.id !== id && i.invoiceId !== invNum);
+              await setDoc(clientDocRef, {
+                invoices: remaining,
+                list: remaining,
+                updatedAt: serverTimestamp(),
+              }, { merge: true });
+            }
+          }
+          if (invoiceObj?.docId && invoiceObj.docId !== clientId) {
+            await deleteDoc(doc(db, "invoices", invoiceObj.docId));
+          } else if (id && !clientId) {
+            await deleteDoc(doc(db, "invoices", id));
+          }
+
           setConfirmModal({
             isSuccess: true,
             title: "Invoice Deleted Successfully!",
-            message: `Invoice ${invNum || ""} has been permanently deleted from the database.`,
+            message: `Invoice ${invNum || ""} has been permanently deleted from ${clientId || "the client"}'s vault.`,
             confirmText: "Done",
+            confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
           });
         } catch (err) {
           setConfirmModal({
@@ -329,7 +740,10 @@ export default function ProjectInvoiceManager() {
             title: "Delete Failed",
             message: err.message || "Failed to delete invoice.",
             icon: "fas fa-exclamation-triangle",
+            iconBg: "#fee2e2",
+            iconColor: "#dc2626",
             confirmText: "Close",
+            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
           });
         }
       },
@@ -643,7 +1057,7 @@ export default function ProjectInvoiceManager() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Total Collected</span>
               <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#ecfdf5", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <i className="fas fa-badge-check"></i>
+                <i className="fas fa-check-circle"></i>
               </div>
             </div>
             <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "#16a34a", marginTop: "8px" }}>
@@ -881,7 +1295,7 @@ export default function ProjectInvoiceManager() {
 
                   <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: "12px", textAlign: "right" }}>
                     <button
-                      onClick={() => handleDeleteProject(p.id, p.name)}
+                      onClick={() => handleDeleteProject(p.id, p.name, p)}
                       style={{ background: "transparent", color: "#ef4444", border: "none", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
                     >
                       <i className="fas fa-trash-alt"></i> Delete Project
@@ -1014,7 +1428,7 @@ export default function ProjectInvoiceManager() {
                             {inv.status === "PAID" ? "Mark Unpaid" : "Mark Paid ✓"}
                           </button>
                           <button
-                            onClick={() => handleDeleteInvoice(inv.id, inv.invoiceId)}
+                            onClick={() => handleDeleteInvoice(inv.id, inv.invoiceId, inv)}
                             style={{ background: "#fee2e2", color: "#ef4444", border: "none", padding: "5px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
                             title="Delete Invoice"
                           >
