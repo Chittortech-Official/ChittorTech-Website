@@ -10,6 +10,8 @@ import {
   doc,
   query,
   orderBy,
+  limit,
+  getDocs,
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
@@ -44,10 +46,14 @@ export default function NotificationHub() {
     }
   };
 
-  // 1. Sync notifications live
+  // 1. Sync notifications live (Limited to 30 recent notifications to minimize reads)
   useEffect(() => {
     try {
-      const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"));
+      const q = query(
+        collection(db, "notifications"),
+        orderBy("timestamp", "desc"),
+        limit(30)
+      );
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
@@ -70,11 +76,14 @@ export default function NotificationHub() {
     }
   }, []);
 
-  // 2. Load clients from projects
+  // 2. Load clients from projects once (One-time getDocs, avoids continuous snapshot streams)
   useEffect(() => {
-    try {
-      const q = query(collection(db, "projects"));
-      const unsub = onSnapshot(q, (snap) => {
+    let isMounted = true;
+    async function fetchProjectClients() {
+      try {
+        const q = query(collection(db, "projects"), limit(50));
+        const snap = await getDocs(q);
+        if (!isMounted) return;
         const clientSet = new Set();
         snap.forEach((d) => {
           const data = d.data();
@@ -82,15 +91,18 @@ export default function NotificationHub() {
         });
         const arr = Array.from(clientSet);
         setKnownClients(arr);
-        if (arr.length > 0 && !targetClientId) {
-          setTargetClientId(arr[0]);
+        if (arr.length > 0) {
+          setTargetClientId((prev) => prev || arr[0]);
         }
-      });
-      return () => unsub();
-    } catch (e) {
-      console.warn("Could not load clients list:", e);
+      } catch (e) {
+        console.warn("Could not load clients list:", e);
+      }
     }
-  }, [targetClientId]);
+    fetchProjectClients();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const effectiveClientId = (customClientInput.trim() || targetClientId || "").trim().toLowerCase();
 

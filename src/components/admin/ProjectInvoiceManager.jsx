@@ -14,6 +14,7 @@ import {
   doc,
   getDoc,
   query,
+  limit,
   onSnapshot,
   serverTimestamp,
 } from "firebase/firestore";
@@ -62,7 +63,7 @@ export default function ProjectInvoiceManager() {
   // 1. Sync Projects Live from Firestore (Single Document Per Client Architecture)
   useEffect(() => {
     try {
-      const q = query(collection(db, "projects"));
+      const q = query(collection(db, "projects"), limit(50));
       const unsubscribe = onSnapshot(
         q,
         async (snap) => {
@@ -156,7 +157,7 @@ export default function ProjectInvoiceManager() {
   // 2. Sync Invoices Live from Firestore (Single Document Per Client Architecture)
   useEffect(() => {
     try {
-      const q = query(collection(db, "invoices"));
+      const q = query(collection(db, "invoices"), limit(50));
       const unsubscribe = onSnapshot(
         q,
         async (snap) => {

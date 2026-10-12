@@ -187,12 +187,12 @@ export async function submitLead(formData) {
  * Real-time listener for the Admin Dashboard.
  * Automatically pushes new leads when they arrive!
  */
-export function subscribeToLeads(onData, onError) {
+export function subscribeToLeads(onData, onError, maxLimit = 25) {
   try {
     const leadsQuery = query(
       collection(db, "leads"),
       orderBy("createdAt", "desc"),
-      limit(250)
+      limit(maxLimit)
     );
 
     const unsubscribe = onSnapshot(
@@ -335,11 +335,11 @@ export async function addB2BLeads(batch) {
 /**
  * Real-time listener for B2B Leads (admin dashboard).
  */
-export function subscribeToB2BLeads(onData, onError) {
+export function subscribeToB2BLeads(onData, onError, maxLimit = 25) {
   try {
     const q = query(
       collection(db, "b2b_leads"),
-      limit(500)
+      limit(maxLimit)
     );
     const unsubscribe = onSnapshot(
       q,
@@ -466,7 +466,7 @@ export async function deleteB2BLead(leadId) {
  */
 export function subscribeToAdminSessions(onData, onError) {
   try {
-    const q = query(collection(db, "admin_sessions"), limit(100));
+    const q = query(collection(db, "admin_sessions"), limit(25));
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
@@ -495,6 +495,31 @@ export function subscribeToAdminSessions(onData, onError) {
     return unsubscribe;
   } catch (err) {
     console.warn("Failed to setup admin_sessions listener:", err);
+    if (onError) onError(err);
+    return () => {};
+  }
+}
+
+/**
+ * Lightweight Real-time listener for ONLY the current admin session doc (1 read instead of 100).
+ */
+export function subscribeToSingleAdminSession(sessionId, onData, onError) {
+  if (!sessionId) return () => {};
+  try {
+    const sessionRef = doc(db, "admin_sessions", sessionId);
+    const unsubscribe = onSnapshot(
+      sessionRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          onData({ id: docSnap.id, ...docSnap.data() });
+        }
+      },
+      (err) => {
+        if (onError) onError(err);
+      }
+    );
+    return unsubscribe;
+  } catch (err) {
     if (onError) onError(err);
     return () => {};
   }

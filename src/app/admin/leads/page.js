@@ -12,12 +12,9 @@ import {
   updateLeadStatus,
   updateLeadNotes,
   deleteLead,
-  subscribeToB2BLeads,
-  updateB2BLeadStatus,
-  updateB2BLeadNotes,
-  deleteB2BLead,
   addAdminSessionActivityInFirestore,
   terminateAdminSessionInFirestore,
+  subscribeToSingleAdminSession,
   subscribeToAdminSessions,
 } from "@/lib/leadService";
 
@@ -196,6 +193,10 @@ export default function AdminLeadsPage() {
   const [selectedLead, setSelectedLead] = useState(null);
   const [leadNotes, setLeadNotes] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
+  const [leadsLimit, setLeadsLimit] = useState(25);
+  const [loadingMoreLeads, setLoadingMoreLeads] = useState(false);
+  const [adminSessions, setAdminSessions] = useState([]);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
 
   // B2B Leads Database (Firestore collection: b2b_leads)
   const [b2bLeads, setB2bLeads] = useState([]);
@@ -486,15 +487,16 @@ export default function AdminLeadsPage() {
     generateCaptcha();
   };
 
-  // Real-time Firestore subscription
+  // Real-time Firestore subscription (Inbound Leads with 25 initial limit)
   useEffect(() => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || adminPipelineTab !== "inbound") return;
     setLoading(true);
 
     const unsubscribe = subscribeToLeads(
       (data) => {
         setLeads(data);
         setLoading(false);
+        setLoadingMoreLeads(false);
         setError(null);
         setIsDbConnected(true);
       },
@@ -502,43 +504,47 @@ export default function AdminLeadsPage() {
         console.warn("Leads subscription sync notice:", err);
         setError("Failed to load leads from Database. Please verify Database connection.");
         setLoading(false);
+        setLoadingMoreLeads(false);
         if (typeof navigator !== "undefined" && !navigator.onLine) {
           setIsDbConnected(false);
         }
-      }
+      },
+      leadsLimit
     );
 
     return () => unsubscribe && unsubscribe();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, adminPipelineTab, leadsLimit]);
 
-  // Real-time subscription for B2B Outbound Leads
+  const handleLoadMoreLeads = () => {
+    setLoadingMoreLeads(true);
+    setLeadsLimit((prev) => prev + 25);
+  };
+
+  // Real-time subscription for Admin Sessions (Active strictly when Sessions & Security tab is open)
   useEffect(() => {
-    if (!isAuthenticated) return;
-    const unsub = subscribeToB2BLeads(
+    if (!isAuthenticated || adminPipelineTab !== "sessions") return;
+    setSessionsLoading(true);
+    const unsub = subscribeToAdminSessions(
       (data) => {
-        setB2bLeads(data);
-        setB2bLoading(false);
-        setIsDbConnected(true);
+        setAdminSessions(data);
+        setSessionsLoading(false);
       },
       (err) => {
-        console.warn("B2B leads sync notice:", err);
-        setB2bLoading(false);
-        if (typeof navigator !== "undefined" && !navigator.onLine) {
-          setIsDbConnected(false);
-        }
+        console.warn("Sessions sync notice:", err);
+        setSessionsLoading(false);
       }
     );
     return () => unsub && unsub();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, adminPipelineTab]);
 
-  // Real-time Remote Session Kill Listener (Kicks terminated sessions back to login screen instantly)
+
+  // Real-time Remote Session Kill Listener (Listens to ONLY current terminal doc: 1 read instead of 100)
   useEffect(() => {
     if (!isAuthenticated) return;
     const currentSessId = typeof window !== "undefined" ? sessionStorage.getItem("ct_current_session_id") : null;
     if (!currentSessId) return;
 
-    const unsub = subscribeToAdminSessions((allSessions) => {
-      const mySession = allSessions.find((s) => s.id === currentSessId);
+    const unsub = subscribeToSingleAdminSession(currentSessId, (mySession) => {
       if (mySession && mySession.status === "closed_logout") {
         // Remote Kill Signal Received from another Admin Terminal!
         try {
@@ -2090,7 +2096,11 @@ export default function AdminLeadsPage() {
         ) : adminPipelineTab === "notifications" ? (
           <NotificationHub />
         ) : adminPipelineTab === "sessions" ? (
-          <AdminSessionsView />
+          <AdminSessionsView
+            sessions={adminSessions}
+            setSessions={setAdminSessions}
+            loading={sessionsLoading}
+          />
         ) : (
           <>
             {/* Title Bar & Stats */}
@@ -2524,6 +2534,77 @@ export default function AdminLeadsPage() {
                     })}
                   </tbody>
                 </table>
+              </div>
+            )}
+
+            {/* Pagination & Load More Leads Bar */}
+            {!loading && filteredLeads.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "14px 20px",
+                  background: "#f8fafc",
+                  borderTop: "1px solid #e2e8f0",
+                  flexWrap: "wrap",
+                  gap: "12px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.82rem", color: "#64748b" }}>
+                  <span
+                    style={{
+                      display: "inline-block",
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      background: "#22c55e",
+                    }}
+                  />
+                  <span>
+                    Showing <strong>{filteredLeads.length}</strong> of <strong>{leads.length}</strong> loaded leads (Quota limit: {leadsLimit})
+                  </span>
+                </div>
+
+                {leads.length >= leadsLimit ? (
+                  <button
+                    onClick={handleLoadMoreLeads}
+                    disabled={loadingMoreLeads}
+                    style={{
+                      padding: "7px 16px",
+                      borderRadius: "8px",
+                      background: "#2563eb",
+                      color: "#ffffff",
+                      border: "none",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      cursor: loadingMoreLeads ? "not-allowed" : "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "7px",
+                      boxShadow: "0 2px 6px rgba(37,99,235,0.2)",
+                      transition: "all 0.15s ease",
+                      opacity: loadingMoreLeads ? 0.7 : 1,
+                    }}
+                  >
+                    {loadingMoreLeads ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin"></i>
+                        <span>Loading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-arrow-down"></i>
+                        <span>Load More Leads (+25)</span>
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <div style={{ fontSize: "0.8rem", color: "#64748b", fontWeight: 500, display: "flex", alignItems: "center", gap: "6px" }}>
+                    <i className="fas fa-check-circle" style={{ color: "#22c55e" }}></i>
+                    <span>All {leads.length} leads loaded</span>
+                  </div>
+                )}
               </div>
             )}
           </div>

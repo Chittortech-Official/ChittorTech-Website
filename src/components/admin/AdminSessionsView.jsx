@@ -3,15 +3,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { AdminConfirmModal } from "./AdminConfirmModal";
 import {
-  subscribeToAdminSessions,
   logAdminSessionInFirestore,
   terminateAdminSessionInFirestore,
   deleteAdminSessionFromFirestore,
 } from "@/lib/leadService";
 
-export default function AdminSessionsView() {
-  const [sessions, setSessions] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function AdminSessionsView({
+  sessions: propSessions,
+  setSessions: propSetSessions,
+  loading: propLoading,
+}) {
+  const [internalSessions, setInternalSessions] = useState([]);
+  const [internalLoading, setInternalLoading] = useState(false);
+
+  const sessions = propSessions !== undefined ? propSessions : internalSessions;
+  const setSessions = propSetSessions || setInternalSessions;
+  const loading = propLoading !== undefined ? propLoading : internalLoading;
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [actionFeedback, setActionFeedback] = useState("");
@@ -122,21 +129,6 @@ export default function AdminSessionsView() {
       });
   }, []);
 
-  // 2. Real-time Subscription to Firestore Collection `admin_sessions`
-  useEffect(() => {
-    setLoading(true);
-    const unsubscribe = subscribeToAdminSessions(
-      (data) => {
-        setSessions(data);
-        setLoading(false);
-      },
-      (err) => {
-        console.warn("Firestore admin_sessions error:", err);
-        setLoading(false);
-      }
-    );
-    return () => unsubscribe && unsubscribe();
-  }, []);
 
   // Show feedback alert toast
   const showFeedback = (msg) => {
