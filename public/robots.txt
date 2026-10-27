@@ -1,7 +1,14 @@
+# 1. Search Engines & Public Visitors (Always Allowed)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: *
 Allow: /
 
-# AI Search & Training Crawlers
+# 2. AI Search & Reasoning Crawlers (Explicitly Allowed)
 User-agent: GPTBot
 Allow: /
 
@@ -26,8 +33,42 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-User-agent: Bingbot
-Allow: /
+# 3. Commercial SEO Scrapers & Spy Bots (Blocked - Zero Search Value)
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+User-agent: SemrushBot-SA
+User-agent: SemrushBot-BA
+User-agent: SemrushBot-SI
+User-agent: SemrushBot-SWA
+User-agent: SemrushBot-CT
+User-agent: SemrushBot-BM
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: SerpstatBot
+Disallow: /
+
+User-agent: Seekport
+Disallow: /
+
+User-agent: Barkrowler
+Disallow: /
 
 # Sitemap
 Sitemap: https://chittortech.in/sitemap.xml

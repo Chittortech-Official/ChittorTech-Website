@@ -476,19 +476,19 @@ export default function Footer() {
                   Empowering global enterprises, startups, and growing businesses with cutting-edge AI Solutions, Custom LLMs, Enterprise Cloud Systems, Dedicated Tech Teams, and Digital Growth Services.
                 </p>
                 <div className="ct-footer-trust-row">
-                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#1e40af", background: "rgba(30,64,175,0.08)", borderColor: "rgba(30,64,175,0.25)" }}>
+                  <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#1e40af", background: "rgba(30,64,175,0.08)", borderColor: "rgba(30,64,175,0.25)" }}>
                     <i className="fa-solid fa-landmark"></i> ADB Empaneled (#051187)
                   </Link>
-                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#b91c1c", background: "rgba(185,28,28,0.08)", borderColor: "rgba(185,28,28,0.25)" }}>
+                  <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#b91c1c", background: "rgba(185,28,28,0.08)", borderColor: "rgba(185,28,28,0.25)" }}>
                     <i className="fa-solid fa-city"></i> SG GeBIZ Partner (#Y309075)
                   </Link>
-                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#0284c7", background: "rgba(2,132,199,0.08)", borderColor: "rgba(2,132,199,0.25)" }}>
+                  <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#0284c7", background: "rgba(2,132,199,0.08)", borderColor: "rgba(2,132,199,0.25)" }}>
                     <i className="fa-solid fa-globe"></i> UNGM Supplier
                   </Link>
-                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#0f172a", background: "rgba(15,23,42,0.06)", borderColor: "rgba(15,23,42,0.2)" }}>
+                  <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#0f172a", background: "rgba(15,23,42,0.06)", borderColor: "rgba(15,23,42,0.2)" }}>
                     <i className="fa-solid fa-flag-usa"></i> SAM.gov Contractor
                   </Link>
-                  <Link href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#059669", background: "rgba(16,185,129,0.08)", borderColor: "rgba(16,185,129,0.25)" }}>
+                  <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#059669", background: "rgba(16,185,129,0.08)", borderColor: "rgba(16,185,129,0.25)" }}>
                     <i className="fa-solid fa-certificate"></i> Trust Center &amp; DGFT IEC
                   </Link>
                 </div>
@@ -514,7 +514,7 @@ export default function Footer() {
                   { href: "/web-development-services", label: "Custom SaaS Development" },
                   { href: "/ai-manufacturing", label: "Computer Vision AI" },
                 ].map((l) => (
-                  <Link key={l.label} href={l.href} className="ct-footer-nav-link">
+                  <Link prefetch={false} key={l.label} href={l.href} className="ct-footer-nav-link">
                     <i className="fa-solid fa-chevron-right"></i>
                     <span>{l.label}</span>
                   </Link>
@@ -539,7 +539,7 @@ export default function Footer() {
                   { href: "/digital-marketing-services", label: "Digital Marketing" },
                   { href: "/b2b-lead-generation-services", label: "B2B Lead Generation" },
                 ].map((l) => (
-                  <Link key={l.label} href={l.href} className="ct-footer-nav-link">
+                  <Link prefetch={false} key={l.label} href={l.href} className="ct-footer-nav-link">
                     <i className="fa-solid fa-chevron-right"></i>
                     <span>{l.label}</span>
                   </Link>
@@ -639,7 +639,7 @@ export default function Footer() {
                       { href: "/enterprise-ai-agents", label: "Enterprise AI Agents", icon: "fa-solid fa-robot", iconColor: "#8b5cf6" },
                       { href: "/timezone-overlap", label: "Timezone Overlap", icon: "fa-solid fa-clock", iconColor: "#06b6d4" },
                     ].map((item, idx) => (
-                      <Link key={idx} href={item.href} className="ct-dir-pill">
+                      <Link prefetch={false} key={idx} href={item.href} className="ct-dir-pill">
                         {item.countryCode ? (
                           <img
                             src={`https://flagcdn.com/w40/${item.countryCode}.png`}
@@ -685,7 +685,7 @@ export default function Footer() {
                       { href: "/employee-background-verification", label: "Employee BGV" },
                       { href: "/electronics-smartphones", label: "Electronics POS" },
                     ].map((item, idx) => (
-                      <Link key={idx} href={item.href} className="ct-dir-pill">
+                      <Link prefetch={false} key={idx} href={item.href} className="ct-dir-pill">
                         {item.label}
                       </Link>
                     ))}
@@ -722,7 +722,7 @@ export default function Footer() {
                       { href: "/modern-responsive-website-design", label: "Web Design" },
                       { href: "/google-play-publishing", label: "Play Store Launch" },
                     ].map((item, idx) => (
-                      <Link key={idx} href={item.href} className="ct-dir-pill">
+                      <Link prefetch={false} key={idx} href={item.href} className="ct-dir-pill">
                         {item.label}
                       </Link>
                     ))}
@@ -753,7 +753,7 @@ export default function Footer() {
                       "thane", "thiruvananthapuram", "thrissur", "tiruppur", "tonk", "trichy", "tumakuru", "udaipur",
                       "vadodara", "varanasi", "vijayawada", "visakhapatnam", "warangal"
                     ].map((city) => (
-                      <Link
+                      <Link prefetch={false}
                         key={city}
                         href={`/cities/${city}`}
                         className="ct-city-pill"
@@ -791,10 +791,10 @@ export default function Footer() {
               <a href="/sitemap.xml">Sitemap</a>
             </div>
             <div className="ct-footer-bottom-right">
-              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#eff6ff', color: '#1e40af', borderColor: '#bfdbfe' }}><i className="fa-solid fa-landmark"></i> ADB #051187</Link>
-              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' }}><i className="fa-solid fa-city"></i> GeBIZ #Y309075</Link>
-              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}><i className="fa-solid fa-globe"></i> UNGM Supplier</Link>
-              <Link href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f8fafc', color: '#0f172a', borderColor: '#cbd5e1' }}><i className="fa-solid fa-flag-usa"></i> SAM.gov</Link>
+              <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#eff6ff', color: '#1e40af', borderColor: '#bfdbfe' }}><i className="fa-solid fa-landmark"></i> ADB #051187</Link>
+              <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' }}><i className="fa-solid fa-city"></i> GeBIZ #Y309075</Link>
+              <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}><i className="fa-solid fa-globe"></i> UNGM Supplier</Link>
+              <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f8fafc', color: '#0f172a', borderColor: '#cbd5e1' }}><i className="fa-solid fa-flag-usa"></i> SAM.gov</Link>
               <span className="ct-footer-badge-pill ssl"><i className="fa-solid fa-shield-halved"></i> SSL Secured</span>
               <span className="ct-footer-badge-pill india"><i className="fa-solid fa-flag"></i> Made in India</span>
             </div>
