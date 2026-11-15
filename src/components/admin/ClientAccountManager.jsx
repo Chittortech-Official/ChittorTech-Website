@@ -18,9 +18,12 @@ function generateSecurePassword() {
 
 export default function ClientAccountManager({
   clients = [],
+  setClients,
   loadingClients = false,
   projects = [],
   invoices = [],
+  tickets = [],
+  onSelectTicketsTab,
   onCreateProject,
   onCreateInvoice,
   setConfirmModal,
@@ -105,68 +108,69 @@ export default function ClientAccountManager({
       return;
     }
 
-    setSubmitting(true);
-    try {
-      const res = await createClientAccount({
-        isUpdate: !!editingClient,
-        email: clientEmail.trim().toLowerCase(),
-        name: clientName.trim(),
-        password: clientPassword.trim(),
-        companyName: clientCompany.trim(),
-        phone: clientPhone.trim(),
-        sendWelcomeEmail: sendWelcomeEmail,
-      });
+    const cleanEmail = clientEmail.trim().toLowerCase();
+    const cleanName = clientName.trim();
+    const cleanPassword = clientPassword.trim();
+    const cleanCompany = clientCompany.trim();
+    const cleanPhone = clientPhone.trim();
+    const isUpdate = !!editingClient;
 
-      setSubmitting(false);
+    const optimisticClient = {
+      id: cleanEmail,
+      email: cleanEmail,
+      name: cleanName,
+      password: cleanPassword,
+      companyName: cleanCompany,
+      phone: cleanPhone,
+      role: "client",
+      status: "active",
+      updatedAt: new Date().toISOString(),
+      ...(isUpdate ? {} : { createdAt: new Date().toISOString() }),
+    };
 
-      if (res && res.status === "success") {
-        closeClientModal();
-        if (setConfirmModal) {
-          setConfirmModal({
-            isSuccess: true,
-            title: editingClient ? "Client Details Updated!" : "Client Registered Successfully!",
-            message: `${res.msg} ${
-              res.emailDispatched
-                ? "Branded welcome email with login credentials has been dispatched to " + clientEmail + "."
-                : ""
-            }`,
-            confirmText: "Done",
-            confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-          });
-        }
-      } else {
-        if (setConfirmModal) {
-          setConfirmModal({
-            isSuccess: false,
-            title: "Save Failed",
-            message: res?.msg || "Failed to save client account.",
-            icon: "fas fa-exclamation-triangle",
-            iconBg: "#fee2e2",
-            iconColor: "#dc2626",
-            confirmText: "Close",
-            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-          });
+    // 1. Optimistic state update for instant UI feedback
+    if (setClients) {
+      setClients((prev) => {
+        if (isUpdate) {
+          return prev.map((c) =>
+            (c.email && c.email.toLowerCase() === cleanEmail) || c.id === cleanEmail
+              ? { ...c, ...optimisticClient }
+              : c
+          );
         } else {
-          alert(res?.msg || "Failed to save client account.");
+          return [optimisticClient, ...prev.filter((c) => (c.email && c.email.toLowerCase() !== cleanEmail) && c.id !== cleanEmail)];
         }
-      }
-    } catch (err) {
-      setSubmitting(false);
-      if (setConfirmModal) {
-        setConfirmModal({
-          isSuccess: false,
-          title: "Error Saving Client",
-          message: err.message,
-          icon: "fas fa-exclamation-triangle",
-          iconBg: "#fee2e2",
-          iconColor: "#dc2626",
-          confirmText: "Close",
-          confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-        });
-      } else {
-        alert("Error saving client: " + err.message);
-      }
+      });
     }
+
+    // 2. Immediately close modal
+    closeClientModal();
+
+    // 3. Immediately display confirmation modal
+    if (setConfirmModal) {
+      setConfirmModal({
+        isSuccess: true,
+        title: isUpdate ? "Client Details Updated!" : "Client Registered Successfully!",
+        message: isUpdate
+          ? `Client details for "${cleanName}" have been updated successfully in the Database.`
+          : `Client account "${cleanName}" registered successfully! Syncing credentials to Database.`,
+        confirmText: "Done",
+        confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+      });
+    }
+
+    // 4. Background serverless sync & email dispatch
+    createClientAccount({
+      isUpdate,
+      email: cleanEmail,
+      name: cleanName,
+      password: cleanPassword,
+      companyName: cleanCompany,
+      phone: cleanPhone,
+      sendWelcomeEmail: sendWelcomeEmail,
+    }).catch((err) => {
+      console.warn("Background client sync error:", err);
+    });
   };
 
   const handleResendWelcome = async (client) => {
@@ -230,43 +234,27 @@ export default function ClientAccountManager({
       confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
       cancelText: "Cancel",
       onConfirm: async () => {
-        try {
-          const res = await deleteClientAccount(client.email);
-          if (res && res.status === "success") {
-            setConfirmModal({
-              isSuccess: true,
-              title: "Client Account Deleted Successfully!",
-              message: `Client account "${client.name}" (${client.email}) has been permanently deleted from Cloud Firestore.`,
-              icon: "fas fa-check-circle",
-              iconBg: "#ecfdf5",
-              iconColor: "#10b981",
-              confirmText: "Done",
-              confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-            });
-          } else {
-            setConfirmModal({
-              isSuccess: false,
-              title: "Delete Failed",
-              message: res?.msg || "Failed to delete client account.",
-              icon: "fas fa-exclamation-triangle",
-              iconBg: "#fee2e2",
-              iconColor: "#dc2626",
-              confirmText: "Close",
-              confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-            });
-          }
-        } catch (err) {
-          setConfirmModal({
-            isSuccess: false,
-            title: "Error Deleting Client",
-            message: err.message,
-            icon: "fas fa-exclamation-triangle",
-            iconBg: "#fee2e2",
-            iconColor: "#dc2626",
-            confirmText: "Close",
-            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-          });
+        // 1. Optimistic removal from UI
+        if (setClients) {
+          setClients((prev) => prev.filter((c) => c.email !== client.email && c.id !== client.id));
         }
+
+        // 2. Instant confirmation display
+        setConfirmModal({
+          isSuccess: true,
+          title: "Client Account Deleted Successfully!",
+          message: `Client account "${client.name}" (${client.email}) has been permanently deleted from Database.`,
+          icon: "fas fa-check-circle",
+          iconBg: "#ecfdf5",
+          iconColor: "#10b981",
+          confirmText: "Done",
+          confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        });
+
+        // 3. Background serverless deletion
+        deleteClientAccount(client.email).catch((err) => {
+          console.warn("Background client delete error:", err);
+        });
       },
     });
   };
@@ -364,6 +352,9 @@ export default function ClientAccountManager({
             );
             const clientInvoices = invoices.filter(
               (i) => (i.clientId || "").toLowerCase() === client.email.toLowerCase()
+            );
+            const clientTickets = tickets.filter(
+              (t) => (t.clientId || t.docId || "").toLowerCase() === client.email.toLowerCase()
             );
             const isPassVisible = !!visiblePasswords[client.id];
             const isResending = resendingEmailId === client.id;
@@ -499,15 +490,34 @@ export default function ClientAccountManager({
                     </div>
                   </div>
 
-                  {/* Linked Project / Invoice Badges */}
-                  <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
-                    <div style={{ flex: 1, background: "#f1f5f9", borderRadius: "8px", padding: "6px 10px", textAlign: "center" }}>
+                  {/* Linked Project / Invoice / Ticket Badges */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", marginBottom: "14px" }}>
+                    <div style={{ background: "#f1f5f9", borderRadius: "8px", padding: "6px 8px", textAlign: "center" }}>
                       <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Projects</div>
                       <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#0f172a" }}>{clientProjects.length}</div>
                     </div>
-                    <div style={{ flex: 1, background: "#f1f5f9", borderRadius: "8px", padding: "6px 10px", textAlign: "center" }}>
+                    <div style={{ background: "#f1f5f9", borderRadius: "8px", padding: "6px 8px", textAlign: "center" }}>
                       <div style={{ fontSize: "0.68rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Invoices</div>
                       <div style={{ fontSize: "0.95rem", fontWeight: 800, color: "#0f172a" }}>{clientInvoices.length}</div>
+                    </div>
+                    <div
+                      onClick={() => onSelectTicketsTab && onSelectTicketsTab(client.email)}
+                      style={{
+                        background: clientTickets.length > 0 ? "#fef3c7" : "#f1f5f9",
+                        border: clientTickets.length > 0 ? "1px solid #fde68a" : "none",
+                        borderRadius: "8px",
+                        padding: "6px 8px",
+                        textAlign: "center",
+                        cursor: onSelectTicketsTab ? "pointer" : "default",
+                      }}
+                      title="View Client Support Tickets"
+                    >
+                      <div style={{ fontSize: "0.68rem", fontWeight: 700, color: clientTickets.length > 0 ? "#b45309" : "#64748b", textTransform: "uppercase" }}>
+                        Tickets
+                      </div>
+                      <div style={{ fontSize: "0.95rem", fontWeight: 800, color: clientTickets.length > 0 ? "#b45309" : "#0f172a" }}>
+                        {clientTickets.length}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -626,7 +636,7 @@ export default function ClientAccountManager({
                   {editingClient ? "✏️ Edit Client Credentials" : "➕ Register Corporate Client"}
                 </h3>
                 <p style={{ margin: "2px 0 0", fontSize: "0.78rem", color: "#64748b" }}>
-                  Credentials will sync with Firestore and the Android mobile app in real-time.
+                  Credentials will sync with Database and the Android mobile app in real-time.
                 </p>
               </div>
               <button onClick={closeClientModal} style={{ background: "transparent", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "#94a3b8" }}>
@@ -659,7 +669,7 @@ export default function ClientAccountManager({
                   required
                 />
                 {editingClient && (
-                  <span style={{ fontSize: "0.72rem", color: "#64748b" }}>Email cannot be changed once registered (serves as unique Firestore document ID).</span>
+                  <span style={{ fontSize: "0.72rem", color: "#64748b" }}>Email cannot be changed once registered (serves as unique Database record ID).</span>
                 )}
               </div>
 

@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { AdminConfirmModal, AdminFloatingToast } from "./AdminConfirmModal";
+import {
+  AdminConfirmModal, AdminFloatingToast } from "./AdminConfirmModal";
 import ClientAccountManager from "./ClientAccountManager";
 import ChittorTechInvoiceViewModal from "./ChittorTechInvoiceViewModal";
+import SupportTicketManager from "./SupportTicketManager";
 import { subscribeToClients } from "@/lib/leadService";
 import { db } from "@/lib/firebase";
 import {
@@ -18,7 +20,207 @@ import {
   limit,
   onSnapshot,
   serverTimestamp,
+  arrayUnion
 } from "firebase/firestore";
+
+const formatDateDDMMYYYY = (dateVal) => {
+  if (!dateVal) return "";
+  const str = String(dateVal).trim();
+  if (/^\d{2}-\d{2}-\d{4}$/.test(str)) return str;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    const [y, m, d] = str.split("-");
+    return `${d}-${m}-${y}`;
+  }
+  try {
+    const dt = dateVal.toDate ? dateVal.toDate() : new Date(dateVal);
+    if (!isNaN(dt.getTime())) {
+      const d = String(dt.getDate()).padStart(2, "0");
+      const m = String(dt.getMonth() + 1).padStart(2, "0");
+      const y = dt.getFullYear();
+      return `${d}-${m}-${y}`;
+    }
+  } catch {}
+  return str;
+};
+
+const getProjectCategoryInfo = (p) => {
+  const explicitType = (p?.type || "").trim();
+
+  // 1. Direct exact matches on explicit user-selected vertical
+  if (explicitType === "Website / Web SaaS" || explicitType === "Web / SaaS") {
+    return {
+      type: "Website / Web SaaS",
+      label: "🌐 Web / SaaS",
+      bg: "#f0f9ff",
+      color: "#0284c7",
+      border: "#bae6fd",
+      isWeb: true,
+    };
+  }
+  if (explicitType === "Mobile App (Android / iOS)" || explicitType === "Mobile App") {
+    return {
+      type: "Mobile App (Android / iOS)",
+      label: "📱 Mobile App",
+      bg: "#ecfdf5",
+      color: "#059669",
+      border: "#a7f3d0",
+      isApp: true,
+    };
+  }
+  if (explicitType === "SEO & Digital Marketing" || explicitType === "SEO & Marketing") {
+    return {
+      type: "SEO & Digital Marketing",
+      label: "📈 SEO & Marketing",
+      bg: "#fef3c7",
+      color: "#b45309",
+      border: "#fde68a",
+      isSeo: true,
+    };
+  }
+  if (explicitType === "AI & Machine Learning") {
+    return {
+      type: "AI & Machine Learning",
+      label: "🧠 AI & ML",
+      bg: "#f5f3ff",
+      color: "#7c3aed",
+      border: "#ddd6fe",
+      isAi: true,
+    };
+  }
+  if (explicitType === "AI & WhatsApp Chatbot") {
+    return {
+      type: "AI & WhatsApp Chatbot",
+      label: "💬 AI Chatbot",
+      bg: "#ecfeff",
+      color: "#0891b2",
+      border: "#a5f3fc",
+      isChatbot: true,
+    };
+  }
+  if (explicitType === "Enterprise Software / ERP" || explicitType === "Enterprise ERP / CRM") {
+    return {
+      type: "Enterprise Software / ERP",
+      label: "🏢 Enterprise ERP",
+      bg: "#eef2ff",
+      color: "#4338ca",
+      border: "#c7d2fe",
+      isErp: true,
+    };
+  }
+
+  // 2. Fuzzy checks if explicit type was not an exact match
+  const t = explicitType.toLowerCase();
+  const n = (p?.name || "").toLowerCase();
+  const d = (p?.domain || "").toLowerCase();
+  const pl = (p?.platform || "").toLowerCase();
+
+  // If explicit type or name specifies website / saas / web portal -> Website / Web SaaS
+  if (t.includes("website") || t.includes("saas") || (t.includes("web") && !t.includes("app")) || n.includes("website") || n.includes("web ") || n.includes(" saas")) {
+    return {
+      type: "Website / Web SaaS",
+      label: "🌐 Web / SaaS",
+      bg: "#f0f9ff",
+      color: "#0284c7",
+      border: "#bae6fd",
+      isWeb: true,
+    };
+  }
+
+  // SEO & Marketing
+  if (t.includes("seo") || n.includes("seo") || t.includes("marketing") || n.includes("marketing")) {
+    return {
+      type: "SEO & Digital Marketing",
+      label: "📈 SEO & Marketing",
+      bg: "#fef3c7",
+      color: "#b45309",
+      border: "#fde68a",
+      isSeo: true,
+    };
+  }
+
+  // AI Chatbot
+  if (t.includes("chatbot") || n.includes("chatbot") || t.includes("bot") || n.includes("bot")) {
+    return {
+      type: "AI & WhatsApp Chatbot",
+      label: "💬 AI Chatbot",
+      bg: "#ecfeff",
+      color: "#0891b2",
+      border: "#a5f3fc",
+      isChatbot: true,
+    };
+  }
+
+  // AI & ML
+  if (t.includes("ai") || n.includes("ai") || t.includes("ml") || t.includes("rag") || n.includes("rag") || t.includes("llm")) {
+    return {
+      type: "AI & Machine Learning",
+      label: "🧠 AI & ML",
+      bg: "#f5f3ff",
+      color: "#7c3aed",
+      border: "#ddd6fe",
+      isAi: true,
+    };
+  }
+
+  // Enterprise ERP
+  if (t.includes("erp") || n.includes("erp") || t.includes("crm") || n.includes("crm") || t.includes("vyapar") || n.includes("billing")) {
+    return {
+      type: "Enterprise Software / ERP",
+      label: "🏢 Enterprise ERP",
+      bg: "#eef2ff",
+      color: "#4338ca",
+      border: "#c7d2fe",
+      isErp: true,
+    };
+  }
+
+  // Mobile App (Only if explicit or name has app, or play.google domain, or platform is mobile and not website)
+  if (t.includes("mobile") || t.includes("play store") || n.includes("mobile app") || n.includes("apk") || n.includes("android") || n.includes("ios") || d.includes("play.google.com") || ((pl.includes("android") || pl.includes("ios")) && !n.includes("website"))) {
+    return {
+      type: "Mobile App (Android / iOS)",
+      label: "📱 Mobile App",
+      bg: "#ecfdf5",
+      color: "#059669",
+      border: "#a7f3d0",
+      isApp: true,
+    };
+  }
+
+  return {
+    type: "Website / Web SaaS",
+    label: "🌐 Web / SaaS",
+    bg: "#f0f9ff",
+    color: "#0284c7",
+    border: "#bae6fd",
+    isWeb: true,
+  };
+};
+
+
+const dispatchClientNotification = async (targetClientId, notifObj) => {
+  try {
+    const docKey = (targetClientId || "").toLowerCase().trim() || "to_all_users";
+    const notifId = notifObj.id || ("notif_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7));
+    const fullPayload = {
+      ...notifObj,
+      id: notifId,
+      timestamp: typeof notifObj.timestamp === "string" ? notifObj.timestamp : new Date().toISOString(),
+    };
+
+    const docRef = doc(db, "notifications", docKey);
+    await setDoc(docRef, {
+      clientId: docKey,
+      notifications: arrayUnion(fullPayload),
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
+
+    try {
+      await setDoc(doc(db, "notifications", docKey, "messages", notifId), fullPayload, { merge: true });
+    } catch (_) {}
+  } catch (err) {
+    console.warn("Failed dispatching client notification:", err);
+  }
+};
 
 export default function ProjectInvoiceManager() {
   const [confirmModal, setConfirmModal] = useState(null);
@@ -30,6 +232,8 @@ export default function ProjectInvoiceManager() {
   const [invoices, setInvoices] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [loadingInvoices, setLoadingInvoices] = useState(true);
+  const [tickets, setTickets] = useState([]);
+  const [loadingTickets, setLoadingTickets] = useState(true);
 
   // Search & Filter
   const [searchQuery, setSearchQuery] = useState("");
@@ -43,14 +247,19 @@ export default function ProjectInvoiceManager() {
 
   // Project Form
   const [projName, setProjName] = useState("");
+  const [projType, setProjType] = useState("Website / Web SaaS");
   const [projClientId, setProjClientId] = useState("");
   const [projStatus, setProjStatus] = useState("In Progress");
   const [projPhase, setProjPhase] = useState("Core API & Cloud Backend");
   const [projProgress, setProjProgress] = useState(45);
   const [projKickoff, setProjKickoff] = useState("");
-  const [projLaunch, setProjLaunch] = useState("");
+  const [projDomainExpiry, setProjDomainExpiry] = useState("");
   const [projDomain, setProjDomain] = useState("");
-  const [projHosting, setProjHosting] = useState("AWS Cloud / Vercel");
+  const [projHosting, setProjHosting] = useState("Vercel / AWS Cloud");
+  const [projPlatform, setProjPlatform] = useState("Web / Cloud SaaS");
+  const [projSslStatus, setProjSslStatus] = useState("Active");
+  const [projTargetKeywords, setProjTargetKeywords] = useState("");
+  const [projAmcAmount, setProjAmcAmount] = useState(0);
 
   // Rich Invoice Form State (Matching Bill-Generator-master)
   const [invDocNumber, setInvDocNumber] = useState("CT/2026/001");
@@ -68,9 +277,9 @@ export default function ProjectInvoiceManager() {
   const [invTaxPct, setInvTaxPct] = useState(0);
   const [invStatus, setInvStatus] = useState("UNPAID");
   const [invPaymentMode, setInvPaymentMode] = useState("Bank Transfer");
-  const [invPaymentInfo, setInvPaymentInfo] = useState("Account Name: ChittorTech\nBank: ICICI Bank / HDFC Bank\nUPI ID: chittortech@icici");
+  const [invPaymentInfo, setInvPaymentInfo] = useState("Account Name: ChittorTech\nBank Name: Chittorgarh Urban Co-operative Bank\nUPI ID: 8233816674@upi (Display Name: Kush Sharma)");
   const [invTermsText, setInvTermsText] = useState(
-    "Payment is due upon receipt of this milestone invoice.\nWork milestone deliverables will be released upon clearance.\nPlease make payments payable to ChittorTech official accounts."
+    "Payment is due upon receipt of this milestone invoice.\nWork milestone deliverables will be released upon clearance.\nOfficial UPI ID: 8233816674@upi (Display Name: Kush Sharma) (or scan official ChittorTech QR code).\nPlease make payments payable to ChittorTech official accounts."
   );
   const [invModalTab, setInvModalTab] = useState("form"); // "form" | "preview"
 
@@ -264,6 +473,67 @@ export default function ProjectInvoiceManager() {
     }
   }, []);
 
+  // 2.5 Sync Tickets Live from Firestore (Single Document Per Client Architecture)
+  useEffect(() => {
+    try {
+      const q = query(collection(db, "tickets"), limit(50));
+      const unsubscribe = onSnapshot(
+        q,
+        (snap) => {
+          const list = [];
+          snap.forEach((docSnap) => {
+            const data = docSnap.data();
+            const docId = docSnap.id;
+            const items = Array.isArray(data.tickets)
+              ? data.tickets
+              : Array.isArray(data.list)
+              ? data.list
+              : null;
+
+            if (items) {
+              items.forEach((t) => {
+                list.push({
+                  ...t,
+                  docId: docId,
+                  clientId: t.clientId || data.clientId || docId,
+                });
+              });
+            } else if (data.ticketId || data.title) {
+              list.push({
+                ...data,
+                id: docId,
+                docId: docId,
+                clientId: data.clientId || docId,
+              });
+            }
+          });
+
+          // Sort latest first
+          list.sort((a, b) => {
+            const parseDate = (d) => {
+              if (!d) return 0;
+              if (d.toDate) return d.toDate().getTime();
+              const parsed = new Date(d).getTime();
+              return isNaN(parsed) ? 0 : parsed;
+            };
+            return parseDate(b.createdAt) - parseDate(a.createdAt);
+          });
+
+          setTickets(list);
+          setLoadingTickets(false);
+        },
+        (err) => {
+          console.warn("Tickets sync warning:", err);
+          setLoadingTickets(false);
+        }
+      );
+      return () => unsubscribe();
+    } catch (e) {
+      console.warn("Failed to listen to tickets:", e);
+      setLoadingTickets(false);
+    }
+  }, []);
+
   // 3. Sync Clients Live from Firestore
   useEffect(() => {
     const unsubscribe = subscribeToClients(
@@ -290,40 +560,144 @@ export default function ProjectInvoiceManager() {
     const targetClientId = projClientId.trim().toLowerCase();
     const clientDocRef = doc(db, "projects", targetClientId);
 
-    try {
-      const snap = await getDoc(clientDocRef);
-      let currentProjects = [];
-      if (snap.exists()) {
-        const d = snap.data();
-        currentProjects = Array.isArray(d.projects) ? [...d.projects] : Array.isArray(d.list) ? [...d.list] : [];
-      }
+    const nowIso = new Date().toISOString();
+    let updatedObj = null;
+    let newProjectObj = null;
 
-      if (editingProject) {
-        const projId = editingProject.id;
-        const existingIdx = currentProjects.findIndex((p) => p.id === projId);
-        const updatedObj = {
-          ...(existingIdx >= 0 ? currentProjects[existingIdx] : editingProject),
-          name: projName.trim(),
-          clientId: targetClientId,
-          status: projStatus,
-          currentPhase: projPhase.trim() || "Development Sprint",
-          milestoneProgress: Number(projProgress) || 0,
-          buildKickoffDate: projKickoff.trim() || new Date().toISOString().split("T")[0],
-          launchDate: projLaunch.trim() || "TBD",
-          domain: projDomain.trim() || "Not Configured",
-          hostingProvider: projHosting.trim() || "AWS Cloud",
-          updatedAt: new Date().toISOString(),
-        };
+    const catInfo = getProjectCategoryInfo({ type: projType, name: projName });
 
-        if (existingIdx >= 0) {
-          currentProjects[existingIdx] = updatedObj;
+    // Normalize and sanitize values according to the specific service vertical
+    let finalDomain = projDomain.trim();
+    let finalHosting = projHosting.trim();
+    let finalPlatform = projPlatform.trim();
+    let finalExpiry = projDomainExpiry.trim();
+    let finalSsl = projSslStatus.trim() || "Active";
+
+    if (catInfo.isSeo) {
+      finalDomain = projDomain.trim() || "";
+      finalHosting = projHosting.trim() || "Complete Technical & On-Page SEO";
+      finalPlatform = projPlatform.trim() || "Rajasthan / Pan-India";
+      finalExpiry = "";
+      finalSsl = "N/A";
+    } else if (catInfo.isApp) {
+      finalDomain = projDomain.trim() || "";
+      finalPlatform = projPlatform.trim() || "Android (Google Play)";
+      finalHosting = projHosting.trim() || "12-Tester Closed Track";
+      finalExpiry = projDomainExpiry.trim() || "";
+      finalSsl = "N/A";
+    } else if (catInfo.isAi) {
+      finalPlatform = projPlatform.trim() || "Enterprise RAG (Vector Knowledge Base)";
+      finalHosting = projHosting.trim() || "Llama 3.3 70B (Groq LPU Instant Inference)";
+      finalExpiry = "";
+      finalSsl = "Air-Gapped Private VPC";
+    } else if (catInfo.isChatbot) {
+      finalPlatform = projPlatform.trim() || "Official WhatsApp Business API";
+      finalHosting = projHosting.trim() || "24/7 Customer Support & FAQ Triage";
+      finalExpiry = "";
+      finalSsl = "Enterprise Webhook Encryption";
+    } else if (catInfo.isErp) {
+      finalDomain = projDomain.trim() || "erp.chittortech.in";
+      finalPlatform = projPlatform.trim() || "GST Invoicing, Inventory & Multi-Branch CRM";
+      finalHosting = projHosting.trim() || "Dedicated Linux VPS + Automated Backups";
+      finalSsl = "TLS 1.3 Active";
+    } else {
+      finalDomain = projDomain.trim() || "Not Configured";
+      finalHosting = projHosting.trim() || "Vercel / AWS Cloud";
+      finalPlatform = "Web / Cloud SaaS";
+      finalSsl = projSslStatus.trim() || "Active";
+    }
+
+    if (editingProject) {
+      const projId = editingProject.id;
+      updatedObj = {
+        ...editingProject,
+        name: projName.trim(),
+        type: projType,
+        clientId: targetClientId,
+        status: projStatus,
+        currentPhase: projPhase.trim() || (catInfo.isSeo ? "Technical SEO & Keyword Ranking" : "Development Sprint"),
+        milestoneProgress: Number(projProgress) || 0,
+        buildKickoffDate: projKickoff.trim() || nowIso.split("T")[0],
+        domain: finalDomain,
+        domainExpiryDate: finalExpiry,
+        hostingProvider: finalHosting,
+        platform: finalPlatform,
+        sslStatus: finalSsl,
+        targetKeywords: projTargetKeywords.trim(),
+        annualRenewalFee: Number(projAmcAmount) || 0,
+        launchDate: editingProject.launchDate || "",
+        updatedAt: nowIso,
+      };
+
+      // 1. Optimistic UI update
+      setProjects((prev) =>
+        prev.map((p) => (p.id === projId ? { ...p, ...updatedObj } : p))
+      );
+    } else {
+      const docKey = "proj_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 6);
+      newProjectObj = {
+        id: docKey,
+        name: projName.trim(),
+        type: projType,
+        clientId: targetClientId,
+        status: projStatus,
+        currentPhase: projPhase.trim() || (catInfo.isSeo ? "Technical SEO & Keyword Ranking" : "Development Sprint"),
+        milestoneProgress: Number(projProgress) || 0,
+        buildKickoffDate: projKickoff.trim() || nowIso.split("T")[0],
+        domain: finalDomain,
+        domainExpiryDate: finalExpiry,
+        hostingProvider: finalHosting,
+        platform: finalPlatform,
+        sslStatus: finalSsl,
+        targetKeywords: projTargetKeywords.trim(),
+        annualRenewalFee: Number(projAmcAmount) || 0,
+        launchDate: "",
+        createdAt: nowIso,
+        updatedAt: nowIso,
+      };
+
+      // 1. Optimistic UI update
+      setProjects((prev) => [newProjectObj, ...prev]);
+    }
+
+    // 2. Immediately close project modal
+    closeProjectModal();
+
+    // 3. Immediately display confirmation modal
+    setConfirmModal({
+      isSuccess: true,
+      title: editingProject ? "Project Updated Successfully!" : "Project Registered Successfully!",
+      message: editingProject
+        ? `Project "${projName}" details have been updated in ${targetClientId}'s vault.`
+        : `New client project "${projName}" has been stored into ${targetClientId}'s single document.`,
+      confirmText: "Done",
+      confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    });
+
+    // 4. Background Database sync & client notifications
+    (async () => {
+      try {
+        const snap = await getDoc(clientDocRef);
+        let currentProjects = [];
+        if (snap.exists()) {
+          const d = snap.data();
+          currentProjects = Array.isArray(d.projects) ? [...d.projects] : Array.isArray(d.list) ? [...d.list] : [];
+        }
+
+        if (editingProject) {
+          const projId = editingProject.id;
+          const existingIdx = currentProjects.findIndex((p) => p.id === projId);
+          if (existingIdx >= 0) {
+            currentProjects[existingIdx] = updatedObj;
+          } else {
+            currentProjects.unshift(updatedObj);
+          }
+
+          if (editingProject.docId && editingProject.docId !== targetClientId) {
+            try { await deleteDoc(doc(db, "projects", editingProject.docId)); } catch (e) {}
+          }
         } else {
-          currentProjects.unshift(updatedObj);
-        }
-
-        // Clean up legacy loose document if it existed
-        if (editingProject.docId && editingProject.docId !== targetClientId) {
-          try { await deleteDoc(doc(db, "projects", editingProject.docId)); } catch (e) {}
+          currentProjects.unshift(newProjectObj);
         }
 
         await setDoc(clientDocRef, {
@@ -333,150 +707,103 @@ export default function ProjectInvoiceManager() {
           updatedAt: serverTimestamp(),
         }, { merge: true });
 
-        // Write notification record to notifications collection
-        try {
-          await addDoc(collection(db, "notifications"), {
-            title: "🚀 Project Milestone Updated: " + projName.trim(),
+        // Background push & in-app notifications
+        dispatchClientNotification(targetClientId, {
+          title: editingProject ? "🚀 Project Milestone Updated: " + projName.trim() : "🚀 Project Configured: " + projName.trim(),
+          message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + projPhase.trim() + " (" + (Number(projProgress) || 0) + "%)",
+          category: "Project",
+          targetRole: "client",
+          targetEmail: targetClientId,
+          timestamp: serverTimestamp(),
+          type: "UPDATE",
+          target: "SPECIFIC_CLIENT",
+          targetClientId: targetClientId,
+          createdAt: nowIso,
+          sentBy: "ChittorTech Admin Console",
+          channel: "FCM_PUSH_AND_INAPP",
+        }).catch(() => {});
+
+        fetch("/api/send-fcm-push", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: editingProject ? "🚀 Project Milestone Updated: " + projName.trim() : "🚀 Project Configured: " + projName.trim(),
             message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + projPhase.trim() + " (" + (Number(projProgress) || 0) + "%)",
-            category: "Project",
-            targetRole: "client",
-            targetEmail: targetClientId,
-            timestamp: serverTimestamp(),
             type: "UPDATE",
             target: "SPECIFIC_CLIENT",
             targetClientId: targetClientId,
-            createdAt: new Date().toISOString(),
-            sentBy: "ChittorTech Admin Console",
-            channel: "FCM_PUSH_AND_INAPP",
-          });
-          fetch("/api/send-fcm-push", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: "🚀 Project Milestone Updated: " + projName.trim(),
-              message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + projPhase.trim() + " (" + (Number(projProgress) || 0) + "%)",
-              type: "UPDATE",
-              target: "SPECIFIC_CLIENT",
-              targetClientId: targetClientId,
-            }),
-          }).catch(() => {});
-        } catch (notifErr) {
-          console.warn("Failed to write project milestone notification:", notifErr);
-        }
-
-        closeProjectModal();
-        setConfirmModal({
-          isSuccess: true,
-          title: "Project Updated Successfully!",
-          message: `Project "${projName}" details have been updated in ${targetClientId}'s vault.`,
-          confirmText: "Done",
-          confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-        });
-      } else {
-        const docKey = "proj_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 6);
-        const newProjectObj = {
-          id: docKey,
-          name: projName.trim(),
-          clientId: targetClientId,
-          status: projStatus,
-          currentPhase: projPhase.trim() || "Development Sprint",
-          milestoneProgress: Number(projProgress) || 0,
-          buildKickoffDate: projKickoff.trim() || new Date().toISOString().split("T")[0],
-          launchDate: projLaunch.trim() || "TBD",
-          domain: projDomain.trim() || "Not Configured",
-          hostingProvider: projHosting.trim() || "AWS Cloud",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-
-        currentProjects.unshift(newProjectObj);
-
-        await setDoc(clientDocRef, {
-          clientId: targetClientId,
-          projects: currentProjects,
-          list: currentProjects,
-          updatedAt: serverTimestamp(),
-        }, { merge: true });
-
-        // Write notification record to notifications collection
-        try {
-          await addDoc(collection(db, "notifications"), {
-            title: "🚀 Project Configured: " + projName.trim(),
-            message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + (projPhase.trim() || "Development Sprint") + " (" + (Number(projProgress) || 0) + "%)",
-            category: "Project",
-            targetRole: "client",
-            targetEmail: targetClientId,
-            timestamp: serverTimestamp(),
-            type: "UPDATE",
-            target: "SPECIFIC_CLIENT",
-            targetClientId: targetClientId,
-            createdAt: new Date().toISOString(),
-            sentBy: "ChittorTech Admin Console",
-            channel: "FCM_PUSH_AND_INAPP",
-          });
-          fetch("/api/send-fcm-push", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              title: "🚀 Project Configured: " + projName.trim(),
-              message: "Your project \"" + projName.trim() + "\" has been updated to phase: " + (projPhase.trim() || "Development Sprint") + " (" + (Number(projProgress) || 0) + "%)",
-              type: "UPDATE",
-              target: "SPECIFIC_CLIENT",
-              targetClientId: targetClientId,
-            }),
-          }).catch(() => {});
-        } catch (notifErr) {
-          console.warn("Failed to write project configure notification:", notifErr);
-        }
-
-        closeProjectModal();
-        setConfirmModal({
-          isSuccess: true,
-          title: "Project Registered Successfully!",
-          message: `New client project "${projName}" has been stored into ${targetClientId}'s single document.`,
-          confirmText: "Done",
-          confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-        });
+          }),
+        }).catch(() => {});
+      } catch (err) {
+        console.warn("Background project save error:", err);
       }
-    } catch (err) {
-      setConfirmModal({
-        isSuccess: false,
-        title: "Project Save Error",
-        message: err.message || "Failed to save project.",
-        icon: "fas fa-exclamation-triangle",
-        iconBg: "#fee2e2",
-        iconColor: "#dc2626",
-        confirmText: "Close",
-        confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-      });
+    })();
+  };
+
+  const handleProjectTypeChange = (newType) => {
+    setProjType(newType);
+    if (newType === "Website / Web SaaS") {
+      setProjPlatform("Web / Cloud SaaS");
+      if (!projHosting || projHosting.includes("Track") || projHosting.includes("Groq") || projHosting.includes("Bot")) {
+        setProjHosting("Vercel / AWS Cloud");
+      }
+    } else if (newType === "Mobile App (Android / iOS)") {
+      setProjPlatform("Android (Google Play)");
+      if (!projHosting || projHosting.includes("AWS") || projHosting.includes("Vercel") || projHosting.includes("Linux")) {
+        setProjHosting("12-Tester Closed Track");
+      }
+    } else if (newType === "SEO & Digital Marketing") {
+      setProjPlatform("Rajasthan / Pan-India");
+      setProjHosting("Complete Technical & On-Page SEO");
+    } else if (newType === "AI & Machine Learning") {
+      setProjPlatform("Enterprise RAG (Vector Knowledge Base)");
+      setProjHosting("Llama 3.3 70B (Groq LPU Instant Inference)");
+    } else if (newType === "AI & WhatsApp Chatbot") {
+      setProjPlatform("Official WhatsApp Business API");
+      setProjHosting("24/7 Customer Support & FAQ Triage");
+    } else if (newType === "Enterprise Software / ERP") {
+      setProjPlatform("GST Invoicing, Inventory & Multi-Branch CRM");
+      setProjHosting("Dedicated Linux VPS + Automated Backups");
     }
   };
 
   const openNewProjectModal = () => {
     setEditingProject(null);
     setProjName("");
+    setProjType("Website / Web SaaS");
     setProjClientId("");
     setProjStatus("In Progress");
     setProjPhase("UI/UX & System Architecture");
     setProjProgress(30);
     setProjKickoff(new Date().toISOString().split("T")[0]);
-    setProjLaunch("");
+    setProjDomainExpiry("");
     setProjDomain("");
-    setProjHosting("AWS Cloud / Vercel");
+    setProjHosting("Vercel / AWS Cloud");
+    setProjPlatform("Web / Cloud SaaS");
+    setProjSslStatus("Active");
+    setProjTargetKeywords("");
+    setProjAmcAmount(0);
     setShowProjectModal(true);
   };
 
   const openEditProjectModal = (p) => {
     setEditingProject(p);
     setProjName(p.name || "");
+    const cat = getProjectCategoryInfo(p);
+    const resolvedType = p.type || cat.type;
+    setProjType(resolvedType);
     setProjClientId(p.clientId || "");
     setProjStatus(p.status || "In Progress");
     setProjPhase(p.currentPhase || "");
     setProjProgress(p.milestoneProgress || 0);
     setProjKickoff(p.buildKickoffDate || "");
-    setProjLaunch(p.launchDate || "");
+    setProjDomainExpiry(p.domainExpiryDate || p.hostingExpiryDate || "");
     setProjDomain(p.domain || "");
-    setProjHosting(p.hostingProvider || "");
+    setProjHosting(p.hostingProvider || (cat.isApp ? "12-Tester Closed Track" : "Vercel / AWS Cloud"));
+    setProjPlatform(p.platform || (cat.isApp ? "Android (Google Play)" : "Web / Cloud SaaS"));
+    setProjSslStatus(p.sslStatus || "Active");
+    setProjTargetKeywords(p.targetKeywords || "");
+    setProjAmcAmount(p.annualRenewalFee || 0);
     setShowProjectModal(true);
   };
 
@@ -496,47 +823,45 @@ export default function ProjectInvoiceManager() {
       confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
       cancelText: "Cancel",
       onConfirm: async () => {
-        try {
-          const clientId = (projectObj?.clientId || "").trim().toLowerCase();
-          if (clientId) {
-            const clientDocRef = doc(db, "projects", clientId);
-            const snap = await getDoc(clientDocRef);
-            if (snap.exists()) {
-              const d = snap.data();
-              const currentProjects = Array.isArray(d.projects) ? d.projects : Array.isArray(d.list) ? d.list : [];
-              const remaining = currentProjects.filter((p) => p.id !== id);
-              await setDoc(clientDocRef, {
-                projects: remaining,
-                list: remaining,
-                updatedAt: serverTimestamp(),
-              }, { merge: true });
-            }
-          }
-          if (projectObj?.docId && projectObj.docId !== clientId) {
-            await deleteDoc(doc(db, "projects", projectObj.docId));
-          } else if (id && !clientId) {
-            await deleteDoc(doc(db, "projects", id));
-          }
+        // 1. Optimistic removal
+        setProjects((prev) => prev.filter((p) => p.id !== id));
 
-          setConfirmModal({
-            isSuccess: true,
-            title: "Project Deleted Successfully!",
-            message: `Project "${name}" has been permanently removed from the client vault.`,
-            confirmText: "Done",
-            confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-          });
-        } catch (err) {
-          setConfirmModal({
-            isSuccess: false,
-            title: "Delete Failed",
-            message: err.message || "Failed to delete project.",
-            icon: "fas fa-exclamation-triangle",
-            iconBg: "#fee2e2",
-            iconColor: "#dc2626",
-            confirmText: "Close",
-            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-          });
-        }
+        // 2. Instant confirmation display
+        setConfirmModal({
+          isSuccess: true,
+          title: "Project Deleted Successfully!",
+          message: `Project "${name}" has been permanently removed from the client vault.`,
+          confirmText: "Done",
+          confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        });
+
+        // 3. Background Database deletion
+        (async () => {
+          try {
+            const clientId = (projectObj?.clientId || "").trim().toLowerCase();
+            if (clientId) {
+              const clientDocRef = doc(db, "projects", clientId);
+              const snap = await getDoc(clientDocRef);
+              if (snap.exists()) {
+                const d = snap.data();
+                const currentProjects = Array.isArray(d.projects) ? d.projects : Array.isArray(d.list) ? d.list : [];
+                const remaining = currentProjects.filter((p) => p.id !== id);
+                await setDoc(clientDocRef, {
+                  projects: remaining,
+                  list: remaining,
+                  updatedAt: serverTimestamp(),
+                }, { merge: true });
+              }
+            }
+            if (projectObj?.docId && projectObj.docId !== clientId) {
+              await deleteDoc(doc(db, "projects", projectObj.docId));
+            } else if (id && !clientId) {
+              await deleteDoc(doc(db, "projects", id));
+            }
+          } catch (err) {
+            console.warn("Background project delete error:", err);
+          }
+        })();
       },
     });
   };
@@ -561,9 +886,9 @@ export default function ProjectInvoiceManager() {
     setInvTaxPct(0);
     setInvStatus("UNPAID");
     setInvPaymentMode("Bank Transfer");
-    setInvPaymentInfo("Account Name: ChittorTech\nBank: ICICI Bank / HDFC Bank\nUPI ID: chittortech@icici");
+    setInvPaymentInfo("Account Name: ChittorTech\nBank Name: Chittorgarh Urban Co-operative Bank\nUPI ID: 8233816674@upi (Display Name: Kush Sharma)");
     setInvTermsText(
-      "Payment is due upon receipt of this milestone invoice.\nWork milestone deliverables will be released upon clearance.\nPlease make payments payable to ChittorTech official accounts."
+      "Payment is due upon receipt of this milestone invoice.\nWork milestone deliverables will be released upon clearance.\nOfficial UPI ID: 8233816674@upi (Display Name: Kush Sharma) (or scan official ChittorTech QR code).\nPlease make payments payable to ChittorTech official accounts."
     );
     setInvModalTab("form");
     setShowInvoiceModal(true);
@@ -687,26 +1012,42 @@ export default function ProjectInvoiceManager() {
       createdDateString: new Date().toLocaleDateString("en-IN"),
     };
 
-    try {
-      const snap = await getDoc(clientDocRef);
-      let currentInvoices = [];
-      if (snap.exists()) {
-        const d = snap.data();
-        currentInvoices = Array.isArray(d.invoices) ? [...d.invoices] : Array.isArray(d.list) ? [...d.list] : [];
-      }
+    // 1. Optimistic UI update
+    setInvoices((prev) => [newInvoiceObj, ...prev]);
 
-      currentInvoices.unshift(newInvoiceObj);
+    // 2. Immediately close modal
+    setShowInvoiceModal(false);
 
-      await setDoc(clientDocRef, {
-        clientId: targetClientId,
-        invoices: currentInvoices,
-        list: currentInvoices,
-        updatedAt: serverTimestamp(),
-      }, { merge: true });
+    // 3. Immediately display confirmation modal
+    setConfirmModal({
+      isSuccess: true,
+      title: "Official Invoice Generated Successfully!",
+      message: `Invoice (${finalDocNum}) has been saved for ${targetClientId}. You can now view, print, or download the A4 PDF anytime.`,
+      confirmText: "Done",
+      confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    });
 
-      // Write notification record to notifications collection
+    // 4. Background Database write & notification
+    (async () => {
       try {
-        await addDoc(collection(db, "notifications"), {
+        const snap = await getDoc(clientDocRef);
+        let currentInvoices = [];
+        if (snap.exists()) {
+          const d = snap.data();
+          currentInvoices = Array.isArray(d.invoices) ? [...d.invoices] : Array.isArray(d.list) ? [...d.list] : [];
+        }
+
+        currentInvoices.unshift(newInvoiceObj);
+
+        await setDoc(clientDocRef, {
+          clientId: targetClientId,
+          invoices: currentInvoices,
+          list: currentInvoices,
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+
+        // Background push & in-app notifications
+        dispatchClientNotification(targetClientId, {
           title: "📄 New Invoice Issued: " + finalDocNum,
           message: (newInvoiceObj.title) + " • ₹" + Number(calculatedInvGrandTotal).toLocaleString("en-IN") + " (" + invStatus + ")",
           category: "Billing",
@@ -719,7 +1060,8 @@ export default function ProjectInvoiceManager() {
           createdAt: new Date().toISOString(),
           sentBy: "ChittorTech Admin Console",
           channel: "FCM_PUSH_AND_INAPP",
-        });
+        }).catch(() => {});
+
         fetch("/api/send-fcm-push", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -731,30 +1073,10 @@ export default function ProjectInvoiceManager() {
             targetClientId: targetClientId,
           }),
         }).catch(() => {});
-      } catch (notifErr) {
-        console.warn("Failed to write invoice notification:", notifErr);
+      } catch (err) {
+        console.warn("Background invoice save error:", err);
       }
-
-      setShowInvoiceModal(false);
-      setConfirmModal({
-        isSuccess: true,
-        title: "Official Invoice Generated Successfully!",
-        message: `Invoice (${finalDocNum}) has been saved for ${targetClientId}. You can now view, print, or download the A4 PDF anytime.`,
-        confirmText: "Done",
-        confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-      });
-    } catch (err) {
-      setConfirmModal({
-        isSuccess: false,
-        title: "Invoice Generation Error",
-        message: err.message || "Failed to generate invoice.",
-        icon: "fas fa-exclamation-triangle",
-        iconBg: "#fee2e2",
-        iconColor: "#dc2626",
-        confirmText: "Close",
-        confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-      });
-    }
+    })();
   };
 
   const toggleInvoiceStatus = async (inv) => {
@@ -788,7 +1110,7 @@ export default function ProjectInvoiceManager() {
         const invNum = inv.invoiceId || inv.id || "Invoice";
         const invTitleStr = inv.title || inv.projectName || "Milestone Deliverable";
         const invAmtNum = Number(inv.amount || 0);
-        await addDoc(collection(db, "notifications"), {
+        await dispatchClientNotification(clientId, {
           title: newStatus === "PAID" ? "✅ Invoice Payment Confirmed: " + invNum : "⏳ Invoice Marked " + newStatus + ": " + invNum,
           message: (invTitleStr || "Milestone Deliverable") + " • ₹" + invAmtNum.toLocaleString("en-IN") + " (" + newStatus + ")",
           category: "Billing",
@@ -835,49 +1157,152 @@ export default function ProjectInvoiceManager() {
       confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
       cancelText: "Cancel",
       onConfirm: async () => {
-        try {
-          const clientId = (invoiceObj?.clientId || "").trim().toLowerCase();
-          if (clientId) {
-            const clientDocRef = doc(db, "invoices", clientId);
-            const snap = await getDoc(clientDocRef);
-            if (snap.exists()) {
-              const d = snap.data();
-              const currentInvoices = Array.isArray(d.invoices) ? d.invoices : Array.isArray(d.list) ? d.list : [];
-              const remaining = currentInvoices.filter((i) => i.id !== id && i.invoiceId !== invNum);
-              await setDoc(clientDocRef, {
-                invoices: remaining,
-                list: remaining,
-                updatedAt: serverTimestamp(),
-              }, { merge: true });
-            }
-          }
-          if (invoiceObj?.docId && invoiceObj.docId !== clientId) {
-            await deleteDoc(doc(db, "invoices", invoiceObj.docId));
-          } else if (id && !clientId) {
-            await deleteDoc(doc(db, "invoices", id));
-          }
+        // 1. Optimistic removal
+        setInvoices((prev) => prev.filter((i) => i.id !== id && i.invoiceId !== invNum));
 
-          setConfirmModal({
-            isSuccess: true,
-            title: "Invoice Deleted Successfully!",
-            message: `Invoice ${invNum || ""} has been permanently deleted from ${clientId || "the client"}'s vault.`,
-            confirmText: "Done",
-            confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-          });
-        } catch (err) {
-          setConfirmModal({
-            isSuccess: false,
-            title: "Delete Failed",
-            message: err.message || "Failed to delete invoice.",
-            icon: "fas fa-exclamation-triangle",
-            iconBg: "#fee2e2",
-            iconColor: "#dc2626",
-            confirmText: "Close",
-            confirmBg: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-          });
-        }
+        const clientId = (invoiceObj?.clientId || "").trim().toLowerCase();
+
+        // 2. Instant confirmation display
+        setConfirmModal({
+          isSuccess: true,
+          title: "Invoice Deleted Successfully!",
+          message: `Invoice ${invNum || ""} has been permanently deleted from ${clientId || "the client"}'s vault.`,
+          confirmText: "Done",
+          confirmBg: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        });
+
+        // 3. Background Database deletion
+        (async () => {
+          try {
+            if (clientId) {
+              const clientDocRef = doc(db, "invoices", clientId);
+              const snap = await getDoc(clientDocRef);
+              if (snap.exists()) {
+                const d = snap.data();
+                const currentInvoices = Array.isArray(d.invoices) ? d.invoices : Array.isArray(d.list) ? d.list : [];
+                const remaining = currentInvoices.filter((i) => i.id !== id && i.invoiceId !== invNum);
+                await setDoc(clientDocRef, {
+                  invoices: remaining,
+                  list: remaining,
+                  updatedAt: serverTimestamp(),
+                }, { merge: true });
+              }
+            }
+            if (invoiceObj?.docId && invoiceObj.docId !== clientId) {
+              await deleteDoc(doc(db, "invoices", invoiceObj.docId));
+            } else if (id && !clientId) {
+              await deleteDoc(doc(db, "invoices", id));
+            }
+          } catch (err) {
+            console.warn("Background invoice delete error:", err);
+          }
+        })();
       },
     });
+  };
+
+  // Handle Ticket Status & Resolution Update
+  const handleUpdateTicketStatus = async (ticket, newStatus, resolutionNote = "") => {
+    const targetClientId = (ticket.clientId || ticket.docId || "").trim().toLowerCase();
+    if (!targetClientId) {
+      alert("Error: Client ID not found for this ticket.");
+      return;
+    }
+
+    const clientDocRef = doc(db, "tickets", targetClientId);
+    try {
+      const snap = await getDoc(clientDocRef);
+      let currentTickets = [];
+      if (snap.exists()) {
+        const d = snap.data();
+        currentTickets = Array.isArray(d.tickets) ? [...d.tickets] : Array.isArray(d.list) ? [...d.list] : [];
+      }
+
+      const existingIdx = currentTickets.findIndex(
+        (t) => (t.ticketId && t.ticketId === ticket.ticketId) || (t.id && t.id === ticket.id)
+      );
+
+      const nowIso = new Date().toISOString();
+      const isResolved = ["RESOLVED", "CLOSED"].includes(newStatus.toUpperCase());
+      const updatedTicket = {
+        ...(existingIdx >= 0 ? currentTickets[existingIdx] : ticket),
+        status: newStatus,
+        resolutionNote: resolutionNote || ticket.resolutionNote || "",
+        updatedAt: nowIso,
+        resolvedAt: isResolved ? nowIso : (ticket.resolvedAt || null),
+      };
+
+      if (existingIdx >= 0) {
+        currentTickets[existingIdx] = updatedTicket;
+      } else {
+        currentTickets.unshift(updatedTicket);
+      }
+
+      // Optimistic local state update for instant UI responsiveness
+      setTickets((prev) =>
+        prev.map((t) =>
+          (t.ticketId && t.ticketId === ticket.ticketId) || (t.id && t.id === ticket.id)
+            ? { ...t, ...updatedTicket }
+            : t
+        )
+      );
+
+      await setDoc(
+        clientDocRef,
+        {
+          clientId: targetClientId,
+          tickets: currentTickets,
+          list: currentTickets,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Push notification to client
+      try {
+        const formattedStatus = newStatus.replace("_", " ");
+        const notifTitle = `🎫 Ticket ${ticket.ticketId || ""}: ${formattedStatus}`;
+        const notifMsg = resolutionNote
+          ? `Resolution: ${resolutionNote}`
+          : `Your ticket "${ticket.title || ""}" status is now ${formattedStatus}.`;
+
+        dispatchClientNotification(targetClientId, {
+          title: notifTitle,
+          message: notifMsg,
+          category: "Support",
+          targetRole: "client",
+          targetEmail: targetClientId,
+          timestamp: serverTimestamp(),
+          type: "UPDATE",
+          target: "SPECIFIC_CLIENT",
+          targetClientId: targetClientId,
+          ticketId: ticket.ticketId || "",
+          createdAt: nowIso,
+          sentBy: "ChittorTech Admin Console",
+          channel: "FCM_PUSH_AND_INAPP",
+        }).catch(() => {});
+
+        fetch("/api/send-fcm-push", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: notifTitle,
+            message: notifMsg,
+            type: "UPDATE",
+            target: "SPECIFIC_CLIENT",
+            targetClientId: targetClientId,
+          }),
+        }).catch(() => {});
+      } catch (notifErr) {
+        console.warn("Failed to write ticket notification:", notifErr);
+      }
+
+      setFloatingToast(`Ticket ${ticket.ticketId || ""} updated to ${newStatus}`);
+      setTimeout(() => setFloatingToast(""), 3500);
+    } catch (err) {
+      console.error("Error updating ticket status:", err);
+      alert("Failed to update ticket: " + err.message);
+    }
   };
 
   // Financial Metrics
@@ -1005,6 +1430,61 @@ export default function ProjectInvoiceManager() {
               <i className="fas fa-file-invoice-dollar"></i>
               <span>Invoices &amp; Billing ({invoices.length})</span>
             </button>
+            <button
+              onClick={() => {
+                setActiveSubTab("tickets");
+                setStatusFilter("all");
+              }}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "9px",
+                border: "none",
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                background: activeSubTab === "tickets" ? "#ffffff" : "transparent",
+                color: activeSubTab === "tickets" ? "#0284c7" : "#64748b",
+                boxShadow: activeSubTab === "tickets" ? "0 2px 6px rgba(0,0,0,0.06)" : "none",
+                transition: "all 0.2s",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <i className="fas fa-headset"></i>
+              <span>Support Tickets</span>
+              {tickets.filter((t) => (t.status || "").toUpperCase() === "OPEN").length > 0 ? (
+                <span
+                  style={{
+                    background: "#ef4444",
+                    color: "#ffffff",
+                    fontSize: "0.72rem",
+                    fontWeight: 800,
+                    padding: "1px 7px",
+                    borderRadius: "10px",
+                    marginLeft: "2px",
+                    boxShadow: "0 2px 5px rgba(239, 68, 68, 0.35)",
+                  }}
+                  title="Open Support Tickets Awaiting Action"
+                >
+                  {tickets.filter((t) => (t.status || "").toUpperCase() === "OPEN").length}
+                </span>
+              ) : (
+                <span
+                  style={{
+                    background: "#f1f5f9",
+                    color: "#64748b",
+                    fontSize: "0.72rem",
+                    fontWeight: 700,
+                    padding: "1px 6px",
+                    borderRadius: "10px",
+                    marginLeft: "2px",
+                  }}
+                >
+                  0
+                </span>
+              )}
+            </button>
           </div>
 
           {activeSubTab === "projects" ? (
@@ -1065,7 +1545,7 @@ export default function ProjectInvoiceManager() {
               </div>
             </div>
             <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#0f172a", marginTop: "8px" }}>{clients.length}</div>
-            <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px" }}>Active in Cloud Firestore</div>
+            <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px" }}>Active in Database</div>
           </div>
 
           <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
@@ -1108,6 +1588,62 @@ export default function ProjectInvoiceManager() {
               {projects.length + invoices.length}
             </div>
             <div style={{ fontSize: "0.75rem", color: "#6d28d9", marginTop: "4px", fontWeight: 600 }}>Milestones &amp; Billing Invoices</div>
+          </div>
+        </div>
+      ) : activeSubTab === "tickets" ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", marginBottom: "24px" }}>
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #0284c7, #38bdf8)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Total Support Tickets</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#f0f9ff", color: "#0284c7", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-headset"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#0f172a", marginTop: "8px" }}>{tickets.length}</div>
+            <div style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "4px" }}>Raised across all clients</div>
+          </div>
+
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #ef4444, #f87171)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Open &amp; Pending</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#fef2f2", color: "#ef4444", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-circle-exclamation"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#ef4444", marginTop: "8px" }}>
+              {tickets.filter((t) => (t.status || "").toUpperCase() === "OPEN").length}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#dc2626", marginTop: "4px", fontWeight: 600 }}>Needs ChittorTech action</div>
+          </div>
+
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #f59e0b, #fbbf24)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>In Investigation</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#fffbeb", color: "#d97706", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-spinner"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#d97706", marginTop: "8px" }}>
+              {tickets.filter((t) => (t.status || "").toUpperCase() === "IN_PROGRESS").length}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#b45309", marginTop: "4px", fontWeight: 600 }}>Active troubleshooting</div>
+          </div>
+
+          <div style={{ background: "#ffffff", padding: "18px 20px", borderRadius: "16px", border: "1.5px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.02)", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #10b981, #34d399)" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: "#64748b", fontSize: "0.78rem", fontWeight: 700, textTransform: "uppercase" }}>Resolved Tickets</span>
+              <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "#ecfdf5", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="fas fa-check-circle"></i>
+              </div>
+            </div>
+            <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#16a34a", marginTop: "8px" }}>
+              {tickets.filter((t) => ["RESOLVED", "CLOSED"].includes((t.status || "").toUpperCase())).length}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "#059669", marginTop: "4px", fontWeight: 600 }}>Completed successfully</div>
           </div>
         </div>
       ) : activeSubTab === "projects" ? (
@@ -1237,9 +1773,15 @@ export default function ProjectInvoiceManager() {
       {activeSubTab === "clients" && (
         <ClientAccountManager
           clients={clients}
+          setClients={setClients}
           loadingClients={loadingClients}
           projects={projects}
           invoices={invoices}
+          tickets={tickets}
+          onSelectTicketsTab={(email) => {
+            setSearchQuery(email || "");
+            setActiveSubTab("tickets");
+          }}
           onCreateProject={(clientEmail) => {
             setProjClientId(clientEmail);
             openNewProjectModal();
@@ -1306,133 +1848,269 @@ export default function ProjectInvoiceManager() {
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))", gap: "18px" }}>
-              {filteredProjects.map((p) => (
-                <div
-                  key={p.id}
-                  style={{
-                    background: "#ffffff",
-                    borderRadius: "16px",
-                    border: "1.5px solid #e2e8f0",
-                    padding: "20px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <div>
-                    {/* Header: Status + Edit */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                      <span
-                        style={{
-                          fontSize: "0.74rem",
-                          fontWeight: 700,
-                          padding: "3px 10px",
-                          borderRadius: "20px",
-                          background:
-                            p.status === "Live & Active" || p.status === "Completed"
-                              ? "#ecfdf5"
-                              : p.status === "In Progress"
-                              ? "#eff6ff"
-                              : p.status === "Code Review"
-                              ? "#f5f3ff"
-                              : "#fffbeb",
-                          color:
-                            p.status === "Live & Active" || p.status === "Completed"
-                              ? "#10b981"
-                              : p.status === "In Progress"
-                              ? "#2563eb"
-                              : p.status === "Code Review"
-                              ? "#8b5cf6"
-                              : "#d97706",
-                          border: `1px solid ${
-                            p.status === "Live & Active" || p.status === "Completed"
-                              ? "#a7f3d0"
-                              : p.status === "In Progress"
-                              ? "#bfdbfe"
-                              : "#e2e8f0"
-                          }`,
-                        }}
-                      >
-                        {p.status === "Live & Active" ? "🟢 Live & Active" : p.status === "Completed" ? "✅ Completed" : p.status === "In Progress" ? "🔵 In Progress" : p.status === "Code Review" ? "🟣 Code Review" : "🟡 Planning"}
-                      </span>
+              {filteredProjects.map((p) => {
+                const catInfo = getProjectCategoryInfo(p);
+                return (
+                  <div
+                    key={p.id}
+                    style={{
+                      background: "#ffffff",
+                      borderRadius: "16px",
+                      border: "1.5px solid #e2e8f0",
+                      padding: "20px",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    <div>
+                      {/* Header: Category Badge + Status + Edit */}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", gap: "8px", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span
+                            style={{
+                              fontSize: "0.72rem",
+                              fontWeight: 800,
+                              padding: "3px 9px",
+                              borderRadius: "14px",
+                              background: catInfo.bg,
+                              color: catInfo.color,
+                              border: `1px solid ${catInfo.border}`,
+                            }}
+                          >
+                            {catInfo.label}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "0.74rem",
+                              fontWeight: 700,
+                              padding: "3px 10px",
+                              borderRadius: "20px",
+                              background:
+                                p.status === "Live & Active" || p.status === "Completed"
+                                  ? "#ecfdf5"
+                                  : p.status === "In Progress"
+                                  ? "#eff6ff"
+                                  : p.status === "Code Review"
+                                  ? "#f5f3ff"
+                                  : "#fffbeb",
+                              color:
+                                p.status === "Live & Active" || p.status === "Completed"
+                                  ? "#10b981"
+                                  : p.status === "In Progress"
+                                  ? "#2563eb"
+                                  : p.status === "Code Review"
+                                  ? "#8b5cf6"
+                                  : "#d97706",
+                              border: `1px solid ${
+                                p.status === "Live & Active" || p.status === "Completed"
+                                  ? "#a7f3d0"
+                                  : p.status === "In Progress"
+                                  ? "#bfdbfe"
+                                  : "#e2e8f0"
+                              }`,
+                            }}
+                          >
+                            {p.status === "Live & Active" ? "🟢 Live" : p.status === "Completed" ? "✅ Completed" : p.status === "In Progress" ? "🔵 In Progress" : p.status === "Code Review" ? "🟣 Review" : "🟡 Planning"}
+                          </span>
+                        </div>
 
-                      <button
-                        onClick={() => openEditProjectModal(p)}
+                        <button
+                          onClick={() => openEditProjectModal(p)}
+                          style={{
+                            background: "#f1f5f9",
+                            border: "1px solid #cbd5e1",
+                            borderRadius: "8px",
+                            padding: "5px 10px",
+                            fontSize: "0.75rem",
+                            fontWeight: 700,
+                            color: "#334155",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          <i className="fas fa-pen"></i> Edit
+                        </button>
+                      </div>
+
+                      {/* Project Title & Client ID */}
+                      <h4 style={{ margin: "0 0 6px", fontSize: "1.1rem", fontWeight: 800, color: "#0f172a" }}>
+                        {p.name}
+                      </h4>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", color: "#0284c7", background: "#f0f9ff", padding: "3px 8px", borderRadius: "6px", fontWeight: 600, marginBottom: "14px" }}>
+                        <i className="fas fa-user-circle"></i>
+                        <span>Client ID: {p.clientId}</span>
+                      </div>
+
+                      {/* Current Phase */}
+                      <div style={{ marginBottom: "12px" }}>
+                        <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Current Sprint Phase</span>
+                        <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1e293b", marginTop: "2px" }}>
+                          📌 {p.currentPhase || "Core Engineering Phase"}
+                        </div>
+                      </div>
+
+                      {/* Progress Slider Display */}
+                      <div style={{ marginBottom: "16px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                          <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 600 }}>Milestone Completion</span>
+                          <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#0284c7" }}>{p.milestoneProgress || 0}%</span>
+                        </div>
+                        <div style={{ width: "100%", height: "7px", background: "#e2e8f0", borderRadius: "10px", overflow: "hidden" }}>
+                          <div
+                            style={{
+                              width: `${Math.min(100, Math.max(0, p.milestoneProgress || 0))}%`,
+                              height: "100%",
+                              background: "linear-gradient(90deg, #0284c7, #10b981)",
+                              borderRadius: "10px",
+                              transition: "width 0.4s ease",
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      {/* Category-Specific Infrastructure & Deliverables Dossier */}
+                      <div
                         style={{
-                          background: "#f1f5f9",
-                          border: "1px solid #cbd5e1",
-                          borderRadius: "8px",
-                          padding: "5px 10px",
-                          fontSize: "0.75rem",
-                          fontWeight: 700,
-                          color: "#334155",
-                          cursor: "pointer",
+                          background: catInfo.bg,
+                          border: `1.5px solid ${catInfo.border}`,
+                          borderRadius: "12px",
+                          padding: "12px 14px",
+                          fontSize: "0.78rem",
+                          color: "#1e293b",
+                          marginBottom: "14px",
                           display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
+                          flexDirection: "column",
+                          gap: "7px",
                         }}
                       >
-                        <i className="fas fa-pen"></i> Edit
+                        {catInfo.isSeo ? (
+                          <>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#78350f", fontWeight: 700 }}><i className="fas fa-globe" style={{ marginRight: "6px" }}></i>Target Site:</span>
+                              <strong style={{ color: "#0f172a" }}>{p.domain || "Client Primary"}</strong>
+                            </div>
+                            {p.targetKeywords && (
+                              <div style={{ borderTop: `1px dashed ${catInfo.border}`, paddingTop: "6px" }}>
+                                <span style={{ color: "#78350f", fontWeight: 700, fontSize: "0.72rem", textTransform: "uppercase" }}>Keywords:</span>
+                                <div style={{ color: "#0f172a", fontWeight: 600, fontSize: "0.75rem", marginTop: "2px" }}>
+                                  🎯 {p.targetKeywords}
+                                </div>
+                              </div>
+                            )}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px dashed ${catInfo.border}`, paddingTop: "6px" }}>
+                              <span style={{ color: "#78350f", fontWeight: 700 }}><i className="fas fa-bullseye" style={{ marginRight: "6px" }}></i>Strategy:</span>
+                              <span style={{ fontWeight: 600 }}>{p.hostingProvider || "Technical SEO & Backlinks"}</span>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#78350f", fontWeight: 700 }}><i className="fas fa-calendar" style={{ marginRight: "6px" }}></i>Kickoff:</span>
+                              <span>{p.buildKickoffDate || "Active"}</span>
+                            </div>
+                          </>
+                        ) : catInfo.isApp ? (
+                          <>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#065f46", fontWeight: 700 }}><i className="fas fa-box" style={{ marginRight: "6px" }}></i>Package ID:</span>
+                              <strong style={{ fontFamily: "monospace", fontSize: "0.75rem", color: "#0f172a" }}>{p.domain || "com.chittortech.app"}</strong>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px dashed ${catInfo.border}`, paddingTop: "6px" }}>
+                              <span style={{ color: "#065f46", fontWeight: 700 }}><i className="fas fa-mobile-screen" style={{ marginRight: "6px" }}></i>Platform:</span>
+                              <span style={{ fontWeight: 600 }}>{p.platform || "Android (Google Play)"}</span>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#065f46", fontWeight: 700 }}><i className="fas fa-flask" style={{ marginRight: "6px" }}></i>Release Track:</span>
+                              <span style={{ fontWeight: 700, color: "#059669" }}>{p.hostingProvider || "12-Tester Track"}</span>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#065f46", fontWeight: 700 }}><i className="fas fa-calendar" style={{ marginRight: "6px" }}></i>Kickoff:</span>
+                              <span>{p.buildKickoffDate || "Recent"}</span>
+                            </div>
+                          </>
+                        ) : catInfo.isAi ? (
+                          <>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#5b21b6", fontWeight: 700 }}><i className="fas fa-network-wired" style={{ marginRight: "6px" }}></i>Architecture:</span>
+                              <strong style={{ color: "#0f172a" }}>{p.platform || "Enterprise RAG Pipeline"}</strong>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px dashed ${catInfo.border}`, paddingTop: "6px" }}>
+                              <span style={{ color: "#5b21b6", fontWeight: 700 }}><i className="fas fa-microchip" style={{ marginRight: "6px" }}></i>Engine:</span>
+                              <span style={{ fontWeight: 600 }}>{p.hostingProvider || "Llama 3.3 (Groq LPU)"}</span>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#5b21b6", fontWeight: 700 }}><i className="fas fa-database" style={{ marginRight: "6px" }}></i>Vector DB:</span>
+                              <span style={{ fontFamily: "monospace", fontSize: "0.75rem" }}>{p.domain || "Pinecone / pgvector"}</span>
+                            </div>
+                          </>
+                        ) : catInfo.isChatbot ? (
+                          <>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#155e75", fontWeight: 700 }}><i className="fab fa-whatsapp" style={{ marginRight: "6px" }}></i>Channel:</span>
+                              <strong style={{ color: "#0f172a" }}>{p.platform || "Official WhatsApp API"}</strong>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px dashed ${catInfo.border}`, paddingTop: "6px" }}>
+                              <span style={{ color: "#155e75", fontWeight: 700 }}><i className="fas fa-robot" style={{ marginRight: "6px" }}></i>Persona:</span>
+                              <span style={{ fontWeight: 600 }}>{p.hostingProvider || "24/7 Lead & Support Bot"}</span>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#155e75", fontWeight: 700 }}><i className="fas fa-language" style={{ marginRight: "6px" }}></i>Languages:</span>
+                              <span>{p.domain || "Hindi, English, Hinglish"}</span>
+                            </div>
+                          </>
+                        ) : catInfo.isErp ? (
+                          <>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#312e81", fontWeight: 700 }}><i className="fas fa-cubes" style={{ marginRight: "6px" }}></i>Modules:</span>
+                              <strong style={{ color: "#0f172a" }}>{p.platform || "GST Billing, Inventory & CRM"}</strong>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px dashed ${catInfo.border}`, paddingTop: "6px" }}>
+                              <span style={{ color: "#312e81", fontWeight: 700 }}><i className="fas fa-server" style={{ marginRight: "6px" }}></i>Hosting:</span>
+                              <span style={{ fontWeight: 600 }}>{p.hostingProvider || "Dedicated Cloud VPS"}</span>
+                            </div>
+                            {p.annualRenewalFee > 0 && (
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <span style={{ color: "#312e81", fontWeight: 700 }}><i className="fas fa-shield" style={{ marginRight: "6px" }}></i>Annual AMC:</span>
+                                <strong style={{ color: "#4338ca" }}>₹{Number(p.annualRenewalFee).toLocaleString("en-IN")}/yr</strong>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#0369a1", fontWeight: 700 }}><i className="fas fa-globe" style={{ marginRight: "6px" }}></i>Domain:</span>
+                              <strong style={{ color: "#0f172a" }}>{p.domain || "TBD"}</strong>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px dashed ${catInfo.border}`, paddingTop: "6px" }}>
+                              <span style={{ color: "#0369a1", fontWeight: 700 }}><i className="fas fa-cloud" style={{ marginRight: "6px" }}></i>Cloud:</span>
+                              <span style={{ fontWeight: 600 }}>{p.hostingProvider || "AWS / Vercel"}</span>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#0369a1", fontWeight: 700 }}><i className="fas fa-lock" style={{ marginRight: "6px" }}></i>SSL Security:</span>
+                              <span style={{ fontWeight: 700, color: p.sslStatus === "Active" ? "#10b981" : "#d97706" }}>{p.sslStatus || "Active"}</span>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span style={{ color: "#0369a1", fontWeight: 700 }}><i className="fas fa-calendar-xmark" style={{ marginRight: "6px" }}></i>Domain Expiry:</span>
+                              <span style={{ fontWeight: 700, color: "#0284c7" }}>{p.domainExpiryDate || "—"}</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: "12px", textAlign: "right" }}>
+                      <button
+                        onClick={() => handleDeleteProject(p.id, p.name, p)}
+                        style={{ background: "transparent", color: "#ef4444", border: "none", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
+                      >
+                        <i className="fas fa-trash-alt"></i> Delete Project
                       </button>
                     </div>
-
-                    {/* Project Title & Client ID */}
-                    <h4 style={{ margin: "0 0 6px", fontSize: "1.1rem", fontWeight: 800, color: "#0f172a" }}>
-                      {p.name}
-                    </h4>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "0.78rem", color: "#0284c7", background: "#f0f9ff", padding: "3px 8px", borderRadius: "6px", fontWeight: 600, marginBottom: "14px" }}>
-                      <i className="fas fa-user-circle"></i>
-                      <span>Client ID: {p.clientId}</span>
-                    </div>
-
-                    {/* Current Phase */}
-                    <div style={{ marginBottom: "12px" }}>
-                      <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Current Sprint Phase</span>
-                      <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1e293b", marginTop: "2px" }}>
-                        📌 {p.currentPhase || "Core Engineering Phase"}
-                      </div>
-                    </div>
-
-                    {/* Progress Slider Display */}
-                    <div style={{ marginBottom: "16px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
-                        <span style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 600 }}>Milestone Completion</span>
-                        <span style={{ fontSize: "0.82rem", fontWeight: 800, color: "#0284c7" }}>{p.milestoneProgress || 0}%</span>
-                      </div>
-                      <div style={{ width: "100%", height: "7px", background: "#e2e8f0", borderRadius: "10px", overflow: "hidden" }}>
-                        <div
-                          style={{
-                            width: `${Math.min(100, Math.max(0, p.milestoneProgress || 0))}%`,
-                            height: "100%",
-                            background: "linear-gradient(90deg, #0284c7, #10b981)",
-                            borderRadius: "10px",
-                            transition: "width 0.4s ease",
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    {/* Infrastructure Chips */}
-                    <div style={{ background: "#f8fafc", borderRadius: "10px", padding: "10px 12px", border: "1px solid #f1f5f9", fontSize: "0.75rem", color: "#475569", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "14px" }}>
-                      <div><strong>Domain:</strong> {p.domain || "TBD"}</div>
-                      <div><strong>Cloud:</strong> {p.hostingProvider || "AWS"}</div>
-                      <div><strong>Kickoff:</strong> {p.buildKickoffDate || "Recent"}</div>
-                      <div><strong>Target:</strong> {p.launchDate || "TBD"}</div>
-                    </div>
                   </div>
-
-                  <div style={{ borderTop: "1px solid #f1f5f9", paddingTop: "12px", textAlign: "right" }}>
-                    <button
-                      onClick={() => handleDeleteProject(p.id, p.name, p)}
-                      style={{ background: "transparent", color: "#ef4444", border: "none", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
-                    >
-                      <i className="fas fa-trash-alt"></i> Delete Project
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -1522,7 +2200,7 @@ export default function ProjectInvoiceManager() {
                         </span>
                       </td>
                       <td style={{ padding: "14px", color: "#64748b", fontSize: "0.8rem" }}>
-                        {inv.dueDate || "Net 7 Days"}
+                        {formatDateDDMMYYYY(inv.dueDate || inv.invoiceDate) || "Net 7 Days"}
                       </td>
                       <td style={{ padding: "14px" }}>
                         <span
@@ -1594,6 +2272,23 @@ export default function ProjectInvoiceManager() {
         </div>
       )}
 
+      {/* SUB-TAB 3: SUPPORT TICKETS VIEW */}
+      {activeSubTab === "tickets" && (
+        <SupportTicketManager
+          tickets={tickets}
+          loadingTickets={loadingTickets}
+          loading={loadingTickets}
+          clients={clients}
+          projects={projects}
+          onUpdateTicketStatus={handleUpdateTicketStatus}
+          onUpdateStatus={handleUpdateTicketStatus}
+          setConfirmModal={setConfirmModal}
+          setFloatingToast={setFloatingToast}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+      )}
+
       {/* PROJECT MODAL */}
       {showProjectModal && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "20px" }}>
@@ -1608,16 +2303,35 @@ export default function ProjectInvoiceManager() {
             </div>
 
             <form onSubmit={handleSaveProject}>
-              <div style={{ marginBottom: "14px" }}>
-                <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Project Name *</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Acme Fleet ERP & Logistics App"
-                  value={projName}
-                  onChange={(e) => setProjName(e.target.value)}
-                  style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.88rem", boxSizing: "border-box" }}
-                  required
-                />
+              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "12px", marginBottom: "14px" }}>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Project Name *</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Acme Fleet ERP & Logistics App"
+                    value={projName}
+                    onChange={(e) => setProjName(e.target.value)}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.88rem", boxSizing: "border-box" }}
+                    required
+                  />
+                </div>
+                <div>
+                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#0284c7", marginBottom: "6px" }}>
+                    Project Vertical / Service Type *
+                  </label>
+                  <select
+                    value={projType}
+                    onChange={(e) => handleProjectTypeChange(e.target.value)}
+                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #0284c7", fontSize: "0.88rem", background: "#f0f9ff", color: "#0369a1", fontWeight: 700, boxSizing: "border-box" }}
+                  >
+                    <option value="Website / Web SaaS">🌐 Website / Web SaaS</option>
+                    <option value="Mobile App (Android / iOS)">📱 Mobile App (Android / iOS)</option>
+                    <option value="SEO & Digital Marketing">📈 SEO & Digital Marketing</option>
+                    <option value="AI & Machine Learning">🧠 AI & Machine Learning</option>
+                    <option value="AI & WhatsApp Chatbot">💬 AI & WhatsApp Chatbot</option>
+                    <option value="Enterprise Software / ERP">🏢 Enterprise Software / ERP</option>
+                  </select>
+                </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "14px" }}>
@@ -1690,49 +2404,399 @@ export default function ProjectInvoiceManager() {
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "14px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Domain</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. app.acmecorp.com"
-                    value={projDomain}
-                    onChange={(e) => setProjDomain(e.target.value)}
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.88rem", boxSizing: "border-box" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Cloud / Hosting</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. AWS Mumbai / Vercel"
-                    value={projHosting}
-                    onChange={(e) => setProjHosting(e.target.value)}
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.88rem", boxSizing: "border-box" }}
-                  />
-                </div>
-              </div>
+              {/* DYNAMIC, VERTICAL-SPECIFIC PROJECT CONFIGURATION PANEL */}
+              {projType === "SEO & Digital Marketing" ? (
+                <div style={{ background: "#fffbeb", border: "1.5px solid #fde68a", borderRadius: "14px", padding: "16px", marginBottom: "18px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", color: "#b45309", fontWeight: 800, fontSize: "0.86rem" }}>
+                    <i className="fas fa-chart-line"></i>
+                    <span>SEO Campaign & Keyword Ranking Deliverables</span>
+                  </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "20px" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Kickoff Date</label>
-                  <input
-                    type="date"
-                    value={projKickoff}
-                    onChange={(e) => setProjKickoff(e.target.value)}
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.88rem", boxSizing: "border-box" }}
-                  />
+                  <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Target Website URL *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. https://shadisutra.com"
+                        value={projDomain}
+                        onChange={(e) => setProjDomain(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Target Geo / Region</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Rajasthan & Pan-India (Local GMB)"
+                        value={projPlatform}
+                        onChange={(e) => setProjPlatform(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "12px" }}>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Primary Target Keywords Focus</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Wedding Planner Chittorgarh, Destination Wedding Rajasthan, Royal Event Venues"
+                      value={projTargetKeywords}
+                      onChange={(e) => setProjTargetKeywords(e.target.value)}
+                      style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Campaign Strategy & Scope</label>
+                      <select
+                        value={projHosting}
+                        onChange={(e) => setProjHosting(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="Complete Technical & On-Page SEO">Complete Technical &amp; On-Page SEO</option>
+                        <option value="Local SEO & Google Business Profile">Local SEO &amp; Google Business Profile (GMB)</option>
+                        <option value="High-Intent Backlinks & Outreach">High-Intent Backlinks &amp; Outreach</option>
+                        <option value="E-Commerce Product Ranking & Schema">E-Commerce Product Ranking &amp; Schema</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Campaign Kickoff Date</label>
+                      <input
+                        type="date"
+                        value={projKickoff}
+                        onChange={(e) => setProjKickoff(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#1e293b", marginBottom: "6px" }}>Target Launch</label>
-                  <input
-                    type="date"
-                    value={projLaunch}
-                    onChange={(e) => setProjLaunch(e.target.value)}
-                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.88rem", boxSizing: "border-box" }}
-                  />
+              ) : projType === "Mobile App (Android / iOS)" ? (
+                <div style={{ background: "#f0fdf4", border: "1.5px solid #a7f3d0", borderRadius: "14px", padding: "16px", marginBottom: "18px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", color: "#059669", fontWeight: 800, fontSize: "0.86rem" }}>
+                    <i className="fas fa-mobile-screen"></i>
+                    <span>Mobile App & Google Play Store Deliverables</span>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>App Package ID / Bundle Name *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. com.shadisutra.app"
+                        value={projDomain}
+                        onChange={(e) => setProjDomain(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Target Platform</label>
+                      <select
+                        value={projPlatform}
+                        onChange={(e) => setProjPlatform(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="Android (Google Play)">🤖 Android (Google Play Store)</option>
+                        <option value="iOS (Apple App Store)">🍏 iOS (Apple App Store)</option>
+                        <option value="Dual Platform (Android + iOS)">📱 Dual Platform (Android + iOS)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Google Play Release Track</label>
+                      <select
+                        value={projHosting}
+                        onChange={(e) => setProjHosting(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="12-Tester Closed Track">🧪 12-Tester Closed Track (In Progress)</option>
+                        <option value="Production Live">🚀 Production Live on Play Store</option>
+                        <option value="Internal Testing & Build Review">🔍 Internal Testing &amp; QA Review</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Target Store Launch Date</label>
+                      <input
+                        type="date"
+                        value={projDomainExpiry}
+                        onChange={(e) => setProjDomainExpiry(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Development Kickoff</label>
+                      <input
+                        type="date"
+                        value={projKickoff}
+                        onChange={(e) => setProjKickoff(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Annual Play Store / Support AMC (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 10000"
+                        value={projAmcAmount}
+                        onChange={(e) => setProjAmcAmount(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : projType === "AI & Machine Learning" ? (
+                <div style={{ background: "#f5f3ff", border: "1.5px solid #ddd6fe", borderRadius: "14px", padding: "16px", marginBottom: "18px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", color: "#7c3aed", fontWeight: 800, fontSize: "0.86rem" }}>
+                    <i className="fas fa-brain"></i>
+                    <span>Enterprise AI &amp; Machine Learning Architecture</span>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>AI Solution Pipeline</label>
+                      <select
+                        value={projPlatform}
+                        onChange={(e) => setProjPlatform(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="Enterprise RAG (Vector Knowledge Base)">Enterprise RAG (Vector Knowledge Base)</option>
+                        <option value="Custom LLM Domain Fine-Tuning">Custom LLM Domain Fine-Tuning</option>
+                        <option value="Document OCR & Computer Vision">Document OCR &amp; Computer Vision</option>
+                        <option value="Autonomous Agentic Workflow">Autonomous Agentic Workflow</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Foundation Model / Compute Engine</label>
+                      <select
+                        value={projHosting}
+                        onChange={(e) => setProjHosting(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="Llama 3.3 70B (Groq LPU Instant Inference)">Llama 3.3 70B (Groq LPU Inference)</option>
+                        <option value="OpenAI GPT-4o / GPT-4o-mini">OpenAI GPT-4o / GPT-4o-mini</option>
+                        <option value="Anthropic Claude 3.5 Sonnet">Anthropic Claude 3.5 Sonnet</option>
+                        <option value="Custom Private Cloud (vLLM)">Custom Private Cloud (vLLM)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Vector DB &amp; Knowledge Store</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Pinecone Serverless / pgvector"
+                        value={projDomain}
+                        onChange={(e) => setProjDomain(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Engineering Kickoff Date</label>
+                      <input
+                        type="date"
+                        value={projKickoff}
+                        onChange={(e) => setProjKickoff(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : projType === "AI & WhatsApp Chatbot" ? (
+                <div style={{ background: "#ecfeff", border: "1.5px solid #a5f3fc", borderRadius: "14px", padding: "16px", marginBottom: "18px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", color: "#0891b2", fontWeight: 800, fontSize: "0.86rem" }}>
+                    <i className="fas fa-comment-dots"></i>
+                    <span>Conversational AI &amp; WhatsApp Chatbot Setup</span>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Integration Channel</label>
+                      <select
+                        value={projPlatform}
+                        onChange={(e) => setProjPlatform(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="Official WhatsApp Business API">Official WhatsApp Business API</option>
+                        <option value="Website Embeddable Live Chat Widget">Website Embeddable Chat Widget</option>
+                        <option value="Omnichannel (WhatsApp + Web)">Omnichannel (WhatsApp + Web)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Bot Persona &amp; Use Case</label>
+                      <select
+                        value={projHosting}
+                        onChange={(e) => setProjHosting(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="24/7 Customer Support & FAQ Triage">24/7 Support &amp; FAQ Triage</option>
+                        <option value="Lead Qualification & Instant Booking">Lead Qualification &amp; Booking</option>
+                        <option value="E-Commerce Catalog & Order Status">E-Commerce Catalog &amp; Order Status</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Supported Languages</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Hindi, English, Hinglish"
+                        value={projDomain}
+                        onChange={(e) => setProjDomain(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Kickoff Date</label>
+                      <input
+                        type="date"
+                        value={projKickoff}
+                        onChange={(e) => setProjKickoff(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : projType === "Enterprise Software / ERP" ? (
+                <div style={{ background: "#eef2ff", border: "1.5px solid #c7d2fe", borderRadius: "14px", padding: "16px", marginBottom: "18px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", color: "#4338ca", fontWeight: 800, fontSize: "0.86rem" }}>
+                    <i className="fas fa-building"></i>
+                    <span>Enterprise ERP &amp; Business Software Suite</span>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Core Modules Included</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. GST Invoicing, Inventory, Multi-Branch CRM"
+                        value={projPlatform}
+                        onChange={(e) => setProjPlatform(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Hosting &amp; Server Architecture</label>
+                      <select
+                        value={projHosting}
+                        onChange={(e) => setProjHosting(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="Dedicated Linux VPS + Automated Backups">Dedicated Linux VPS + Backups</option>
+                        <option value="AWS Cloud Multi-Region Database">AWS Cloud Multi-Region Database</option>
+                        <option value="Hybrid On-Premise + Cloud Sync">Hybrid On-Premise + Cloud Sync</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Kickoff Date</label>
+                      <input
+                        type="date"
+                        value={projKickoff}
+                        onChange={(e) => setProjKickoff(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Annual Maintenance / AMC (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 15000"
+                        value={projAmcAmount}
+                        onChange={(e) => setProjAmcAmount(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* DEFAULT: Website / Web SaaS */
+                <div style={{ background: "#f8fafc", border: "1.5px solid #bae6fd", borderRadius: "14px", padding: "16px", marginBottom: "18px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px", color: "#0284c7", fontWeight: 800, fontSize: "0.86rem" }}>
+                    <i className="fas fa-globe"></i>
+                    <span>Website &amp; Cloud SaaS Infrastructure</span>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Production Domain *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. shadisutra.com"
+                        value={projDomain}
+                        onChange={(e) => setProjDomain(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Cloud / Hosting Provider</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Vercel / AWS Cloud"
+                        value={projHosting}
+                        onChange={(e) => setProjHosting(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Kickoff Date</label>
+                      <input
+                        type="date"
+                        value={projKickoff}
+                        onChange={(e) => setProjKickoff(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Domain Expiry Date</label>
+                      <input
+                        type="date"
+                        value={projDomainExpiry}
+                        onChange={(e) => setProjDomainExpiry(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>SSL Status</label>
+                      <select
+                        value={projSslStatus}
+                        onChange={(e) => setProjSslStatus(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", background: "#ffffff", boxSizing: "border-box" }}
+                      >
+                        <option value="Active">🟢 SSL Active (HTTPS / TLS 1.3)</option>
+                        <option value="Pending">🟡 Pending DNS / Cloudflare</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 700, color: "#1e293b", marginBottom: "5px" }}>Annual Maintenance / AMC (₹)</label>
+                      <input
+                        type="number"
+                        placeholder="e.g. 5000"
+                        value={projAmcAmount}
+                        onChange={(e) => setProjAmcAmount(e.target.value)}
+                        style={{ width: "100%", padding: "9px 12px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
                 <button type="button" onClick={closeProjectModal} style={{ padding: "10px 18px", borderRadius: "8px", border: "1px solid #cbd5e1", background: "#f8fafc", color: "#475569", fontWeight: 700, cursor: "pointer" }}>
@@ -1993,16 +3057,77 @@ export default function ProjectInvoiceManager() {
                 {/* 3. ASSOCIATED PROJECT & TITLE */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "16px" }}>
                   <div>
-                    <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#334155", marginBottom: "4px" }}>
-                      Associated Project
-                    </label>
-                    <input
-                      type="text"
-                      value={invProjName}
-                      onChange={(e) => setInvProjName(e.target.value)}
-                      placeholder="e.g. Mewari Achaar Mobile App"
-                      style={{ width: "100%", padding: "8px 10px", borderRadius: "8px", border: "1.5px solid #cbd5e1", fontSize: "0.85rem", boxSizing: "border-box" }}
-                    />
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                      <label style={{ fontSize: "0.78rem", fontWeight: 700, color: "#334155" }}>
+                        Associated Project
+                      </label>
+                      {projects.filter((p) => !invClientId || (p.clientId || "").toLowerCase() === invClientId.toLowerCase()).length > 0 && (
+                        <span style={{ fontSize: "0.7rem", color: "#0284c7", fontWeight: 600 }}>
+                          {projects.filter((p) => !invClientId || (p.clientId || "").toLowerCase() === invClientId.toLowerCase()).length} Project(s) Found
+                        </span>
+                      )}
+                    </div>
+                    <select
+                      value={projects.some((p) => p.name === invProjName) ? invProjName : (invProjName ? "__custom__" : "")}
+                      onChange={(e) => {
+                        if (e.target.value === "__custom__") {
+                          setInvProjName("");
+                        } else {
+                          setInvProjName(e.target.value);
+                        }
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: "8px 10px",
+                        borderRadius: "8px",
+                        border: "1.5px solid #cbd5e1",
+                        fontSize: "0.85rem",
+                        boxSizing: "border-box",
+                        background: "#ffffff",
+                        fontWeight: 600,
+                        color: "#0f172a",
+                      }}
+                    >
+                      <option value="">-- Select Client Project --</option>
+                      {projects
+                        .filter((p) => !invClientId || (p.clientId || "").toLowerCase() === invClientId.toLowerCase())
+                        .map((p) => (
+                          <option key={p.id} value={p.name}>
+                            📁 {p.name} ({p.status || "Active"})
+                          </option>
+                        ))}
+                      {invClientId && projects.filter((p) => (p.clientId || "").toLowerCase() !== invClientId.toLowerCase()).length > 0 && (
+                        <optgroup label="Other Client Projects">
+                          {projects
+                            .filter((p) => (p.clientId || "").toLowerCase() !== invClientId.toLowerCase())
+                            .map((p) => (
+                              <option key={p.id} value={p.name}>
+                                📁 {p.name} ({p.clientId})
+                              </option>
+                            ))}
+                        </optgroup>
+                      )}
+                      <option value="General Web & Cloud Deliverable">General Web &amp; Cloud Deliverable</option>
+                      <option value="Mobile App Development Sprint">Mobile App Development Sprint</option>
+                      <option value="__custom__">✏️ Custom Project Name...</option>
+                    </select>
+                    {(!projects.some((p) => p.name === invProjName) && invProjName !== "" || invProjName === "__custom__") && (
+                      <input
+                        type="text"
+                        value={invProjName === "__custom__" ? "" : invProjName}
+                        onChange={(e) => setInvProjName(e.target.value)}
+                        placeholder="Enter custom project name..."
+                        style={{
+                          width: "100%",
+                          padding: "7px 10px",
+                          borderRadius: "8px",
+                          border: "1.5px solid #0284c7",
+                          fontSize: "0.82rem",
+                          boxSizing: "border-box",
+                          marginTop: "6px",
+                        }}
+                      />
+                    )}
                   </div>
                   <div>
                     <label style={{ display: "block", fontSize: "0.78rem", fontWeight: 700, color: "#334155", marginBottom: "4px" }}>
@@ -2314,7 +3439,7 @@ export default function ProjectInvoiceManager() {
                           </p>
                           <p style={{ margin: 0, fontSize: "12px" }}>
                             <strong style={{ fontWeight: 700, marginRight: "5px" }}>Invoice Date:</strong>
-                            <span>{invDocDate || new Date().toISOString().split("T")[0]}</span>
+                            <span>{formatDateDDMMYYYY(invDocDate || new Date())}</span>
                           </p>
                         </div>
                         <div style={{ backgroundColor: "#E8EDF3", flex: 1, display: "flex", alignItems: "center", padding: "0 46px 0 14px", gap: "11px", position: "relative", overflow: "hidden" }}>
@@ -2395,9 +3520,9 @@ export default function ProjectInvoiceManager() {
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px", marginBottom: "18px" }}>
                         <div style={{ border: "1.5px solid #D8DDE3", borderRadius: "4px", padding: "13px 15px", backgroundColor: "rgba(255,255,255,0.8)" }}>
                           <h3 style={{ fontSize: "14px", fontWeight: 900, color: "#000000", margin: "0 0 9px 0", paddingBottom: "6px", borderBottom: "1.5px solid #D8DDE3" }}>Billing Information:</h3>
-                          <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Date: </strong>{invDocDate || "—"}</p>
+                          <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Date: </strong>{formatDateDDMMYYYY(invDocDate) || "—"}</p>
                           <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Payment Method: </strong>{invPaymentMode}</p>
-                          <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Due Date: </strong>{invDueDate || "—"}</p>
+                          <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Due Date: </strong>{formatDateDDMMYYYY(invDueDate) || "—"}</p>
                           <div style={{ marginTop: "6px", whiteSpace: "pre-line", fontSize: "11px", color: "#4A4A4A" }}>{invPaymentInfo}</div>
                         </div>
 
@@ -2413,13 +3538,12 @@ export default function ProjectInvoiceManager() {
 
                       {/* Signature block */}
                       <div style={{ display: "flex", justifyContent: "flex-end", paddingRight: "4px", marginBottom: "16px" }}>
-                        <div style={{ textAlign: "right", minWidth: "180px" }}>
-                          <div style={{ fontSize: "12px", fontWeight: 600, color: "#1A1A1A", marginBottom: "8px" }}>
-                            Date: {invDocDate || new Date().toISOString().split("T")[0]}
+                        <div style={{ textAlign: "right", minWidth: "260px" }}>
+                          <div style={{ fontSize: "12px", fontWeight: 700, color: "#1A1A1A", marginBottom: "6px" }}>
+                            Date: {formatDateDDMMYYYY(invDocDate || new Date())}
                           </div>
-                          <div style={{ height: "40px" }}></div>
-                          <div style={{ borderTop: "1.5px solid #1A1A1A", paddingTop: "5px", fontSize: "12px", fontWeight: 700 }}>
-                            Authorized Signatory (ChittorTech)
+                          <div style={{ fontSize: "11px", color: "#475569", fontWeight: 600, fontStyle: "italic", letterSpacing: "0.2px" }}>
+                            * Bill generated from the digital platform, no manual sign needed
                           </div>
                         </div>
                       </div>

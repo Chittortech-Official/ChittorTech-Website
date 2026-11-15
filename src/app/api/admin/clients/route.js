@@ -377,6 +377,76 @@ export async function POST(req) {
       // Write directly to Firestore users collection
       if (adminDb) {
         await adminDb.collection("users").doc(cleanEmail).set(docData, { merge: true });
+
+        if (action === "create_client" && !ADMIN_EMAILS.includes(cleanEmail)) {
+          const nowIso = new Date().toISOString();
+          const baseClientMetadata = {
+            clientId: cleanEmail,
+            clientEmail: cleanEmail,
+            clientName: clientName,
+            companyName: clientCompany,
+            updatedAt: nowIso,
+            createdAt: nowIso,
+          };
+
+          // 1. Initialize tickets document
+          try {
+            const tktDocRef = adminDb.collection("tickets").doc(cleanEmail);
+            const tktSnap = await tktDocRef.get();
+            if (!tktSnap.exists) {
+              await tktDocRef.set({
+                ...baseClientMetadata,
+                tickets: [],
+              });
+            }
+          } catch (tktErr) {
+            console.warn("Could not auto-init tickets doc for client:", tktErr);
+          }
+
+          // 2. Initialize projects document
+          try {
+            const projDocRef = adminDb.collection("projects").doc(cleanEmail);
+            const projSnap = await projDocRef.get();
+            if (!projSnap.exists) {
+              await projDocRef.set({
+                ...baseClientMetadata,
+                projects: [],
+                list: [],
+              });
+            }
+          } catch (projErr) {
+            console.warn("Could not auto-init projects doc for client:", projErr);
+          }
+
+          // 3. Initialize invoices document
+          try {
+            const invDocRef = adminDb.collection("invoices").doc(cleanEmail);
+            const invSnap = await invDocRef.get();
+            if (!invSnap.exists) {
+              await invDocRef.set({
+                ...baseClientMetadata,
+                invoices: [],
+                list: [],
+              });
+            }
+          } catch (invErr) {
+            console.warn("Could not auto-init invoices doc for client:", invErr);
+          }
+
+          // 4. Initialize notifications document
+          try {
+            const notifDocRef = adminDb.collection("notifications").doc(cleanEmail);
+            const notifSnap = await notifDocRef.get();
+            if (!notifSnap.exists) {
+              await notifDocRef.set({
+                ...baseClientMetadata,
+                notifications: [],
+              });
+            }
+          } catch (notifErr) {
+            console.warn("Could not auto-init notifications doc for client:", notifErr);
+          }
+        }
       }
 
       // Dispatch Welcome Email if requested (default true on creation)
@@ -481,17 +551,48 @@ export async function POST(req) {
 
       const cleanEmail = email.trim().toLowerCase();
       if (adminDb) {
-        await Promise.allSettled([
+        // 1. Direct document deletes for users, projects, invoices, tickets, notifications
+        const deleteOps = [
           adminDb.collection("users").doc(cleanEmail).delete(),
           adminDb.collection("projects").doc(cleanEmail).delete(),
           adminDb.collection("invoices").doc(cleanEmail).delete(),
           adminDb.collection("tickets").doc(cleanEmail).delete(),
-        ]);
+          adminDb.collection("notifications").doc(cleanEmail).delete(),
+        ];
+
+        // 2. Delete any subcollections (e.g. notifications/{cleanEmail}/messages)
+        try {
+          const subMessages = await adminDb
+            .collection("notifications")
+            .doc(cleanEmail)
+            .collection("messages")
+            .get();
+          subMessages.forEach((docSnap) => {
+            deleteOps.push(docSnap.ref.delete());
+          });
+        } catch (_) {}
+
+        // 3. Delete any legacy docs matching this client ID
+        try {
+          const [projQuery, invQuery, tktQuery, notifQuery] = await Promise.all([
+            adminDb.collection("projects").where("clientId", "==", cleanEmail).get(),
+            adminDb.collection("invoices").where("clientId", "==", cleanEmail).get(),
+            adminDb.collection("tickets").where("clientId", "==", cleanEmail).get(),
+            adminDb.collection("notifications").where("targetClientId", "==", cleanEmail).get(),
+          ]);
+
+          projQuery.forEach((d) => deleteOps.push(d.ref.delete()));
+          invQuery.forEach((d) => deleteOps.push(d.ref.delete()));
+          tktQuery.forEach((d) => deleteOps.push(d.ref.delete()));
+          notifQuery.forEach((d) => deleteOps.push(d.ref.delete()));
+        } catch (_) {}
+
+        await Promise.allSettled(deleteOps);
       }
 
       return NextResponse.json({
         status: "success",
-        msg: `Client account "${cleanEmail}" deleted from database.`,
+        msg: `Client account "${cleanEmail}" and all linked documents (tickets, projects, invoices, notifications) deleted from database.`,
       });
     }
 

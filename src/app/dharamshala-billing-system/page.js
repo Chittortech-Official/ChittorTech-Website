@@ -246,6 +246,39 @@ export default function Page() {
                   <i className="fa-solid fa-file-invoice-dollar me-2"></i> Request Trust Audit Demo
                 </button>
               </div>
+
+              {/* Ultra-Compact Quick Info Pill */}
+              <div style={{
+                marginTop: "16px",
+                background: "rgba(255, 255, 255, 0.08)",
+                border: "1px solid rgba(254, 215, 170, 0.3)",
+                borderRadius: "12px",
+                padding: "10px 14px",
+                backdropFilter: "blur(8px)",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px", flexWrap: "wrap" }}>
+                  <span style={{ background: "#ea580c", color: "#fff", fontSize: "0.65rem", fontWeight: 800, padding: "2px 8px", borderRadius: "20px", textTransform: "uppercase" }}>
+                    <i className="fa-solid fa-om me-1"></i> Trust &amp; Yatri ERP
+                  </span>
+                  <span style={{ color: "#fed7aa", fontSize: "0.74rem", fontWeight: 700 }}>
+                    Offline-First · 80G Receipts · Police Register
+                  </span>
+                </div>
+                <p style={{ fontSize: "0.78rem", color: "#ffedd5", lineHeight: 1.4, margin: "0 0 8px 0" }}>
+                  Bina internet ke counter billing, 80G donation tax receipts, thermal print, aur police Form C yatri export. One-time turnkey setup, zero monthly subscription.
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  <span style={{ background: "rgba(69, 26, 3, 0.7)", border: "1px solid rgba(254, 215, 170, 0.2)", color: "#fb923c", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                    ₹14,999 One-Time ($180)
+                  </span>
+                  <span style={{ background: "rgba(69, 26, 3, 0.7)", border: "1px solid rgba(254, 215, 170, 0.2)", color: "#34d399", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                    <i className="fa-solid fa-wifi me-1"></i> Offline-First
+                  </span>
+                  <span style={{ background: "rgba(69, 26, 3, 0.7)", border: "1px solid rgba(254, 215, 170, 0.2)", color: "#facc15", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                    80G Receipt Print
+                  </span>
+                </div>
+              </div>
             </div>
             <div className="col-lg-5 col-12 d-flex justify-content-center mt-4 mt-lg-0">
               {/* Smartphone Mockup Frame (Vertical 9:16 — Zero Black Bars) */}
@@ -617,6 +650,129 @@ export default function Page() {
                 <div style={{ background: "rgba(0,0,0,0.15)", borderRadius: "12px", padding: "16px", marginTop: "24px", fontSize: "0.8rem", color: "#fed7aa" }}>
                   <i className="fa-solid fa-circle-info me-1"></i> Trustees can configure dynamic check-in approval workflows. If auto-approve is active, tokens skip this queue.
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* -- Turnkey Software Pricing for Temple Trusts -- */}
+      <section id="trust-software-pricing" style={{ padding: "90px 0", background: "#fdfbf7", borderTop: "1px solid #eedec5" }}>
+        <div className="container">
+          <div className="text-center mb-5">
+            <span style={{ display: "inline-block", background: "#fed7aa", color: "#9a3412", padding: "6px 18px", borderRadius: "50px", fontSize: "0.8rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
+              <i className="fa-solid fa-tags me-1"></i> Transparent Trust Pricing
+            </span>
+            <h2 style={{ fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 900, color: "#451a03", marginBottom: "14px" }}>
+              Dharamshala &amp; Temple Trust Software Packages
+            </h2>
+            <p style={{ color: "#78350f", maxWidth: "680px", margin: "0 auto", fontSize: "1.05rem", lineHeight: 1.7 }}>
+              One-time turnkey setup with zero forced monthly subscriptions. Includes lifetime database ownership, thermal printer setup, and full staff training.
+            </p>
+          </div>
+
+          <div className="row g-4 justify-content-center">
+            {/* Plan 1 */}
+            <div className="col-lg-4 col-md-6">
+              <div style={{ background: "#fff", border: "1.5px solid #fed7aa", borderRadius: "20px", padding: "35px 28px", height: "100%", display: "flex", flexDirection: "column", boxShadow: "0 10px 30px rgba(120, 53, 15, 0.05)" }}>
+                <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#ea580c", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Ashram Counter Edition</span>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "#451a03", marginBottom: "10px" }}>Single Counter Setup</h3>
+                <p style={{ fontSize: "0.85rem", color: "#78716c", marginBottom: "20px", lineHeight: 1.5 }}>
+                  Ideal for small ashrams and single-gate dharamshalas needing fast check-ins and clean donation receipts.
+                </p>
+                <div style={{ marginBottom: "24px", paddingBottom: "18px", borderBottom: "1px solid #fed7aa" }}>
+                  <div style={{ fontSize: "2.4rem", fontWeight: 900, color: "#ea580c", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>₹14,999</div>
+                  <div style={{ fontSize: "0.8rem", color: "#a8a29e", fontWeight: 600 }}>One-Time Turnkey ($180 USD)</div>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px 0", flexGrow: 1, fontSize: "0.88rem", color: "#44403c" }}>
+                  {[
+                    "Room allocation up to 50 rooms/beds",
+                    "Devotee check-in / check-out with ID proof scan",
+                    "80G donation receipt printing (Thermal 3-inch + A4)",
+                    "Daily cash register & collection summary",
+                    "WhatsApp receipt PDF dispatch to devotees",
+                    "Offline-first sync (Works without internet)",
+                    "1-Year free technical support & remote setup"
+                  ].map((feat, i) => (
+                    <li key={i} style={{ marginBottom: "10px", display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                      <i className="fa-solid fa-circle-check text-success" style={{ marginTop: "4px", flexShrink: 0 }}></i>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20am%20interested%20in%20the%20Single%20Counter%20Dharamshala%20Software%20(₹14,999)." target="_blank" rel="noopener noreferrer" className="ct-btn ct-btn-lg" style={{ background: "#451a03", color: "#fff", width: "100%", justifyContent: "center", fontWeight: 700 }}>
+                  <i className="fa-brands fa-whatsapp me-2"></i> Get Started on WhatsApp
+                </a>
+              </div>
+            </div>
+
+            {/* Plan 2: Most Popular */}
+            <div className="col-lg-4 col-md-6">
+              <div style={{ background: "#fff", border: "2.5px solid #ea580c", borderRadius: "20px", padding: "35px 28px", height: "100%", display: "flex", flexDirection: "column", position: "relative", boxShadow: "0 20px 45px rgba(234, 88, 12, 0.15)" }}>
+                <span style={{ position: "absolute", top: "-14px", left: "50%", transform: "translateX(-50%)", background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#fff", fontSize: "0.72rem", fontWeight: 800, padding: "4px 16px", borderRadius: "50px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                  Most Recommended for Trusts
+                </span>
+                <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#ea580c", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Trust &amp; Complex Edition</span>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "#451a03", marginBottom: "10px" }}>Temple Trust ERP</h3>
+                <p style={{ fontSize: "0.85rem", color: "#78716c", marginBottom: "20px", lineHeight: 1.5 }}>
+                  Full multi-counter solution for active pilgrimage shrines, dharamshalas, and charitable trust guest houses.
+                </p>
+                <div style={{ marginBottom: "24px", paddingBottom: "18px", borderBottom: "1px solid #fed7aa" }}>
+                  <div style={{ fontSize: "2.4rem", fontWeight: 900, color: "#ea580c", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>₹29,999</div>
+                  <div style={{ fontSize: "0.8rem", color: "#a8a29e", fontWeight: 600 }}>One-Time Turnkey ($360 USD)</div>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px 0", flexGrow: 1, fontSize: "0.88rem", color: "#44403c" }}>
+                  {[
+                    "Unlimited rooms, family halls & dormitories",
+                    "Multi-counter billing with cashier role-based access",
+                    "Automated Police Yatri Register (PDF/Excel Form C)",
+                    "Trust Accounting & Donation Ledger (Pooja/Prasad)",
+                    "Trustee Mobile Dashboard (Live collections on phone)",
+                    "Offline-online hybrid cloud auto-sync",
+                    "1-Year dedicated support + staff video training"
+                  ].map((feat, i) => (
+                    <li key={i} style={{ marginBottom: "10px", display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                      <i className="fa-solid fa-circle-check text-success" style={{ marginTop: "4px", flexShrink: 0 }}></i>
+                      <span><strong>{feat}</strong></span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20am%20interested%20in%20the%20Temple%20Trust%20ERP%20Software%20(₹29,999)." target="_blank" rel="noopener noreferrer" className="ct-btn ct-btn-lg" style={{ background: "linear-gradient(135deg, #f59e0b, #ea580c)", color: "#fff", width: "100%", justifyContent: "center", fontWeight: 800, border: "none" }}>
+                  <i className="fa-brands fa-whatsapp me-2"></i> Book Live Trust Demo
+                </a>
+              </div>
+            </div>
+
+            {/* Plan 3 */}
+            <div className="col-lg-4 col-md-6">
+              <div style={{ background: "#fff", border: "1.5px solid #fed7aa", borderRadius: "20px", padding: "35px 28px", height: "100%", display: "flex", flexDirection: "column", boxShadow: "0 10px 30px rgba(120, 53, 15, 0.05)" }}>
+                <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#ea580c", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Enterprise Shrine Board</span>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "#451a03", marginBottom: "10px" }}>Custom Pilgrim Portal</h3>
+                <p style={{ fontSize: "0.85rem", color: "#78716c", marginBottom: "20px", lineHeight: 1.5 }}>
+                  Tailored web and mobile infrastructure for state pilgrimage boards, famous temples, and high-footfall trusts.
+                </p>
+                <div style={{ marginBottom: "24px", paddingBottom: "18px", borderBottom: "1px solid #fed7aa" }}>
+                  <div style={{ fontSize: "2.4rem", fontWeight: 900, color: "#ea580c", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>₹49,999</div>
+                  <div style={{ fontSize: "0.8rem", color: "#a8a29e", fontWeight: 600 }}>Custom One-Time ($599 USD)</div>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px 0", flexGrow: 1, fontSize: "0.88rem", color: "#44403c" }}>
+                  {[
+                    "Online public devotee advance room booking portal",
+                    "Integrated UPI/QR donation gateways across gates",
+                    "Trust inventory management (Bhandara, Linens, Stores)",
+                    "Custom charter compliance & annual audit reporting",
+                    "Priority 24/7 SLA emergency hotline",
+                    "Lifetime database license & private cloud hosting"
+                  ].map((feat, i) => (
+                    <li key={i} style={{ marginBottom: "10px", display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                      <i className="fa-solid fa-circle-check text-success" style={{ marginTop: "4px", flexShrink: 0 }}></i>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20need%20a%20Custom%20Shrine%20Board%20/%20Temple%20Portal%20(₹49,999)." target="_blank" rel="noopener noreferrer" className="ct-btn ct-btn-lg" style={{ background: "#451a03", color: "#fff", width: "100%", justifyContent: "center", fontWeight: 700 }}>
+                  <i className="fa-solid fa-headset me-2"></i> Consult Our Tech Lead
+                </a>
               </div>
             </div>
           </div>

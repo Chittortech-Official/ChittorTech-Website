@@ -1,19 +1,19 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { AdminConfirmModal, AdminFloatingToast } from "./AdminConfirmModal";
 import { db } from "@/lib/firebase";
 import {
   collection,
   addDoc,
+  setDoc,
   deleteDoc,
   doc,
   query,
-  orderBy,
   limit,
   getDocs,
   onSnapshot,
   serverTimestamp,
+  arrayUnion
 } from "firebase/firestore";
 
 export default function NotificationHub() {
@@ -51,15 +51,30 @@ export default function NotificationHub() {
     try {
       const q = query(
         collection(db, "notifications"),
-        orderBy("timestamp", "desc"),
-        limit(30)
+        limit(50)
       );
       const unsubscribe = onSnapshot(
         q,
         (snapshot) => {
           const items = [];
           snapshot.forEach((docSnap) => {
-            items.push({ id: docSnap.id, ...docSnap.data() });
+            const data = docSnap.data();
+            if (Array.isArray(data.notifications)) {
+              data.notifications.forEach((item, idx) => {
+                items.push({
+                  id: item.id || (docSnap.id + "_" + idx),
+                  parentDocId: docSnap.id,
+                  ...item,
+                });
+              });
+            } else if (data.title || data.message) {
+              items.push({ id: docSnap.id, ...data });
+            }
+          });
+          items.sort((a, b) => {
+            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : (a.timestamp?.toMillis ? a.timestamp.toMillis() : 0);
+            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : (b.timestamp?.toMillis ? b.timestamp.toMillis() : 0);
+            return timeB - timeA;
           });
           setNotifications(items);
           setLoading(false);
@@ -150,7 +165,21 @@ export default function NotificationHub() {
         channel: "FCM_PUSH_AND_INAPP",
       };
 
-      await addDoc(collection(db, "notifications"), payload);
+      const targetDocId = (target === "SPECIFIC_CLIENT" && effectiveClientId)
+        ? effectiveClientId.toLowerCase().trim()
+        : "to_all_users";
+      const notifId = "notif_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+      const fullPayload = { ...payload, id: notifId };
+
+      await setDoc(doc(db, "notifications", targetDocId), {
+        clientId: targetDocId,
+        notifications: arrayUnion(fullPayload),
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
+
+      try {
+        await setDoc(doc(db, "notifications", targetDocId, "messages", notifId), fullPayload, { merge: true });
+      } catch (subErr) {}
 
       // Trigger FCM Push via API route
       try {

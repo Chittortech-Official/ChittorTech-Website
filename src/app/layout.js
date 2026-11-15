@@ -20,7 +20,7 @@ export const metadata = {
   metadataBase: new URL("https://chittortech.in"),
   title: {
     default: "ChittorTech | IT Services, Web & Mobile App Development",
-    template: "%s | ChittorTech",
+    template: "%s",
   },
   description: "ChittorTech is a premier IT company in India specializing in custom mobile apps, web development, cloud ERP, and enterprise AI software solutions.",
   alternates: {

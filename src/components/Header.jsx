@@ -1222,6 +1222,7 @@ export default function Header() {
                   </div>
                 </li>
 
+                <li><Link href="/case-studies" className="ct-nav-btn"><i className="fa-solid fa-trophy text-primary me-1" style={{ fontSize: "0.78rem" }}></i> Case Studies</Link></li>
                 <li><Link href="/trust-center" className="ct-nav-btn"><i className="fa-solid fa-shield-halved text-success me-1" style={{ fontSize: "0.78rem" }}></i> Trust Center</Link></li>
                 <li><Link href="/about-us" className="ct-nav-btn">About</Link></li>
                 <li><Link href="/blog" className="ct-nav-btn">Blog</Link></li>
@@ -1328,6 +1329,9 @@ export default function Header() {
           </div>
 
           <div className="ct-mobile-divider" />
+          <Link href="/case-studies" className="ct-mobile-link">
+            <span><i className="fa-solid fa-trophy" style={{marginRight:"8px",color:"#3b82f6"}}></i>Case Studies</span>
+          </Link>
           <Link href="/trust-center" className="ct-mobile-link">
             <span><i className="fa-solid fa-shield-halved" style={{marginRight:"8px",color:"#10b981"}}></i>Trust Center</span>
           </Link>

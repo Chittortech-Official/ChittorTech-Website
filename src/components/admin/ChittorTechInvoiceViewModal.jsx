@@ -2,6 +2,26 @@
 
 import React, { useRef, useState } from "react";
 
+const formatDateDDMMYYYY = (dateVal) => {
+  if (!dateVal) return "";
+  const str = String(dateVal).trim();
+  if (/^\d{2}-\d{2}-\d{4}$/.test(str)) return str;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    const [y, m, d] = str.split("-");
+    return `${d}-${m}-${y}`;
+  }
+  try {
+    const dt = dateVal.toDate ? dateVal.toDate() : new Date(dateVal);
+    if (!isNaN(dt.getTime())) {
+      const d = String(dt.getDate()).padStart(2, "0");
+      const m = String(dt.getMonth() + 1).padStart(2, "0");
+      const y = dt.getFullYear();
+      return `${d}-${m}-${y}`;
+    }
+  } catch {}
+  return str;
+};
+
 export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
   const [downloading, setDownloading] = useState(false);
   const previewRef = useRef(null);
@@ -71,7 +91,7 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
     : subtotal + taxAmt;
 
   const paymentMode = invoice.paymentMode || "Bank Transfer";
-  const paymentInfo = invoice.paymentInfo || "Account Name: ChittorTech\nBank: ICICI Bank / HDFC Bank\nUPI ID: chittortech@icici";
+  const paymentInfo = invoice.paymentInfo || "Account Name: ChittorTech\nBank: ICICI Bank / HDFC Bank\nUPI ID: 8233816674@upi (Display Name: Kush Sharma)";
 
   const termsList = Array.isArray(invoice.terms) && invoice.terms.length > 0
     ? invoice.terms
@@ -80,6 +100,7 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
         : [
             "Payment is due upon receipt of this milestone invoice.",
             "Work milestone source deliverables will be released upon clearance.",
+            "Official UPI ID: 8233816674@upi (Display Name: Kush Sharma).",
             "All payments should be remitted to official ChittorTech accounts only.",
           ]);
 
@@ -349,7 +370,7 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
                 </p>
                 <p style={{ margin: 0, fontSize: "12px" }}>
                   <strong style={{ fontWeight: 700, marginRight: "5px" }}>Invoice Date:</strong>
-                  <span>{invoiceDate}</span>
+                  <span>{formatDateDDMMYYYY(invoiceDate)}</span>
                 </p>
               </div>
 
@@ -661,7 +682,7 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
                 </h3>
                 <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}>
                   <strong style={{ color: "#1A1A1A", fontWeight: 600 }}>Date: </strong>
-                  {invoiceDate}
+                  {formatDateDDMMYYYY(invoiceDate)}
                 </p>
                 <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}>
                   <strong style={{ color: "#1A1A1A", fontWeight: 600 }}>Payment Method: </strong>
@@ -669,7 +690,7 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
                 </p>
                 <p style={{ margin: "0 0 4px 0", fontSize: "12px", color: "#4A4A4A" }}>
                   <strong style={{ color: "#1A1A1A", fontWeight: 600 }}>Due Date: </strong>
-                  {dueDate}
+                  {formatDateDDMMYYYY(dueDate)}
                 </p>
                 <div
                   style={{
@@ -735,21 +756,12 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
                 marginBottom: "16px",
               }}
             >
-              <div style={{ textAlign: "right", minWidth: "200px" }}>
-                <div style={{ fontSize: "12px", fontWeight: 600, color: "#1A1A1A", marginBottom: "8px" }}>
-                  Date: {invoiceDate}
+              <div style={{ textAlign: "right", minWidth: "260px" }}>
+                <div style={{ fontSize: "12px", fontWeight: 700, color: "#1A1A1A", marginBottom: "6px" }}>
+                  Date: {formatDateDDMMYYYY(invoiceDate)}
                 </div>
-                <div style={{ height: "45px" }}></div>
-                <div
-                  style={{
-                    borderTop: "1.5px solid #1A1A1A",
-                    paddingTop: "5px",
-                    fontSize: "12px",
-                    fontWeight: 700,
-                    color: "#1A1A1A",
-                  }}
-                >
-                  Authorized Signatory (ChittorTech)
+                <div style={{ fontSize: "11px", color: "#475569", fontWeight: 600, fontStyle: "italic", letterSpacing: "0.2px" }}>
+                  * Bill generated from the digital platform, no manual sign needed
                 </div>
               </div>
             </div>

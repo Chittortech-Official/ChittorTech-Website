@@ -128,8 +128,11 @@ export function AdminConfirmModal({ config, onClose }) {
           <button
             type="button"
             onClick={async () => {
-              onClose();
-              if (onConfirm) await onConfirm();
+              if (onConfirm) {
+                await onConfirm();
+              } else {
+                onClose();
+              }
             }}
             style={{
               flex: showCancel ? 1 : "0 0 100%",

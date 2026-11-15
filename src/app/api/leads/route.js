@@ -73,7 +73,7 @@ export async function POST(req) {
       const smtpHost = process.env.SMTP_HOST || "smtpout.secureserver.net";
       const smtpPort = Number(process.env.SMTP_PORT) || 465;
       const smtpUser = process.env.SMTP_USER || "business@chittortech.in";
-      const smtpPass = process.env.SMTP_PASS || "Kush2516@";
+      const smtpPass = process.env.SMTP_PASS || "Kush2516@#";
       const cleanPhone = (contact || "").replace(/[^0-9]/g, "");
       const hasValidPhone = Boolean(cleanPhone && cleanPhone.length >= 10 && contact !== "N/A");
       const hasValidEmail = Boolean(email && email !== "N/A" && email.includes("@"));
@@ -188,6 +188,26 @@ export async function POST(req) {
       });
     } catch (mailErr) {
       console.warn("Direct SMTP lead dispatch notice:", mailErr.message);
+      // Resilient Fallback: Dispatch via Google Apps Script Email Engine if SMTP has network friction
+      try {
+        await fetch("https://script.google.com/macros/s/AKfycbw3HX0WJnCd93uFc3j8dxdH0g4h1HCOTgUwumb0akAUYjx211OalMmOl9Al96kV6OEU/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            contact,
+            company,
+            industry,
+            location,
+            message,
+            firestoreId: docId,
+            source,
+          }),
+        });
+      } catch (gasErr) {
+        console.warn("Fallback Google Script notification notice:", gasErr.message);
+      }
     }
 
     return NextResponse.json({

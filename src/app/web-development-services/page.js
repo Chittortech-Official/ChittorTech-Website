@@ -125,6 +125,39 @@ export default function Page() {
                   <i className="fa-solid fa-envelope"></i> Contact Us
                 </a>
               </div>
+
+              {/* Ultra-Compact Quick Info Pill */}
+              <div style={{
+                marginTop: "16px",
+                background: "rgba(255, 255, 255, 0.08)",
+                border: "1px solid rgba(147, 197, 253, 0.3)",
+                borderRadius: "12px",
+                padding: "10px 14px",
+                backdropFilter: "blur(8px)",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px", flexWrap: "wrap" }}>
+                  <span style={{ background: "#2563eb", color: "#fff", fontSize: "0.65rem", fontWeight: 800, padding: "2px 8px", borderRadius: "20px", textTransform: "uppercase" }}>
+                    <i className="fa-solid fa-code me-1"></i> Full-Stack Web
+                  </span>
+                  <span style={{ color: "#93c5fd", fontSize: "0.74rem", fontWeight: 700 }}>
+                    Next.js + Technical SEO · 5–7 Days Delivery
+                  </span>
+                </div>
+                <p style={{ fontSize: "0.78rem", color: "#e2e8f0", lineHeight: 1.4, margin: "0 0 8px 0" }}>
+                  High-converting responsive websites with sub-second page loads, automated JSON-LD schemas, and 95+ PageSpeed scores. Starter packages start at ₹9,999 ($120).
+                </p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#38bdf8", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                    ₹9,999 Starter ($120)
+                  </span>
+                  <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#34d399", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                    5–7 Days Delivery
+                  </span>
+                  <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#facc15", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                    95+ PageSpeed
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Smartphone Mockup Frame */}
@@ -658,6 +691,129 @@ export default function Page() {
                  </div>
              </div>
          </div>
+      </section>
+
+      {/* -- Transparent Turnkey Web Development Pricing -- */}
+      <section id="web-development-pricing" style={{ padding: "90px 0", background: "#f8fafc", borderTop: "1px solid #e2e8f0" }}>
+        <div className="container">
+          <div className="text-center mb-5">
+            <span style={{ display: "inline-block", background: "#dbeafe", color: "#1e40af", padding: "6px 18px", borderRadius: "50px", fontSize: "0.8rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "12px" }}>
+              <i className="fa-solid fa-tags me-1"></i> Transparent Fixed Pricing
+            </span>
+            <h2 style={{ fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 900, color: "#0f172a", marginBottom: "14px" }}>
+              Turnkey Web Development Packages
+            </h2>
+            <p style={{ color: "#64748b", maxWidth: "680px", margin: "0 auto", fontSize: "1.05rem", lineHeight: 1.7 }}>
+              No hidden fees, no hourly surprises. Every website includes 100% responsive design, Next.js speed optimization, on-page technical SEO, and lifetime source code ownership.
+            </p>
+          </div>
+
+          <div className="row g-4 justify-content-center">
+            {/* Plan 1 */}
+            <div className="col-lg-4 col-md-6">
+              <div style={{ background: "#fff", border: "1.5px solid #e2e8f0", borderRadius: "20px", padding: "35px 28px", height: "100%", display: "flex", flexDirection: "column", boxShadow: "0 10px 30px rgba(15, 23, 42, 0.04)" }}>
+                <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#2563eb", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Starter Edition</span>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "#0f172a", marginBottom: "10px" }}>Business Website</h3>
+                <p style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "20px", lineHeight: 1.5 }}>
+                  Ideal for local businesses, clinics, lawyers, and startups needing a modern, credible online presence.
+                </p>
+                <div style={{ marginBottom: "24px", paddingBottom: "18px", borderBottom: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: "2.4rem", fontWeight: 900, color: "#2563eb", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>₹9,999</div>
+                  <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>Fixed Turnkey ($120 USD)</div>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px 0", flexGrow: 1, fontSize: "0.88rem", color: "#334155" }}>
+                  {[
+                    "5 to 7 high-converting custom pages",
+                    "Mobile-first responsive design (Next.js/React)",
+                    "On-page technical SEO & Schema markup",
+                    "Direct WhatsApp lead button & contact form",
+                    "Google Search Console & Analytics setup",
+                    "Free 1-year SSL certificate & fast cloud hosting",
+                    "Delivery in 5 to 7 business days"
+                  ].map((feat, i) => (
+                    <li key={i} style={{ marginBottom: "10px", display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                      <i className="fa-solid fa-circle-check text-primary" style={{ marginTop: "4px", flexShrink: 0 }}></i>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20am%20interested%20in%20the%20Starter%20Business%20Website%20Package%20(₹9,999)." target="_blank" rel="noopener noreferrer" className="ct-btn ct-btn-lg" style={{ background: "#0f172a", color: "#fff", width: "100%", justifyContent: "center", fontWeight: 700 }}>
+                  <i className="fa-brands fa-whatsapp me-2"></i> Get Started on WhatsApp
+                </a>
+              </div>
+            </div>
+
+            {/* Plan 2: Most Popular */}
+            <div className="col-lg-4 col-md-6">
+              <div style={{ background: "#fff", border: "2.5px solid #2563eb", borderRadius: "20px", padding: "35px 28px", height: "100%", display: "flex", flexDirection: "column", position: "relative", boxShadow: "0 20px 45px rgba(37, 99, 235, 0.12)" }}>
+                <span style={{ position: "absolute", top: "-14px", left: "50%", transform: "translateX(-50%)", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", color: "#fff", fontSize: "0.72rem", fontWeight: 800, padding: "4px 16px", borderRadius: "50px", textTransform: "uppercase", letterSpacing: "1px" }}>
+                  Most Popular Choice
+                </span>
+                <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#2563eb", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Growth &amp; Corporate</span>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "#0f172a", marginBottom: "10px" }}>Corporate Portal</h3>
+                <p style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "20px", lineHeight: 1.5 }}>
+                  Full corporate portal with custom animations, CMS blog, dynamic service pages, and lead pipeline sync.
+                </p>
+                <div style={{ marginBottom: "24px", paddingBottom: "18px", borderBottom: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: "2.4rem", fontWeight: 900, color: "#2563eb", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>₹24,999</div>
+                  <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>Fixed Turnkey ($299 USD)</div>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px 0", flexGrow: 1, fontSize: "0.88rem", color: "#334155" }}>
+                  {[
+                    "Up to 15 pages + Admin CMS panel",
+                    "Dynamic blog & service CMS architecture",
+                    "Advanced GSAP / CSS interactive micro-animations",
+                    "Sub-second load times (95+ Google PageSpeed)",
+                    "Automated XML sitemap & IndexNow integration",
+                    "Custom Figma UI/UX to code translation",
+                    "Delivery in 10 to 14 business days"
+                  ].map((feat, i) => (
+                    <li key={i} style={{ marginBottom: "10px", display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                      <i className="fa-solid fa-circle-check text-success" style={{ marginTop: "4px", flexShrink: 0 }}></i>
+                      <span><strong>{feat}</strong></span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20am%20interested%20in%20the%20Corporate%20Portal%20Package%20(₹24,999)." target="_blank" rel="noopener noreferrer" className="ct-btn ct-btn-lg" style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)", color: "#fff", width: "100%", justifyContent: "center", fontWeight: 800, border: "none" }}>
+                  <i className="fa-brands fa-whatsapp me-2"></i> Book Consultation
+                </a>
+              </div>
+            </div>
+
+            {/* Plan 3 */}
+            <div className="col-lg-4 col-md-6">
+              <div style={{ background: "#fff", border: "1.5px solid #e2e8f0", borderRadius: "20px", padding: "35px 28px", height: "100%", display: "flex", flexDirection: "column", boxShadow: "0 10px 30px rgba(15, 23, 42, 0.04)" }}>
+                <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#2563eb", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>Custom Engineering</span>
+                <h3 style={{ fontSize: "1.4rem", fontWeight: 900, color: "#0f172a", marginBottom: "10px" }}>Enterprise Web App</h3>
+                <p style={{ fontSize: "0.85rem", color: "#64748b", marginBottom: "20px", lineHeight: 1.5 }}>
+                  Custom full-stack web applications, SaaS platforms, customer portals, and database-driven software.
+                </p>
+                <div style={{ marginBottom: "24px", paddingBottom: "18px", borderBottom: "1px solid #e2e8f0" }}>
+                  <div style={{ fontSize: "2.4rem", fontWeight: 900, color: "#2563eb", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>₹49,999</div>
+                  <div style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>Custom One-Time ($599 USD)</div>
+                </div>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 28px 0", flexGrow: 1, fontSize: "0.88rem", color: "#334155" }}>
+                  {[
+                    "Full-stack Next.js, Node.js & PostgreSQL/MongoDB",
+                    "User authentication, role-based dashboards & auth",
+                    "Payment gateway integration (Razorpay/Stripe)",
+                    "REST API / GraphQL backend integration",
+                    "Multi-tenant schema & Zero-Trust security",
+                    "Priority 24/7 SLA emergency maintenance"
+                  ].map((feat, i) => (
+                    <li key={i} style={{ marginBottom: "10px", display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                      <i className="fa-solid fa-circle-check text-primary" style={{ marginTop: "4px", flexShrink: 0 }}></i>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20need%20an%20Enterprise%20Web%20Application%20(₹49,999)." target="_blank" rel="noopener noreferrer" className="ct-btn ct-btn-lg" style={{ background: "#0f172a", color: "#fff", width: "100%", justifyContent: "center", fontWeight: 700 }}>
+                  <i className="fa-solid fa-headset me-2"></i> Consult Our Tech Lead
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/*  faq template section */}

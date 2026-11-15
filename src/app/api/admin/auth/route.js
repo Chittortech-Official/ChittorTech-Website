@@ -6,7 +6,7 @@ function getTransporter() {
   const smtpHost = process.env.SMTP_HOST || "smtpout.secureserver.net";
   const smtpPort = Number(process.env.SMTP_PORT) || 465;
   const smtpUser = process.env.SMTP_USER || "business@chittortech.in";
-  const smtpPass = process.env.SMTP_PASS || "Kush2516@";
+  const smtpPass = process.env.SMTP_PASS || "Kush2516@#";
 
   return nodemailer.createTransport({
     host: smtpHost,
@@ -103,6 +103,20 @@ export async function POST(req) {
         });
       } catch (mailErr) {
         console.warn("SMTP 2FA dispatch error:", mailErr.message);
+        // Resilient Fallback to Google Apps Script Email Engine
+        try {
+          await fetch("https://script.google.com/macros/s/AKfycbw3HX0WJnCd93uFc3j8dxdH0g4h1HCOTgUwumb0akAUYjx211OalMmOl9Al96kV6OEU/exec", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: "ChittorTech Administrator",
+              email: "kushsharma.cor@gmail.com",
+              contact: "N/A",
+              message: `Your ChittorTech Admin 2FA Code is: ${otp} (Valid for 5 minutes).`,
+              source: "Admin Portal 2FA",
+            }),
+          });
+        } catch (gasErr) {}
       }
 
       return NextResponse.json({

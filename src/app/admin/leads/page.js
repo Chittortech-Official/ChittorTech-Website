@@ -6,6 +6,7 @@ import B2BLeadGenerator from "@/components/admin/B2BLeadGenerator";
 import AdminSessionsView from "@/components/admin/AdminSessionsView";
 import NotificationHub from "@/components/admin/NotificationHub";
 import ProjectInvoiceManager from "@/components/admin/ProjectInvoiceManager";
+import QuotaGateCard from "@/components/admin/QuotaGateCard";
 import { AdminConfirmModal, AdminFloatingToast } from "@/components/admin/AdminConfirmModal";
 import {
   subscribeToLeads,
@@ -21,9 +22,13 @@ import {
 const SCRIPT_URL = "/api/admin/auth";
 
 export default function AdminLeadsPage() {
-  const [adminPipelineTab, setAdminPipelineTab] = useState("b2b_outbound");
+  const [adminPipelineTab, setAdminPipelineTab] = useState("projects_invoices");
   const [confirmModal, setConfirmModal] = useState(null);
   const [floatingToast, setFloatingToast] = useState("");
+
+  const [b2bConfirmed, setB2bConfirmed] = useState(false);
+  const [inboundConfirmed, setInboundConfirmed] = useState(false);
+  const [sessionsConfirmed, setSessionsConfirmed] = useState(false);
 
   useEffect(() => {
     try {
@@ -487,9 +492,9 @@ export default function AdminLeadsPage() {
     generateCaptcha();
   };
 
-  // Real-time Firestore subscription (Inbound Leads with 25 initial limit)
+  // Real-time Firestore subscription (Inbound Leads with 25 initial limit - only when explicitly confirmed)
   useEffect(() => {
-    if (!isAuthenticated || adminPipelineTab !== "inbound") return;
+    if (!isAuthenticated || adminPipelineTab !== "inbound" || !inboundConfirmed) return;
     setLoading(true);
 
     const unsubscribe = subscribeToLeads(
@@ -513,16 +518,16 @@ export default function AdminLeadsPage() {
     );
 
     return () => unsubscribe && unsubscribe();
-  }, [isAuthenticated, adminPipelineTab, leadsLimit]);
+  }, [isAuthenticated, adminPipelineTab, leadsLimit, inboundConfirmed]);
 
   const handleLoadMoreLeads = () => {
     setLoadingMoreLeads(true);
     setLeadsLimit((prev) => prev + 25);
   };
 
-  // Real-time subscription for Admin Sessions (Active strictly when Sessions & Security tab is open)
+  // Real-time subscription for Admin Sessions (Active strictly when Sessions & Security tab is open and explicitly confirmed)
   useEffect(() => {
-    if (!isAuthenticated || adminPipelineTab !== "sessions") return;
+    if (!isAuthenticated || adminPipelineTab !== "sessions" || !sessionsConfirmed) return;
     setSessionsLoading(true);
     const unsub = subscribeToAdminSessions(
       (data) => {
@@ -535,7 +540,7 @@ export default function AdminLeadsPage() {
       }
     );
     return () => unsub && unsub();
-  }, [isAuthenticated, adminPipelineTab]);
+  }, [isAuthenticated, adminPipelineTab, sessionsConfirmed]);
 
 
   // Real-time Remote Session Kill Listener (Listens to ONLY current terminal doc: 1 read instead of 100)
@@ -1784,11 +1789,11 @@ export default function AdminLeadsPage() {
           }}
         >
           {[
+            { id: "projects_invoices", label: "Clients & Projects", icon: "fa-users-gear" },
+            { id: "notifications", label: "Notification Hub", icon: "fa-bell" },
+            { id: "sessions", label: "Sessions & Security", icon: "fa-shield-alt" },
             { id: "b2b_outbound", label: "Generate Leads", icon: "fa-satellite-dish" },
             { id: "inbound", label: "Incoming Leads", icon: "fa-inbox" },
-            { id: "notifications", label: "Notification Hub", icon: "fa-bell" },
-            { id: "projects_invoices", label: "Clients & Projects", icon: "fa-users-gear" },
-            { id: "sessions", label: "Sessions & Security", icon: "fa-shield-alt" },
           ].map((tab) => {
             const isActive = adminPipelineTab === tab.id;
             return (
@@ -2090,19 +2095,132 @@ export default function AdminLeadsPage() {
             </div>
           </div>
         ) : adminPipelineTab === "b2b_outbound" ? (
-          <B2BLeadGenerator isOnline={isOnline && isDbConnected} />
+          b2bConfirmed ? (
+            <div>
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+                <button
+                  type="button"
+                  onClick={() => setB2bConfirmed(false)}
+                  style={{
+                    background: "#ffffff",
+                    border: "1px solid #cbd5e1",
+                    color: "#475569",
+                    padding: "6px 14px",
+                    borderRadius: "8px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  <i className="fas fa-lock" style={{ fontSize: "0.7rem", color: "#0284c7" }}></i>
+                  <span>Secure &amp; Standby Module</span>
+                </button>
+              </div>
+              <B2BLeadGenerator isOnline={isOnline && isDbConnected} />
+            </div>
+          ) : (
+            <QuotaGateCard
+              icon="fa-satellite-dish"
+              badge="Zero-Trust Security Gate"
+              title="B2B Outbound Marketing Engine"
+              subtitle="Google Maps business scraper, outreach pipeline, and lead generation engine."
+              description="Explicit confirmation required to initialize and stream the live outbound B2B pipeline."
+              buttonLabel="Click to Start B2B Marketing"
+              buttonColor="linear-gradient(135deg, #0284c7 0%, #0369a1 100%)"
+              buttonShadow="rgba(2, 132, 199, 0.3)"
+              onConfirm={() => setB2bConfirmed(true)}
+            />
+          )
         ) : (adminPipelineTab === "projects_invoices" || adminPipelineTab === "projects") ? (
           <ProjectInvoiceManager />
         ) : adminPipelineTab === "notifications" ? (
           <NotificationHub />
         ) : adminPipelineTab === "sessions" ? (
-          <AdminSessionsView
-            sessions={adminSessions}
-            setSessions={setAdminSessions}
-            loading={sessionsLoading}
+          sessionsConfirmed ? (
+            <div>
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+                <button
+                  type="button"
+                  onClick={() => setSessionsConfirmed(false)}
+                  style={{
+                    background: "#ffffff",
+                    border: "1px solid #cbd5e1",
+                    color: "#475569",
+                    padding: "6px 14px",
+                    borderRadius: "8px",
+                    fontSize: "0.78rem",
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  <i className="fas fa-lock" style={{ fontSize: "0.7rem", color: "#6366f1" }}></i>
+                  <span>Lock Session Vault</span>
+                </button>
+              </div>
+              <AdminSessionsView
+                sessions={adminSessions}
+                setSessions={setAdminSessions}
+                loading={sessionsLoading}
+              />
+            </div>
+          ) : (
+            <QuotaGateCard
+              icon="fa-shield-halved"
+              badge="Zero-Trust Security Gate"
+              title="Admin Sessions & Security Logs"
+              subtitle="Real-time security auditing, device tracking, and administrator session monitor."
+              description="High-security zone. Click below to verify authorization and stream live administrator sessions."
+              buttonLabel="Click to Examine Security Sessions"
+              buttonColor="linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)"
+              buttonShadow="rgba(99, 102, 241, 0.3)"
+              onConfirm={() => setSessionsConfirmed(true)}
+            />
+          )
+        ) : !inboundConfirmed ? (
+          <QuotaGateCard
+            icon="fa-inbox"
+            badge="Zero-Trust Security Gate"
+            title="Incoming Client Leads & Inquiries"
+            subtitle="Central management of website consultation requests, inbound inquiries, and contact leads."
+            description="Client confidentiality protocol active. Click below to verify authorization and load incoming client consultations."
+            buttonLabel="Click to Load Incoming Leads"
+            buttonColor="linear-gradient(135deg, #10b981 0%, #059669 100%)"
+            buttonShadow="rgba(16, 185, 129, 0.3)"
+            onConfirm={() => setInboundConfirmed(true)}
           />
         ) : (
           <>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "12px" }}>
+              <button
+                type="button"
+                onClick={() => setInboundConfirmed(false)}
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid #cbd5e1",
+                  color: "#475569",
+                  padding: "6px 14px",
+                  borderRadius: "8px",
+                  fontSize: "0.78rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
+              >
+                <i className="fas fa-lock" style={{ fontSize: "0.7rem", color: "#10b981" }}></i>
+                <span>Secure &amp; Standby Stream</span>
+              </button>
+            </div>
             {/* Title Bar & Stats */}
             <div style={{ marginBottom: "28px" }}>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", gap: "16px", marginBottom: "24px" }}>
@@ -2562,7 +2680,7 @@ export default function AdminLeadsPage() {
                     }}
                   />
                   <span>
-                    Showing <strong>{filteredLeads.length}</strong> of <strong>{leads.length}</strong> loaded leads (Quota limit: {leadsLimit})
+                    Showing <strong>{filteredLeads.length}</strong> of <strong>{leads.length}</strong> loaded leads (Batch size: {leadsLimit})
                   </span>
                 </div>
 

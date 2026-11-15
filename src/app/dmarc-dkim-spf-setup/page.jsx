@@ -509,6 +509,40 @@ export default function DmarcSetupPage() {
                   </button>
                 </div>
 
+                {/* Ultra-Compact Quick Info Pill */}
+                <div style={{
+                  marginTop: "14px",
+                  marginBottom: "14px",
+                  background: "rgba(255, 255, 255, 0.06)",
+                  border: "1px solid rgba(56, 189, 248, 0.3)",
+                  borderRadius: "12px",
+                  padding: "10px 14px",
+                  backdropFilter: "blur(8px)",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px", flexWrap: "wrap" }}>
+                    <span style={{ background: "#0284c7", color: "#fff", fontSize: "0.65rem", fontWeight: 800, padding: "2px 8px", borderRadius: "20px", textTransform: "uppercase" }}>
+                      <i className="fa-solid fa-shield-halved me-1"></i> Mandate Aligned
+                    </span>
+                    <span style={{ color: "#7dd3fc", fontSize: "0.74rem", fontWeight: 700 }}>
+                      Google &amp; Yahoo 2026 Ready · 24-Hr Fix
+                    </span>
+                  </div>
+                  <p style={{ fontSize: "0.78rem", color: "#e2e8f0", lineHeight: 1.4, margin: "0 0 8px 0" }}>
+                    SPF lookup fix, 2048-bit DKIM signing, and controlled DMARC p=reject roadmap without email downtime. Turnkey setup at ₹5,999 INR ($79 USD) per domain.
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#38bdf8", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                      24-Hr Turnaround
+                    </span>
+                    <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#34d399", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                      ₹5,999 / $79
+                    </span>
+                    <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#c084fc", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                      Zero Downtime
+                    </span>
+                  </div>
+                </div>
+
                 <div className="text-slate-400" style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
                   <i className="fa-solid fa-earth-americas me-2 text-cyan-400"></i>
                   Supporting businesses across: <strong>USA · UK · UAE · Canada · Australia · India</strong>

@@ -468,6 +468,103 @@ export default function GooglePlayPublishingPage() {
             padding-top: 0 !important;
           }
         }
+
+        /* Direct Answer Box Styling with Mobile Responsiveness */
+        .gplay-direct-answer {
+          margin-top: 24px;
+          background: rgba(255, 255, 255, 0.07);
+          border: 1px solid rgba(147, 197, 253, 0.25);
+          border-radius: 16px;
+          padding: 18px 20px;
+          backdrop-filter: blur(12px);
+        }
+        .gplay-direct-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(59, 130, 246, 0.25);
+          border: 1px solid rgba(96, 165, 250, 0.4);
+          color: #93c5fd;
+          border-radius: 50px;
+          padding: 3px 10px;
+          font-size: 0.7rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          margin-bottom: 8px;
+        }
+        .gplay-direct-title {
+          font-size: 1.02rem;
+          font-weight: 800;
+          color: #ffffff;
+          margin-bottom: 6px;
+        }
+        .gplay-direct-text {
+          font-size: 0.84rem;
+          color: #e2e8f0;
+          line-height: 1.5;
+          margin-bottom: 12px;
+        }
+        .gplay-fact-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 8px;
+        }
+        .gplay-fact-card {
+          background: rgba(15, 23, 42, 0.65);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 10px;
+          padding: 8px 10px;
+          text-align: center;
+        }
+        .gplay-fact-val {
+          font-size: 0.98rem;
+          font-weight: 900;
+          line-height: 1.15;
+        }
+        .gplay-fact-lbl {
+          font-size: 0.68rem;
+          color: #94a3b8;
+          font-weight: 600;
+          margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+          .gplay-direct-answer {
+            margin-top: 14px !important;
+            padding: 12px 14px !important;
+            border-radius: 12px !important;
+          }
+          .gplay-direct-badge {
+            font-size: 0.62rem !important;
+            padding: 2px 8px !important;
+            margin-bottom: 6px !important;
+          }
+          .gplay-direct-title {
+            font-size: 0.88rem !important;
+            line-height: 1.3 !important;
+            margin-bottom: 6px !important;
+          }
+          .gplay-direct-text {
+            font-size: 0.74rem !important;
+            line-height: 1.35 !important;
+            margin-bottom: 10px !important;
+          }
+          .gplay-fact-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 6px !important;
+          }
+          .gplay-fact-card {
+            padding: 6px 8px !important;
+            border-radius: 8px !important;
+          }
+          .gplay-fact-val {
+            font-size: 0.82rem !important;
+          }
+          .gplay-fact-lbl {
+            font-size: 0.62rem !important;
+          }
+        }
       `}</style>
 
       <div className="gplay-section">
@@ -492,6 +589,39 @@ export default function GooglePlayPublishingPage() {
                   <a href="#packages" className="btn-gplay-primary">
                     View Pricing Plans <i className="fa-solid fa-arrow-down"></i>
                   </a>
+                </div>
+
+                {/* Ultra-Compact Quick Info Pill */}
+                <div style={{
+                  marginTop: "16px",
+                  background: "rgba(255, 255, 255, 0.06)",
+                  border: "1px solid rgba(147, 197, 253, 0.25)",
+                  borderRadius: "12px",
+                  padding: "10px 14px",
+                  backdropFilter: "blur(8px)",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px", flexWrap: "wrap" }}>
+                    <span style={{ background: "#16a34a", color: "#fff", fontSize: "0.65rem", fontWeight: 800, padding: "2px 8px", borderRadius: "20px", textTransform: "uppercase" }}>
+                      <i className="fa-solid fa-bolt me-1"></i> Direct Production
+                    </span>
+                    <span style={{ color: "#93c5fd", fontSize: "0.74rem", fontWeight: 700 }}>
+                      D-U-N-S® Verified Console · Zero Testing Needed
+                    </span>
+                  </div>
+                  <p style={{ fontSize: "0.78rem", color: "#cbd5e1", lineHeight: 1.4, margin: "0 0 8px 0" }}>
+                    ChittorTech ke D-U-N-S verified org console se direct public production launch milta hai—12 testers ya 14 din wait karne ki bilkul zaroorat nahi. Personal consoles ke liye testing pool available.
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#34d399", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                      <i className="fa-solid fa-circle-check me-1"></i> Direct Live (No Wait)
+                    </span>
+                    <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#60a5fa", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                      <i className="fa-solid fa-building me-1"></i> D-U-N-S® Org
+                    </span>
+                    <span style={{ background: "rgba(15, 23, 42, 0.7)", border: "1px solid rgba(255,255,255,0.12)", color: "#f59e0b", fontSize: "0.7rem", fontWeight: 700, padding: "3px 8px", borderRadius: "6px" }}>
+                      ₹10,299+ ($129)
+                    </span>
+                  </div>
                 </div>
               </div>
 

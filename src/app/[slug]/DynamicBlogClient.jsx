@@ -1,8 +1,73 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { submitLead } from "@/lib/leadService";
 import chittorgarhServices from "@/data/chittorgarhServices.json";
+
+
+const CASE_STUDY_METRICS = {
+  "shabari-mata-temple-hubli-invoice-system": [
+    { val: "< 1 Sec", lbl: "Thermal Receipt Print", icon: "fa-solid fa-bolt", color: "#fb923c", bg: "rgba(251, 146, 60, 0.18)", border: "rgba(251, 146, 60, 0.45)" },
+    { val: "100%", lbl: "80G Tax Compliance", icon: "fa-solid fa-shield-halved", color: "#4ade80", bg: "rgba(74, 222, 128, 0.18)", border: "rgba(74, 222, 128, 0.45)" },
+    { val: "0 Halts", lbl: "Offline-First Resilience", icon: "fa-solid fa-database", color: "#38bdf8", bg: "rgba(56, 189, 248, 0.18)", border: "rgba(56, 189, 248, 0.45)" },
+    { val: "Live Cloud", lbl: "Trustee Audit Dashboard", icon: "fa-solid fa-chart-pie", color: "#c084fc", bg: "rgba(192, 132, 252, 0.18)", border: "rgba(192, 132, 252, 0.45)" },
+  ],
+  "visit-chittorgarh-app-tourism": [
+    { val: "5,600+", lbl: "Search Impressions", icon: "fa-solid fa-chart-line", color: "#38bdf8", bg: "rgba(56, 189, 248, 0.18)", border: "rgba(56, 189, 248, 0.45)" },
+    { val: "576", lbl: "Generative AI Overviews", icon: "fa-solid fa-wand-magic-sparkles", color: "#c084fc", bg: "rgba(192, 132, 252, 0.18)", border: "rgba(192, 132, 252, 0.45)" },
+    { val: "Global", lbl: "US, UK, DE, AU Visitors", icon: "fa-solid fa-earth-americas", color: "#34d399", bg: "rgba(52, 211, 153, 0.18)", border: "rgba(52, 211, 153, 0.45)" },
+    { val: "Direct", lbl: "WhatsApp Cab Bookings", icon: "fa-brands fa-whatsapp", color: "#22c55e", bg: "rgba(34, 197, 94, 0.18)", border: "rgba(34, 197, 94, 0.45)" },
+  ],
+};
+
+const CASE_STUDY_WORKFLOWS = {
+  "shabari-mata-temple-hubli-invoice-system": {
+    title: "Deployment & Architectural Workflow",
+    steps: [
+      { num: "01", title: "Offline Pilgrim Counter Check-In", desc: "Counter staff register devotees and donations with instantaneous local SQLite caching, operating continuously without internet access." },
+      { num: "02", title: "Sub-Second Thermal Printing & 80G Audit", desc: "Automated generation of bilingual Kannada/English thermal slips with sequential 80G tax exemption numbering and donor PAN validation." },
+      { num: "03", title: "Background Cloud Synchronization", desc: "Whenever network connectivity is available, the local ledger synchronizes tamper-proof audit data directly to the trustee cloud." },
+      { num: "04", title: "Cashier Shift Tallying & Trustee Governance", desc: "Automated end-of-day physical cash reconciliation reports preventing revenue leakage and giving trustees full remote visibility." }
+    ]
+  },
+  "visit-chittorgarh-app-tourism": {
+    title: "Answer Engine (GEO) & Conversion Workflow",
+    steps: [
+      { num: "01", title: "Global AI Query Discovery", desc: "International tourists search for Chittorgarh day trips on ChatGPT, Perplexity, and Google AI Overviews." },
+      { num: "02", title: "GEO Schema Citation Domination", desc: "Structured JSON-LD schema (TouristAttraction, LocalBusiness, FAQ) triggers top citation placement in AI overviews." },
+      { num: "03", title: "Sub-Second Next.js PWA Experience", desc: "Fast-loading mobile-first itineraries, audio guides, and cloakroom maps that work smoothly even inside fort blind spots." },
+      { num: "04", title: "Direct WhatsApp Booking Conversion", desc: "Direct 1-click booking connects tourists to licensed local cab drivers and guides with zero intermediary commission cuts." }
+    ]
+  }
+};
+
+const RELATED_CASE_STUDIES = [
+  {
+    badge: "Spiritual Trust ERP",
+    badgeColor: "#ea580c",
+    badgeBg: "#fff7ed",
+    title: "Sabari Mala Mandir (Hubli) - 80G Billing",
+    desc: "Offline-first thermal donation billing with automated 80G tax exemption receipts and cloud trustee dashboard.",
+    link: "/shabari-mata-temple-hubli-invoice-system",
+  },
+  {
+    badge: "Regional Tourism & GEO",
+    badgeColor: "#0284c7",
+    badgeBg: "#f0f9ff",
+    title: "VisitChittorgarh.in - UNESCO Tourism Portal",
+    desc: "Capturing global tourist demand across 576 AI overviews with sub-second Next.js PWA and direct WhatsApp booking.",
+    link: "/visit-chittorgarh-app-tourism",
+  },
+  {
+    badge: "Mobile App Publishing",
+    badgeColor: "#16a34a",
+    badgeBg: "#f0fdf4",
+    title: "Google Play Direct Production Console",
+    desc: "D-U-N-S registered organization console publishing bypassing 14-day tester wait for immediate live releases.",
+    link: "/google-play-publishing",
+  },
+];
 
 const BLOG_CONTENT = {
   "google-play-store-publishing-guide-compliance-launch": {
@@ -30,28 +95,76 @@ const BLOG_CONTENT = {
     summary: "At ChittorTech, we eliminate the complexity of app publishing. By providing tester pools, policy compliance consulting, and verified developer consoles, we guarantee your app reaches your audience safely and quickly."
   },
   "shabari-mata-temple-hubli-invoice-system": {
-    heading: "Sabari Mala Mandir (Hubli) Custom Invoice & Billing System",
-    intro: "Sabarimala Mandir is one of India's largest pilgrimage management challenges. With millions of devotees offering donations, booking services, and requesting 80G tax exemption certificates, a standard billing machine falls short. ChittorTech engineered a custom offline-online hybrid invoice system to handle trust accounting, room booking, and counter billing seamlessly.",
-    capabilitiesTitle: "Sabari Mala Mandir Custom ERP Capabilities:",
+    heading: "Case Study: Sabari Mala Mandir (Hubli) - Hybrid 80G Billing & Devotee ERP",
+    intro: "Sabarimala Temple in Hubli (Karnataka) manages thousands of daily pilgrim footfalls, requiring instant donation accounting, dharamshala room allocations, pooja bookings, and legal 80G tax exemption receipts. ChittorTech designed and deployed an offline-first hybrid invoice system that prints thermal receipts in under 1 second, keeps functioning during internet blackouts, and automatically syncs all audit ledgers to a cloud trustee dashboard.",
+    capabilitiesTitle: "Core Engineering Highlights & Impact:",
     capabilities: [
       {
-        title: "80G Tax Exemption Receipts",
-        desc: "Instant creation of digital and printed donation receipts with automatic 80G compliance tax data formatting."
+        title: "Statutory 80G Tax Exemption Automation",
+        desc: "Automated generation of bilingual donation receipts compliant with Indian Income Tax 80G rules, including donor PAN capture, serial numbering, and instant thermal printer & WhatsApp dispatch."
       },
       {
-        title: "Offline/Online Hybrid Sync",
-        desc: "Allows temple counters to issue invoices instantly even during zero internet connectivity, with background cloud auto-sync."
+        title: "Offline-First Hybrid Architecture",
+        desc: "Built with local offline database cache allowing counter staff to continuously issue receipts and check-ins even during zero internet connectivity, with background cloud synchronization."
       },
       {
-        title: "Devotee Room & Queue Booking",
-        desc: "Integrated system to manage dharamshala check-ins, queue reservations, and inventory logs in real-time."
+        title: "Multi-Counter Cashier & Role Access Control",
+        desc: "Dedicated user roles for cashiers, temple administrators, and trustees, complete with cashier shift closing reports, physical cash tallying, and tamper-proof audit trails."
       },
       {
-        title: "Trust & Donation Accounting",
-        desc: "Secure ledgers tracking every single rupee donated, with automated audit trails and daily bank deposits logging."
+        title: "Pilgrim Room Allocation & Queue Management",
+        desc: "Integrated dharamshala room booking module tracking check-ins, advance devotee reservations, inventory logs, and Form C police register exports in real-time."
       }
     ],
-    summary: "We designed a robust billing solution that handles the high-volume traffic of Sabari Mala Mandir counters. With modern UI, receipt print integrations, and transparent accounting, we help temple trusts manage their resources with absolute trust."
+    summary: "By deploying ChittorTech's pilgrim billing ERP, the Sabari Mala Mandir Trust eliminated 100% of manual paper ledger bottlenecks, achieved transparent 80G tax auditing, and reduced devotee counter waiting times from 15 minutes to under 30 seconds."
+  },
+  "visit-chittorgarh-app-tourism": {
+    heading: "Case Study: Visit Chittorgarh - Digital Tourism Platform & Travel Guide",
+    intro: "VisitChittorgarh.in is the definitive digital tourism guide and private day-trip booking engine for Chittorgarh Fort, a UNESCO World Heritage Site attracting over 1.2 million tourists annually. ChittorTech engineered the end-to-end web portal, mobile application, and Answer Engine Optimization (AEO) pipeline: generating over 5,600 organic impressions and 576 Generative AI recommendations in just 90 days from international tourists in Germany, USA, Australia, and the UK.",
+    capabilitiesTitle: "Key Technical & Business Architecture:",
+    capabilities: [
+      {
+        title: "Sub-Second Next.js Performance & PWA",
+        desc: "Engineered on Next.js with server-side caching, automated XML sitemaps, and mobile-first progressive web app capabilities for lightning-fast speeds on slow 3G/4G network zones inside the 700-acre fort."
+      },
+      {
+        title: "Answer Engine Optimization (AEO/GEO)",
+        desc: "Structured schema architecture (TouristAttraction, LocalBusiness, FAQPage, HowTo) that successfully secured #1 citation rankings across ChatGPT, Perplexity AI, Google AI Overviews, and Microsoft Copilot."
+      },
+      {
+        title: "Integrated WhatsApp Cab & Guide Booking Engine",
+        desc: "High-converting direct WhatsApp reservation pipeline for private AC day trips (Udaipur to Chittorgarh) and licensed government-approved fort guides with zero commission intermediary leakage."
+      },
+      {
+        title: "Hyperlocal Food & Heritage Directory",
+        desc: "Comprehensive database covering 50+ local culinary spots, luggage storage cloakrooms, sound & light show timings, and fort entry ticket logistics with interactive map navigation."
+      }
+    ],
+    summary: "The VisitChittorgarh project proves how ChittorTech combines modern web development with bleeding-edge Answer Engine Optimization (GEO) to capture real global consumer demand. Want to build a high-converting regional portal or booking engine? Contact ChittorTech today."
+  },
+  "chittorgarh-tourism-website-development": {
+    heading: "Case Study: Chittorgarh Tourism Web Platform Engineering",
+    intro: "Developing an authoritative, high-authority tourism portal requires balancing heavy historical media assets with instant load times and search engine prominence. ChittorTech delivered a comprehensive digital gateway for Chittorgarh's tourism ecosystem, featuring interactive heritage maps, ticketing guides, and foreign tourist assistance.",
+    capabilitiesTitle: "Tourism Web Architecture Deliverables:",
+    capabilities: [
+      {
+        title: "High-Resolution Image & Video Streaming",
+        desc: "Edge-cached static asset delivery ensuring instant loading of 4K fort visuals without slowing down mobile page speeds."
+      },
+      {
+        title: "International Tourist Assistance Workflows",
+        desc: "Dedicated itinerary planners, currency guidance, local taxi fare benchmarks, and direct WhatsApp concierge support for global visitors."
+      },
+      {
+        title: "Search Console & Answer Engine Domination",
+        desc: "Configured comprehensive JSON-LD schemas and multilingual metadata to capture voice and AI search queries across search engines."
+      },
+      {
+        title: "Local Vendor & Guide Integration",
+        desc: "Direct contact directories connecting travelers directly with licensed local guides, homestays, and Rajasthan Tourism accredited operators."
+      }
+    ],
+    summary: "A benchmark in regional digital transformation. ChittorTech continues to empower local tourism economies through scalable, modern web engineering."
   },
   "ai-governance-security-deepfakes": {
     heading: "AI Governance, Security & Deepfake Mitigation Guide",
@@ -162,7 +275,7 @@ const getDynamicContent = (slug, cleanTitle) => {
   const title = cleanTitle;
   let theme = "software automation";
   let techKeywords = ["custom development", "system integration", "cloud scaling", "automated workflows"];
-  
+
   if (slug.includes("ai") || slug.includes("llm") || slug.includes("chatbot") || slug.includes("rag") || slug.includes("reasoning") || slug.includes("prompt") || slug.includes("slop")) {
     theme = "artificial intelligence and machine learning";
     techKeywords = ["custom LLM training", "vector search semantic indexing", "autonomous AI agents", "prompt engineering standards"];
@@ -237,7 +350,7 @@ export default function DynamicBlogClient({ slug, cleanTitle }) {
       return;
     }
 
-    const submissionPayload = { 
+    const submissionPayload = {
       ...formData,
       message: `[SEO LANDING PAGE: ${cleanTitle}] ` + (formData.message || "")
     };
@@ -245,7 +358,7 @@ export default function DynamicBlogClient({ slug, cleanTitle }) {
     // 1. Instant feedback to user
     setStatusType("success");
     setStatusMsg("Thank you! We will contact you soon with a custom demo.");
-    
+
     // 2. Clear form fields
     setFormData({
       name: "",
@@ -333,7 +446,29 @@ export default function DynamicBlogClient({ slug, cleanTitle }) {
 
         /* Section */
         .dy-section {
-          padding: 80px 0;
+          padding: 70px 0;
+          position: relative;
+          clear: both;
+          display: block;
+          width: 100%;
+        }
+        .dy-workflow-section {
+          padding: 75px 0;
+          background: #f8fafc;
+          border-top: 1px solid #e2e8f0;
+          border-bottom: 1px solid #e2e8f0;
+          position: relative;
+          clear: both;
+          display: block;
+          width: 100%;
+        }
+        .dy-impact-section {
+          padding: 70px 0;
+          background: #ffffff;
+          position: relative;
+          clear: both;
+          display: block;
+          width: 100%;
         }
         .dy-card {
           background: #ffffff;
@@ -341,7 +476,28 @@ export default function DynamicBlogClient({ slug, cleanTitle }) {
           padding: 32px;
           border: 1px solid #e2e8f0;
           box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03);
-          height: 100%;
+          height: auto !important;
+          margin-bottom: 0px;
+          position: relative;
+        }
+        .dy-related-section {
+          padding: 80px 0;
+          background: #f8fafc;
+          border-top: 1px solid #e2e8f0;
+          position: relative;
+          clear: both;
+          display: block;
+          width: 100%;
+        }
+        .dy-cta-section {
+          background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #1e3a8a 100%);
+          padding: 75px 0;
+          color: #ffffff;
+          text-align: center;
+          position: relative;
+          clear: both;
+          display: block;
+          width: 100%;
         }
 
         /* Form Card */
@@ -471,46 +627,78 @@ export default function DynamicBlogClient({ slug, cleanTitle }) {
           <p className="dy-hero-desc">
             {content.intro || "Explore secure, cloud-based workflow automation, GST-compliant billing, inventory management, and custom enterprise AI solutions tailored to boost business growth."}
           </p>
+
+          {CASE_STUDY_METRICS[slug] && (
+            <div className="d-flex flex-wrap gap-3 mt-4">
+              {CASE_STUDY_METRICS[slug].map((m, idx) => (
+                <div key={idx} style={{
+                  background: "rgba(15, 23, 42, 0.7)",
+                  border: `1.5px solid ${m.border}`,
+                  borderRadius: "14px",
+                  padding: "10px 18px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.35)",
+                  backdropFilter: "blur(10px)"
+                }}>
+                  <div style={{
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "10px",
+                    background: m.bg,
+                    border: `1px solid ${m.border}`,
+                    color: m.color,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "1.15rem",
+                    flexShrink: 0
+                  }}>
+                    <i className={m.icon} style={{ color: m.color }}></i>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "1.25rem", fontWeight: 900, color: "#ffffff", lineHeight: 1.1, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{m.val}</div>
+                    <div style={{ fontSize: "0.72rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginTop: "2px" }}>{m.lbl}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       {/* Main Content & Form */}
       <section className="dy-section">
         <div className="container">
-          <div className="row g-5">
+          <div className="row g-5 align-items-start">
             <div className="col-lg-7">
-              <h2 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#0f172a", marginBottom: "20px" }}>
-                {content.heading || cleanTitle}
-              </h2>
-              <p style={{ fontSize: "1.02rem", color: "#475569", lineHeight: "1.8", marginBottom: "24px" }}>
-                {content.intro}
-              </p>
-
               <div className="dy-card mb-4">
-                <h3 style={{ fontSize: "1.25rem", fontWeight: 700, color: "#0f172a", marginBottom: "16px" }}>
-                  {content.capabilitiesTitle}
-                </h3>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
+                  <span style={{ background: "#eff6ff", color: "#2563eb", padding: "4px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase" }}>
+                    <i className="fa-solid fa-layer-group me-1"></i> Solution Architecture
+                  </span>
+                </div>
+                <h2 style={{ fontSize: "1.45rem", fontWeight: 800, color: "#0f172a", marginBottom: "20px" }}>
+                  {content.capabilitiesTitle || "Key Technical Features & Capabilities"}
+                </h2>
                 <ul className="dy-bullets">
                   {content.capabilities.map((c, idx) => (
-                    <li key={idx}>
-                      <div className="dy-bullet-icon"><i className="fas fa-check"></i></div>
-                      <span><strong>{c.title}:</strong> {c.desc}</span>
+                    <li key={idx} style={{ alignItems: "flex-start" }}>
+                      <div className="dy-bullet-icon" style={{ marginTop: "4px" }}><i className="fas fa-check"></i></div>
+                      <div>
+                        <strong style={{ color: "#0f172a", fontSize: "0.98rem" }}>{c.title}:</strong>
+                        <div style={{ color: "#475569", fontSize: "0.92rem", lineHeight: 1.6, marginTop: "2px" }}>{c.desc}</div>
+                      </div>
                     </li>
                   ))}
                 </ul>
               </div>
-
-              <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#0f172a", marginTop: "40px", marginBottom: "16px" }}>
-                {slug.includes("chittorgarh") ? "Why Chittorgarh Businesses Choose ChittorTech" : "Why Indian Enterprises Trust ChittorTech"}
-              </h2>
-              <p style={{ fontSize: "0.98rem", color: "#475569", lineHeight: "1.75" }}>
-                {content.summary}
-              </p>
             </div>
 
-            {/* Sticky Form */}
+            {/* Right Column: Sticky Form & Trust Card */}
             <div className="col-lg-5">
-              <div className="dy-form-card">
+              <div className="dy-form-card" style={{ position: "sticky", top: "90px" }}>
                 <h3 className="dy-form-title">Request a Free Demo</h3>
                 <p className="dy-form-subtitle">Receive a customized demonstration and expert trial consultation.</p>
 
@@ -610,8 +798,210 @@ export default function DynamicBlogClient({ slug, cleanTitle }) {
                     <i className="fas fa-arrow-right"></i>
                   </button>
                 </form>
+
+                {/* Trust & Guarantee Box */}
+                <div style={{ marginTop: "24px", paddingTop: "18px", borderTop: "1px dashed #e2e8f0" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+                    <span style={{ background: "#ecfdf5", color: "#059669", padding: "4px 10px", borderRadius: "50px", fontSize: "0.72rem", fontWeight: 800, textTransform: "uppercase" }}>
+                      <i className="fa-solid fa-shield-check me-1"></i> Verified Partner
+                    </span>
+                    <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>D-U-N-S Registered Org</span>
+                  </div>
+                  <ul style={{ listStyle: "none", padding: 0, margin: "0 0 16px 0", fontSize: "0.8rem", color: "#475569" }}>
+                    <li style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                      <i className="fa-solid fa-circle-check text-success"></i> <strong>Zero Commission / Direct Booking Leakage</strong>
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                      <i className="fa-solid fa-circle-check text-success"></i> <strong>100% Source Code Ownership & Audit Trail</strong>
+                    </li>
+                    <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <i className="fa-solid fa-circle-check text-success"></i> <strong>Direct WhatsApp Technical Consultation</strong>
+                    </li>
+                  </ul>
+                  <a
+                    href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20reviewed%20your%20case%20study%20and%20want%20to%20discuss%20a%20similar%20project."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-outline-success w-100 fw-bold"
+                    style={{ borderRadius: "10px", fontSize: "0.82rem", padding: "9px" }}
+                  >
+                    <i className="fa-brands fa-whatsapp me-2"></i> Chat with Lead Engineer
+                  </a>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Standalone Full-Width System Workflow Section */}
+      {CASE_STUDY_WORKFLOWS[slug] && (
+        <section className="dy-workflow-section">
+          <div className="container">
+            <div className="text-center mb-5" style={{ maxWidth: "700px", margin: "0 auto" }}>
+              <span style={{ background: "#eff6ff", color: "#2563eb", padding: "5px 14px", borderRadius: "50px", fontSize: "0.76rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "1px" }}>
+                <i className="fa-solid fa-diagram-project me-1"></i> System Architecture &amp; Workflow
+              </span>
+              <h2 style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.1rem)", fontWeight: 800, color: "#0f172a", marginTop: "12px", marginBottom: "8px" }}>
+                {CASE_STUDY_WORKFLOWS[slug].title}
+              </h2>
+              <p style={{ color: "#64748b", fontSize: "0.95rem", lineHeight: 1.6, margin: 0 }}>
+                High-availability pipeline engineered for seamless operations, zero data loss, and real-time execution.
+              </p>
+            </div>
+            <div className="row g-4 align-items-stretch">
+              {CASE_STUDY_WORKFLOWS[slug].steps.map((st) => (
+                <div key={st.num} className="col-12 col-md-6 col-lg-3 d-flex">
+                  <div style={{
+                    background: "#ffffff",
+                    border: "1.5px solid #e2e8f0",
+                    borderRadius: "16px",
+                    padding: "24px 20px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    width: "100%",
+                    boxShadow: "0 6px 20px rgba(15, 23, 42, 0.04)"
+                  }}>
+                    <div>
+                      <span style={{ fontSize: "0.75rem", fontWeight: 900, color: "#2563eb", background: "#eff6ff", border: "1px solid #dbeafe", padding: "4px 10px", borderRadius: "6px" }}>
+                        STEP {st.num}
+                      </span>
+                      <h3 style={{ fontSize: "1.05rem", fontWeight: 800, color: "#0f172a", marginTop: "14px", marginBottom: "8px", lineHeight: 1.35 }}>
+                        {st.title}
+                      </h3>
+                      <p style={{ fontSize: "0.86rem", color: "#64748b", lineHeight: 1.6, margin: 0 }}>
+                        {st.desc}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Standalone Full-Width Measurable Impact Section */}
+      {content.summary && (
+        <section className="dy-impact-section">
+          <div className="container">
+            <div style={{
+              background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #1e3a8a 100%)",
+              borderRadius: "22px",
+              padding: "44px 38px",
+              color: "#ffffff",
+              boxShadow: "0 15px 35px rgba(15, 23, 42, 0.12)"
+            }}>
+              <div className="row align-items-center g-4">
+                <div className="col-12 col-lg-8">
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "rgba(34, 197, 94, 0.2)", border: "1px solid rgba(34, 197, 94, 0.4)", color: "#4ade80", padding: "4px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: "12px" }}>
+                    <i className="fa-solid fa-circle-check"></i> Verified Business Impact
+                  </span>
+                  <h3 style={{ fontSize: "clamp(1.4rem, 3vw, 1.85rem)", fontWeight: 900, color: "#ffffff", marginBottom: "12px", lineHeight: 1.25, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    Measurable Impact &amp; Client Value
+                  </h3>
+                  <p style={{ fontSize: "0.98rem", color: "#cbd5e1", lineHeight: 1.75, margin: 0, maxWidth: "720px" }}>
+                    {content.summary}
+                  </p>
+                </div>
+                <div className="col-12 col-lg-4 text-lg-end text-start">
+                  <a
+                    href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20reviewed%20your%20case%20study%20and%20want%20to%20discuss%20a%20similar%20project."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-success fw-bold px-4 py-3 w-100 mb-2"
+                    style={{ borderRadius: "10px", fontSize: "0.9rem" }}
+                  >
+                    <i className="fa-brands fa-whatsapp me-2"></i> Discuss Similar System
+                  </a>
+                  <Link href="/contact-us" className="btn btn-outline-light fw-bold px-4 py-2 w-100" style={{ borderRadius: "10px", fontSize: "0.86rem" }}>
+                    Request Free Consultation <i className="fa-solid fa-arrow-right ms-1"></i>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Related Case Studies Grid */}
+      <section className="dy-related-section">
+        <div className="container">
+          <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+              <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#2563eb", textTransform: "uppercase", letterSpacing: "1px" }}>
+                Proven Engineering
+              </span>
+              <h2 style={{ fontSize: "1.65rem", fontWeight: 800, color: "#0f172a", margin: "4px 0 0" }}>
+                Explore More Client Case Studies &amp; Architecture
+              </h2>
+            </div>
+            <Link href="/case-studies" className="btn btn-outline-primary btn-sm fw-bold px-3 py-2" style={{ borderRadius: "8px" }}>
+              View All Case Studies <i className="fa-solid fa-arrow-right ms-1"></i>
+            </Link>
+          </div>
+
+          <div className="row g-4">
+            {RELATED_CASE_STUDIES.filter((item) => item.link !== "/" + slug).slice(0, 3).map((item) => (
+              <div key={item.link} className="col-12 col-md-4">
+                <Link href={item.link} style={{ textDecoration: "none", color: "inherit" }}>
+                  <div style={{
+                    background: "#ffffff",
+                    border: "1.5px solid #e2e8f0",
+                    borderRadius: "18px",
+                    padding: "26px",
+                    height: "auto",
+                    minHeight: "220px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    transition: "all 0.2s ease",
+                  }} className="cs-preview-card">
+                    <div>
+                      <span style={{ fontSize: "0.72rem", fontWeight: 800, color: item.badgeColor, background: item.badgeBg, padding: "3px 10px", borderRadius: "50px", textTransform: "uppercase" }}>
+                        {item.badge}
+                      </span>
+                      <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a", marginTop: "14px", marginBottom: "8px", lineHeight: 1.35 }}>
+                        {item.title}
+                      </h3>
+                      <p style={{ fontSize: "0.85rem", color: "#64748b", lineHeight: 1.6, margin: 0 }}>
+                        {item.desc}
+                      </p>
+                    </div>
+                    <div style={{ marginTop: "20px", fontSize: "0.84rem", fontWeight: 700, color: "#2563eb", display: "flex", alignItems: "center", gap: "6px" }}>
+                      Read Case Study <i className="fa-solid fa-arrow-right"></i>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Full-Width Conversion CTA Banner */}
+      <section className="dy-cta-section">
+        <div className="container" style={{ maxWidth: "780px" }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.4rem)", fontWeight: 900, color: "#ffffff", marginBottom: "14px" }}>
+            Want Similar Scalable Architecture For Your Business?
+          </h2>
+          <p style={{ color: "#cbd5e1", fontSize: "1.05rem", lineHeight: 1.7, marginBottom: "28px" }}>
+            Whether you need offline-first pilgrim billing ERP, Answer Engine Optimization (GEO) to capture global travelers, or verified mobile app publishing, our engineering team is ready to deploy.
+          </p>
+          <div className="d-flex justify-content-center gap-3 flex-wrap">
+            <a
+              href="https://api.whatsapp.com/send?phone=917597451057&text=Hi%20ChittorTech,%20I%20want%20to%20consult%20on%20building%20a%20system%20like%20your%20case%20studies."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-success btn-lg fw-bold px-4 py-3"
+              style={{ borderRadius: "10px" }}
+            >
+              <i className="fa-brands fa-whatsapp me-2"></i> Discuss on WhatsApp (+91 75974 51057)
+            </a>
+            <Link href="/contact-us" className="btn btn-outline-light btn-lg fw-bold px-4 py-3" style={{ borderRadius: "10px" }}>
+              Request Custom Blueprint
+            </Link>
           </div>
         </div>
       </section>
