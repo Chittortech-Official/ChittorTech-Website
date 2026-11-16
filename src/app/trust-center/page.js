@@ -995,7 +995,61 @@ export default function TrustCenterPage() {
           </div>
 
           <div className="row g-4">
-            {/* Card 1: DGFT IEC */}
+            {/* Card 1: Dun & Bradstreet D-U-N-S Number */}
+            <div className="col-lg-4 col-md-6">
+              <div className="tc-card" style={{ borderColor: "#0284c7" }}>
+                <div className="tc-card-top">
+                  <div className="tc-card-icon global" style={{ background: "#e0f2fe", color: "#0284c7" }}>
+                    <i className="fa-solid fa-globe"></i>
+                  </div>
+                  <span className="tc-status-pill verified">
+                    <i className="fa-solid fa-circle-check"></i> Official D-U-N-S® Issued
+                  </span>
+                </div>
+                <h3 className="tc-card-title">Dun &amp; Bradstreet (D-U-N-S®)</h3>
+                <p className="tc-card-sub">
+                  Official 9-digit corporate identifier issued by Dun &amp; Bradstreet for CHITTORTECH. Globally recognized business verification for Google Play Organization, Apple Developer, and cross-border enterprise contracts.
+                </p>
+                <div className="tc-meta-box">
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">D-U-N-S® Number</span>
+                    <span className="tc-meta-val" style={{ color: "#0284c7", fontWeight: 700 }}>
+                      311811480
+                      <button
+                        className="tc-copy-btn"
+                        onClick={() => handleCopy("311811480", "duns")}
+                        title="Copy D-U-N-S Number"
+                      >
+                        <i className={copiedId === "duns" ? "fa-solid fa-check text-success" : "fa-regular fa-copy"}></i>
+                      </button>
+                    </span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Legal Entity</span>
+                    <span className="tc-meta-val">CHITTORTECH</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Issuing Authority</span>
+                    <span className="tc-meta-val">Dun &amp; Bradstreet India</span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Geographic Scope</span>
+                    <span className="tc-meta-val">Global (US, EU, UAE, India)</span>
+                  </div>
+                </div>
+                <a
+                  href="https://www.dnb.co.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tc-btn-verify"
+                  style={{ background: "#0284c7", borderColor: "#0284c7", color: "#fff" }}
+                >
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> D&amp;B India Registry
+                </a>
+              </div>
+            </div>
+
+            {/* Card 2: DGFT IEC */}
             <div className="col-lg-4 col-md-6">
               <div className="tc-card">
                 <div className="tc-card-top">
@@ -1258,49 +1312,6 @@ export default function TrustCenterPage() {
               </div>
             </div>
 
-            {/* Card 7: D-U-N-S Number */}
-            <div className="col-lg-4 col-md-6">
-              <div className="tc-card">
-                <div className="tc-card-top">
-                  <div className="tc-card-icon global">
-                    <i className="fa-solid fa-globe"></i>
-                  </div>
-                  <span className="tc-status-pill verified">
-                    <i className="fa-solid fa-circle-check"></i> Official D-U-N-S® Issued
-                  </span>
-                </div>
-                <h3 className="tc-card-title">Dun &amp; Bradstreet (D-U-N-S®)</h3>
-                <p className="tc-card-sub">
-                  Official 9-digit corporate identifier issued by Dun &amp; Bradstreet for CHITTORTECH. Globally recognized business verification for Google Play Organization, Apple Developer, and cross-border enterprise contracts.
-                </p>
-                <div className="tc-meta-box">
-                  <div className="tc-meta-row">
-                    <span className="tc-meta-label">D-U-N-S® Number</span>
-                    <span className="tc-meta-val" style={{ color: "#0284c7", fontWeight: 700 }}>311811480</span>
-                  </div>
-                  <div className="tc-meta-row">
-                    <span className="tc-meta-label">Legal Entity</span>
-                    <span className="tc-meta-val">CHITTORTECH</span>
-                  </div>
-                  <div className="tc-meta-row">
-                    <span className="tc-meta-label">Issuing Authority</span>
-                    <span className="tc-meta-val">Dun &amp; Bradstreet India</span>
-                  </div>
-                  <div className="tc-meta-row">
-                    <span className="tc-meta-label">Geographic Scope</span>
-                    <span className="tc-meta-val">Global (US, EU, UAE, India)</span>
-                  </div>
-                </div>
-                <a
-                  href="https://www.dnb.co.in/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tc-btn-verify"
-                >
-                  <i className="fa-solid fa-arrow-up-right-from-square"></i> D&amp;B India Registry
-                </a>
-              </div>
-            </div>
 
             {/* Card 8: GST Compliance */}
             <div className="col-lg-4 col-md-6">
@@ -2343,7 +2354,55 @@ export default function TrustCenterPage() {
               </a>
             </div>
 
-            {/* Record 1: DGFT IEC */}
+            {/* Record 1: D-U-N-S® Corporate Registry */}
+            <div className="tc-matrix-card" style={{ borderColor: "#0284c7" }}>
+              <div>
+                <div className="tc-matrix-header">
+                  <div className="tc-matrix-top-bar">
+                    <div className="tc-matrix-icon global" style={{ background: "#e0f2fe", color: "#0284c7" }}>
+                      <i className="fa-solid fa-globe"></i>
+                    </div>
+                    <span className="tc-status-pill verified">
+                      <i className="fa-solid fa-circle-check"></i> Issued &amp; Active
+                    </span>
+                  </div>
+                  <div className="tc-matrix-title-wrap">
+                    <h4 className="tc-matrix-title">Dun &amp; Bradstreet (D-U-N-S®)</h4>
+                    <p className="tc-matrix-authority">Dun &amp; Bradstreet Global DB</p>
+                  </div>
+                </div>
+
+                <div className="tc-matrix-body">
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Corporate ID</span>
+                    <span className="tc-matrix-val" style={{ color: "#0284c7", fontWeight: 700 }}>
+                      311811480
+                      <button
+                        className="tc-copy-btn"
+                        onClick={() => handleCopy("311811480", "duns-matrix")}
+                        title="Copy D-U-N-S Number"
+                      >
+                        <i className={copiedId === "duns-matrix" ? "fa-solid fa-check text-success" : "fa-regular fa-copy"}></i>
+                      </button>
+                    </span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Legal Entity</span>
+                    <span className="tc-matrix-val">CHITTORTECH</span>
+                  </div>
+                  <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">Scope</span>
+                    <span className="tc-matrix-val">Global (US, UK, EU, UAE, India)</span>
+                  </div>
+                </div>
+              </div>
+
+              <a href="https://www.dnb.co.in/" target="_blank" rel="noopener noreferrer" className="tc-matrix-btn" style={{ background: "#0284c7", color: "#fff", borderColor: "#0284c7" }}>
+                <i className="fa-solid fa-arrow-up-right-from-square"></i> D&amp;B India Portal
+              </a>
+            </div>
+
+            {/* Record 2: DGFT IEC */}
             <div className="tc-matrix-card">
               <div>
                 <div className="tc-matrix-header">
@@ -2577,44 +2636,6 @@ export default function TrustCenterPage() {
               </Link>
             </div>
 
-            {/* Record 7: D-U-N-S® Corporate Registry */}
-            <div className="tc-matrix-card">
-              <div>
-                <div className="tc-matrix-header">
-                  <div className="tc-matrix-top-bar">
-                    <div className="tc-matrix-icon global">
-                      <i className="fa-solid fa-globe"></i>
-                    </div>
-                    <span className="tc-status-pill verified">
-                      <i className="fa-solid fa-circle-check"></i> Issued &amp; Active
-                    </span>
-                  </div>
-                  <div className="tc-matrix-title-wrap">
-                    <h4 className="tc-matrix-title">Dun &amp; Bradstreet (D-U-N-S®)</h4>
-                    <p className="tc-matrix-authority">Dun &amp; Bradstreet Global DB</p>
-                  </div>
-                </div>
-
-                <div className="tc-matrix-body">
-                  <div className="tc-matrix-row">
-                    <span className="tc-matrix-key">Corporate ID</span>
-                    <span className="tc-matrix-val" style={{ color: "#0284c7", fontWeight: 700 }}>311811480</span>
-                  </div>
-                  <div className="tc-matrix-row">
-                    <span className="tc-matrix-key">Legal Entity</span>
-                    <span className="tc-matrix-val">CHITTORTECH</span>
-                  </div>
-                  <div className="tc-matrix-row">
-                    <span className="tc-matrix-key">Scope</span>
-                    <span className="tc-matrix-val">Global (US, UK, EU, UAE, India)</span>
-                  </div>
-                </div>
-              </div>
-
-              <a href="https://www.dnb.co.in/" target="_blank" rel="noopener noreferrer" className="tc-matrix-btn">
-                <i className="fa-solid fa-arrow-up-right-from-square"></i> D&amp;B India Portal
-              </a>
-            </div>
 
             {/* Record 8: GST & Financial Compliance */}
             <div className="tc-matrix-card">
