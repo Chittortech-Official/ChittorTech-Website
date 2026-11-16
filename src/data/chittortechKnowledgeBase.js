@@ -28,7 +28,7 @@ export const CHITTORTECH_KNOWLEDGE_BASE = `
 - MSME / Udyam Enterprise: Registered under Ministry of MSME, Govt. of India with statutory 45-day buyer payment protection under the MSMED Act.
 - Google Play Console Developer: Identity-verified developer profile with full compliance for Google's 12-tester 14-day closed testing rules.
 - Apple Developer Program (iOS): Enrollment & developer verification under process for native iOS, iPadOS, macOS App Store & TestFlight distribution.
-- Corporate Identifiers: D-U-N-S (Dun & Bradstreet, in progress), GST Invoicing & LUT Zero-Rated Export Compliance.
+- Corporate Identifiers: D-U-N-S (Dun & Bradstreet: 311811480, Verified & Active), GST Invoicing & LUT Zero-Rated Export Compliance.
 - Turnkey Corporate Services ChittorTech Delivers for Clients (Direct Lead Generation):
   1. DGFT IEC Registration: Foreign remittance clearance (USD, EUR, GBP) via wire transfer + bank FIRC setup.
   2. DPIIT Startup India Recognition: Official filing, 80% patent / 50% trademark fee rebates, tax holidays.

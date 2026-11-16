@@ -1265,30 +1265,30 @@ export default function TrustCenterPage() {
                   <div className="tc-card-icon global">
                     <i className="fa-solid fa-globe"></i>
                   </div>
-                  <span className="tc-status-pill progress">
-                    <i className="fa-solid fa-clock"></i> Coming Soon
+                  <span className="tc-status-pill verified">
+                    <i className="fa-solid fa-circle-check"></i> Official D-U-N-S® Issued
                   </span>
                 </div>
                 <h3 className="tc-card-title">Dun &amp; Bradstreet (D-U-N-S®)</h3>
                 <p className="tc-card-sub">
-                  9-digit corporate identifier under process with Dun &amp; Bradstreet India. Mandated by Apple Developer Organization, US Fortune 500s, and European enterprise procurement.
+                  Official 9-digit corporate identifier issued by Dun &amp; Bradstreet for CHITTORTECH. Globally recognized business verification for Google Play Organization, Apple Developer, and cross-border enterprise contracts.
                 </p>
                 <div className="tc-meta-box">
                   <div className="tc-meta-row">
-                    <span className="tc-meta-label">Registry</span>
-                    <span className="tc-meta-val">Dun &amp; Bradstreet</span>
+                    <span className="tc-meta-label">D-U-N-S® Number</span>
+                    <span className="tc-meta-val" style={{ color: "#0284c7", fontWeight: 700 }}>311811480</span>
                   </div>
                   <div className="tc-meta-row">
-                    <span className="tc-meta-label">Status</span>
-                    <span className="tc-meta-val" style={{ color: "#b45309" }}>Coming Soon</span>
+                    <span className="tc-meta-label">Legal Entity</span>
+                    <span className="tc-meta-val">CHITTORTECH</span>
                   </div>
                   <div className="tc-meta-row">
-                    <span className="tc-meta-label">Apple Org Verified</span>
-                    <span className="tc-meta-val">In Process</span>
+                    <span className="tc-meta-label">Issuing Authority</span>
+                    <span className="tc-meta-val">Dun &amp; Bradstreet India</span>
                   </div>
                   <div className="tc-meta-row">
                     <span className="tc-meta-label">Geographic Scope</span>
-                    <span className="tc-meta-val">US, UK, EU, UAE, AUS</span>
+                    <span className="tc-meta-val">Global (US, EU, UAE, India)</span>
                   </div>
                 </div>
                 <a
@@ -1297,7 +1297,7 @@ export default function TrustCenterPage() {
                   rel="noopener noreferrer"
                   className="tc-btn-verify"
                 >
-                  <i className="fa-solid fa-arrow-up-right-from-square"></i> D&amp;B India Portal
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> D&amp;B India Registry
                 </a>
               </div>
             </div>
@@ -2585,8 +2585,8 @@ export default function TrustCenterPage() {
                     <div className="tc-matrix-icon global">
                       <i className="fa-solid fa-globe"></i>
                     </div>
-                    <span className="tc-status-pill progress">
-                      <i className="fa-solid fa-clock"></i> Coming Soon
+                    <span className="tc-status-pill verified">
+                      <i className="fa-solid fa-circle-check"></i> Issued &amp; Active
                     </span>
                   </div>
                   <div className="tc-matrix-title-wrap">
@@ -2598,15 +2598,15 @@ export default function TrustCenterPage() {
                 <div className="tc-matrix-body">
                   <div className="tc-matrix-row">
                     <span className="tc-matrix-key">Corporate ID</span>
-                    <span className="tc-matrix-val">9-Digit D-U-N-S®</span>
+                    <span className="tc-matrix-val" style={{ color: "#0284c7", fontWeight: 700 }}>311811480</span>
                   </div>
                   <div className="tc-matrix-row">
-                    <span className="tc-matrix-key">Apple Org Match</span>
-                    <span className="tc-matrix-val">In Process</span>
+                    <span className="tc-matrix-key">Legal Entity</span>
+                    <span className="tc-matrix-val">CHITTORTECH</span>
                   </div>
                   <div className="tc-matrix-row">
                     <span className="tc-matrix-key">Scope</span>
-                    <span className="tc-matrix-val">US, UK, EU, UAE, AUS</span>
+                    <span className="tc-matrix-val">Global (US, UK, EU, UAE, India)</span>
                   </div>
                 </div>
               </div>
