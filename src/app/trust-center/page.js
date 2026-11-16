@@ -152,9 +152,9 @@ export default function TrustCenterPage() {
         
         .tc-hero-title {
           font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
-          font-size: clamp(2.1rem, 4.5vw, 3.5rem);
+          font-size: clamp(1.4rem, 3.8vw, 3.2rem);
           font-weight: 800;
-          line-height: 1.15;
+          line-height: 1.18;
           letter-spacing: -0.03em;
           margin-bottom: 18px;
           color: #ffffff !important;
@@ -165,7 +165,7 @@ export default function TrustCenterPage() {
           -webkit-text-fill-color: transparent;
         }
         .tc-hero-subtitle {
-          font-size: clamp(0.98rem, 1.8vw, 1.18rem);
+          font-size: clamp(0.9rem, 1.5vw, 1.15rem);
           color: #cbd5e1 !important;
           max-width: 800px;
           margin: 0 auto 32px;
@@ -393,6 +393,27 @@ export default function TrustCenterPage() {
 
         /* Mobile Adjustments for Meta Rows to prevent awkward text overlap */
         @media (max-width: 576px) {
+          .tc-hero-title {
+            font-size: 1.45rem !important;
+            line-height: 1.25 !important;
+          }
+          .tc-hero-subtitle {
+            font-size: 0.88rem !important;
+            line-height: 1.5 !important;
+            margin-bottom: 20px !important;
+          }
+          .tc-pill {
+            font-size: 0.68rem !important;
+            padding: 5px 12px !important;
+          }
+          .tc-sec-title {
+            font-size: 1.35rem !important;
+            line-height: 1.25 !important;
+          }
+          .tc-sec-desc {
+            font-size: 0.86rem !important;
+            line-height: 1.5 !important;
+          }
           .tc-card { padding: 22px 18px; }
           .tc-meta-row {
             flex-direction: column;
@@ -430,10 +451,14 @@ export default function TrustCenterPage() {
           transition: all 0.25s ease;
         }
         .tc-btn-verify:hover {
-          background: #2563eb;
+          background: #0f172a !important;
           color: #ffffff !important;
-          border-color: #2563eb;
-          box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+          border-color: #0f172a !important;
+          box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25) !important;
+          transform: translateY(-1px);
+        }
+        .tc-btn-verify:hover * {
+          color: #ffffff !important;
         }
         .tc-btn-lead {
           margin-top: auto;
@@ -452,10 +477,10 @@ export default function TrustCenterPage() {
           transition: all 0.25s ease;
         }
         .tc-btn-lead:hover {
-          background: #2563eb;
-          border-color: #2563eb;
+          background: #2563eb !important;
+          border-color: #2563eb !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+          box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
           transform: translateY(-1px);
         }
 
@@ -580,10 +605,13 @@ export default function TrustCenterPage() {
           text-align: center;
         }
         .tc-matrix-btn:hover {
-          background: #2563eb;
-          border-color: #2563eb;
+          background: #0f172a !important;
+          border-color: #0f172a !important;
           color: #ffffff !important;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25) !important;
+        }
+        .tc-matrix-btn:hover * {
+          color: #ffffff !important;
         }
 
         /* ─── Responsive Consultation Banner ─── */
