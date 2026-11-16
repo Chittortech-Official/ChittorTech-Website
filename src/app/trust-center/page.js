@@ -328,30 +328,7 @@ export default function TrustCenterPage() {
         .tc-card-icon.wa { background: #f0fdf4; color: #22c55e; }
 
         .tc-status-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.74rem;
-          font-weight: 700;
-          padding: 4px 10px;
-          border-radius: 20px;
-          white-space: nowrap;
-          flex-shrink: 0;
-        }
-        .tc-status-pill.verified {
-          background: #ecfdf5;
-          color: #059669;
-          border: 1px solid #a7f3d0;
-        }
-        .tc-status-pill.progress {
-          background: #fffbeb;
-          color: #b45309;
-          border: 1px solid #fde68a;
-        }
-        .tc-status-pill.active {
-          background: #eff6ff;
-          color: #1d4ed8;
-          border: 1px solid #bfdbfe;
+          display: none !important;
         }
 
         .tc-card-title {
