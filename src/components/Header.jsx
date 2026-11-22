@@ -17,6 +17,7 @@ const NAV_ITEMS = {
   ],
   industries: {
     solutions: [
+      { href: "/government-egovernance-solutions", icon: "fa-landmark",          label: "Government & E-Governance" },
       { href: "/erp",                        icon: "fa-cubes",          label: "Enterprise ERP Systems" },
       { href: "/crm",                        icon: "fa-users-gear",     label: "AI CRM & Sales Funnel" },
       { href: "/custom-crm-solutions",       icon: "fa-user-check",     label: "Custom CRM Solutions" },
@@ -63,6 +64,20 @@ const NAV_ITEMS = {
 };
 
 const ANNOUNCEMENT_SLIDES = [
+  {
+    badge: "🏛️ Government & E-Governance",
+    badgeColor: "#38bdf8",
+    badgeBorder: "rgba(56, 189, 248, 0.4)",
+    badgeBg: "rgba(56, 189, 248, 0.12)",
+    textPrefix: "Websites & Grievance Systems for Government Bodies —",
+    textHighlight: "SP Chittorgarh, Nagar Parishad & GFR ready.",
+    btnText: "🏛️ Explore Govt Portals",
+    btnLink: "/government-egovernance-solutions",
+    isExternal: false,
+    btnGradient: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+    btnShadow: "0 0 16px rgba(37, 99, 235, 0.45)",
+    textColor: "#ffffff"
+  },
   {
     badge: "⚡ Instant Architecture & Quote",
     badgeColor: "#fbbf24",
@@ -225,7 +240,7 @@ export default function Header() {
         }
         .ct-strip-inner {
           width: 100%;
-          max-width: 1360px;
+          max-width: 1560px;
           margin: 0 auto;
           display: flex;
           align-items: center;
@@ -437,8 +452,9 @@ export default function Header() {
         }
         .ct-header-inner {
           display: flex; align-items: center; justify-content: space-between;
-          height: 76px; padding: 0 28px;
-          max-width: 1360px; margin: 0 auto; gap: 12px;
+          height: 74px; padding: 0 clamp(16px, 2vw, 32px);
+          max-width: 1560px; margin: 0 auto; gap: 8px;
+          width: 100%;
         }
 
         /* ─── Logo ─── */
@@ -720,7 +736,7 @@ export default function Header() {
           padding: 8px 14px; border-radius: 9px;
           border: 1.5px solid #e2e8f0;
           color: #374151; font-size: 0.82rem; font-weight: 600;
-          text-decoration: none; white-space: nowrap;
+          text-decoration: none; white-space: nowrap; flex-shrink: 0;
           transition: all 0.2s ease; background: transparent;
         }
         .ct-phone-btn i { color: #291fbc; font-size: 0.78rem; }
@@ -731,14 +747,14 @@ export default function Header() {
         }
         .ct-cta-btn {
           display: inline-flex; align-items: center; gap: 7px;
-          padding: 9px 20px; border-radius: 10px;
+          padding: 9px 18px; border-radius: 10px;
           background: linear-gradient(135deg, #291fbc 0%, #1d4ed8 50%, #06b6d4 100%);
           background-size: 200% 100%;
-          color: #fff !important; font-size: 0.855rem; font-weight: 700;
+          color: #fff !important; font-size: 0.84rem; font-weight: 700;
           border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
           box-shadow: 0 4px 16px rgba(41,31,188,0.3);
           transition: all 0.3s ease; white-space: nowrap; text-decoration: none;
-          letter-spacing: -0.1px;
+          letter-spacing: -0.1px; flex-shrink: 0;
         }
         .ct-cta-btn:hover {
           background-position: 100% 0%;
@@ -927,10 +943,20 @@ export default function Header() {
         }
 
         /* ─── Responsive ─── */
-        @media (max-width: 1100px) {
+        @media (max-width: 1220px) {
           .ct-nav, .ct-nav-right { display: none !important; }
           .ct-hamburger { display: flex !important; }
           .ct-mobile-drawer { display: flex; }
+        }
+        @media (min-width: 1221px) and (max-width: 1540px) {
+          .ct-header-inner { padding: 0 14px !important; gap: 4px !important; }
+          .ct-logo-text { font-size: 1.22rem !important; margin-left: 6px !important; }
+          .ct-logo img { height: 40px !important; }
+          .ct-nav { gap: 0 !important; }
+          .ct-nav-btn { padding: 6px 7px !important; font-size: 0.77rem !important; letter-spacing: -0.2px !important; }
+          .ct-nav-btn i { font-size: 0.72rem !important; }
+          .ct-phone-btn { padding: 6px 10px !important; font-size: 0.75rem !important; }
+          .ct-cta-btn { padding: 7px 13px !important; font-size: 0.78rem !important; }
         }
         @media (max-width: 768px) {
           .ct-strip { display: none !important; }
@@ -1223,7 +1249,9 @@ export default function Header() {
                 </li>
 
                 <li><Link href="/case-studies" className="ct-nav-btn"><i className="fa-solid fa-trophy text-primary me-1" style={{ fontSize: "0.78rem" }}></i> Case Studies</Link></li>
+                <li><Link href="/government-egovernance-solutions" className="ct-nav-btn"><i className="fa-solid fa-landmark text-warning me-1" style={{ fontSize: "0.78rem" }}></i> Gov Affiliations</Link></li>
                 <li><Link href="/trust-center" className="ct-nav-btn"><i className="fa-solid fa-shield-halved text-success me-1" style={{ fontSize: "0.78rem" }}></i> Trust Center</Link></li>
+                <li><Link href="/leadership" className="ct-nav-btn">Leadership</Link></li>
                 <li><Link href="/about-us" className="ct-nav-btn">About</Link></li>
                 <li><Link href="/blog" className="ct-nav-btn">Blog</Link></li>
 
@@ -1332,8 +1360,14 @@ export default function Header() {
           <Link href="/case-studies" className="ct-mobile-link">
             <span><i className="fa-solid fa-trophy" style={{marginRight:"8px",color:"#3b82f6"}}></i>Case Studies</span>
           </Link>
+          <Link href="/government-egovernance-solutions" className="ct-mobile-link">
+            <span><i className="fa-solid fa-landmark" style={{marginRight:"8px",color:"#f59e0b"}}></i>Gov Affiliations</span>
+          </Link>
           <Link href="/trust-center" className="ct-mobile-link">
             <span><i className="fa-solid fa-shield-halved" style={{marginRight:"8px",color:"#10b981"}}></i>Trust Center</span>
+          </Link>
+          <Link href="/leadership" className="ct-mobile-link">
+            <span><i className="fa-solid fa-users" style={{marginRight:"8px",color:"#8b5cf6"}}></i>Leadership & Advisory</span>
           </Link>
           <Link href="/about-us" className="ct-mobile-link">
             <span><i className="fa-solid fa-circle-info" style={{marginRight:"8px",color:"#94a3b8"}}></i>About Us</span>

@@ -112,13 +112,26 @@ function getPageAwareDetails(pathname, userName = "") {
     };
   }
 
+  if (pathname?.includes("leadership")) {
+    return {
+      greeting: `Hello${nameGreeting}! 🏛️ Exploring ChittorTech's Leadership & Technical Advisory Board? How can I help you learn about our founders and senior technical advisors?`,
+      suggestions: [
+        "Who founded ChittorTech?",
+        "Technical Advisory Board",
+        "View Advisors on LinkedIn",
+        "Talk to Founders"
+      ],
+      contextPrompt: "The visitor is on ChittorTech's Leadership & Technical Advisory Board page (/leadership). ChittorTech is founded by Kush Sharma (Founder & CGRO - Public Sector & Gov Relations) and Lav Sharma (Co-Founder & CBDO - Enterprise Alliances & Global Growth). Advised by a 6-member Technical Advisory Board contributing strictly in their personal individual capacities: Navneet Sharma (Microsoft Sentinel, IIT Mandi), Ronak Sharma (Accenture, 58+ Cloud Certs, RTU), Ananya Sharma (Visa, Chitkara), Ayush Sharma (BrowserStack, NSIT), Divya Shaktawat (Deutsche Bank, MLV), and Bharat Sharma (Deutsche Bank AVP, ex-Infosys Lead Consultant, ex-BNP Paribas PM, Google Cloud Certified, RTU). Each has a dedicated profile at /leadership/[slug] and verified LinkedIn links."
+    };
+  }
+
   // Default Fallback
   return {
     greeting: `Hello${nameGreeting}! I'm ChittorTech GPT, your official AI Assistant. How can I assist your business growth or engineering today?`,
     suggestions: [
       "What is ChittorTech?",
+      "Meet Leadership & Advisors",
       "View Core Services",
-      "B2B Lead Generation Engine",
       "Contact Support Team"
     ],
     contextPrompt: "The visitor is exploring ChittorTech's website. Answer questions politely and guide them to relevant software solutions, lead generation tools, or contact info."
@@ -350,7 +363,7 @@ export default function Chatbot() {
 
     const confMsg = {
       role: "ai",
-      content: `🎉 **Meeting Request Received!**\n\n- **Service:** ${meetingService}\n- **Date:** ${meetingDate}\n- **Time Slot:** ${meetingSlot}\n\nThank you **${userName || "Valued Partner"}**! We have received your strategy call request. Our team will revert back to you shortly on your registered number (**${fullPhone}**).\n\nYou can also chat directly on WhatsApp with Co-Founder & Chief Business Development & Strategic Officer **Lav Sharma**: [ACTION:WHATSAPP]`,
+      content: `🎉 **Meeting Request Received!**\n\n- **Service:** ${meetingService}\n- **Date:** ${meetingDate}\n- **Time Slot:** ${meetingSlot}\n\nThank you **${userName || "Valued Partner"}**! We have received your strategy call request. Our team will revert back to you shortly on your registered number (**${fullPhone}**).\n\nYou can also chat directly on WhatsApp with Co-Founder & Chief Business Development & Strategic Partnerships Officer (CBDO) **Lav Sharma**: [ACTION:WHATSAPP]`,
       timestamp: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, confMsg]);
@@ -894,7 +907,7 @@ export default function Chatbot() {
                       </div>
                       <div>
                         <h4 className="scheduler-title-text">Book Strategy Call</h4>
-                        <p className="scheduler-sub-text">Direct 1-on-1 consultation with Lav Sharma (Co-Founder &amp; Chief Business Development &amp; Strategic Officer)</p>
+                        <p className="scheduler-sub-text">Direct 1-on-1 consultation with Lav Sharma (Co-Founder &amp; Chief Business Development &amp; Strategic Partnerships Officer (CBDO))</p>
                       </div>
                     </div>
                     <button 

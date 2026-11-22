@@ -80,6 +80,7 @@ const FEATURES = [
 ];
 
 const INDUSTRIES = [
+  { icon: "fa-landmark", label: "Government & E-Governance", href: "/government-egovernance-solutions", color: "#2563eb" },
   { icon: "fa-cart-shopping", label: "Supermarkets & Retail", href: "/supermarket", color: "#8b5cf6" },
   { icon: "fa-shirt", label: "Apparel & Garments", href: "/garments", color: "#ec4899" },
   { icon: "fa-hospital", label: "Hospitals & Healthcare", href: "/hospitals", color: "#06b6d4" },
@@ -249,10 +250,49 @@ const PROCESS_STEPS = [
   { num: "04", title: "Deployment & Scaling", desc: "Seamless launch on enterprise cloud infra with 24/7 monitoring.", color: "#f59e0b" },
 ];
 
-/* ── 7 High-Converting Hero Slider Banners ── */
+/* ── 10 High-Converting Hero Slider Banners ── */
 const HERO_SLIDES = [
   {
     id: 1,
+    badge: "Police Citizen Services",
+    badgeIcon: "fa-shield-halved",
+    badgeColor: "#dc2626",
+    title: "SP Chittorgarh Citizen Outreach & Safety Portal",
+    sub: "Bilingual police portal featuring Real-Time SP & ASP Jan Sunwai (जन सुनवाई) live availability status, direct police station telephone directory & emergency helpline cards.",
+    ctaPrimary: { text: "View SP Portal Case Study", href: "/government-egovernance-solutions", icon: "fa-shield-halved" },
+    ctaSecondary: { text: "Talk to CGRO", href: "https://wa.me/917597451057?text=Namaste%20Kush%20Sir%2C%20I%20am%20inquiring%20about%20Police%20Citizen%20Services%20and%20Safety%20Portals.", isExternal: true, icon: "fa-whatsapp" },
+    pills: ["SP/ASP Jan Sunwai Status", "Direct Station Directory", "FIR Guidance", "100% Uptime"],
+    image: "/assets/images/hero-slider/banner1-web-mobile.jpg",
+    alt: "SP Chittorgarh Citizen Portal - District Police IT Infrastructure"
+  },
+  {
+    id: 2,
+    badge: "Municipal Council E-Governance",
+    badgeIcon: "fa-city",
+    badgeColor: "#2563eb",
+    title: "Nagar Parishad Chittorgarh Civic Grievance Portal",
+    sub: "Automated 2-step civic grievance redressal engine across 60+ wards with geotagged photo evidence, ward heatmaps & SMS/WhatsApp alerts.",
+    ctaPrimary: { text: "Explore Municipal Portal", href: "/government-egovernance-solutions", icon: "fa-city" },
+    ctaSecondary: { text: "Talk to CGRO", href: "https://wa.me/917597451057?text=Namaste%20Kush%20Sir%2C%20I%20am%20inquiring%20about%20Municipal%20Council%20and%20Nagar%20Parishad%20Grievance%20Portals.", isExternal: true, icon: "fa-whatsapp" },
+    pills: ["60+ Wards Covered", "Sanitary Inspector SLAs", "Citizen WhatsApp Alerts", "65% Faster Redressal"],
+    image: "/assets/images/hero-slider/banner1-web-mobile.jpg",
+    alt: "Nagar Parishad Chittorgarh Complaint Management Portal"
+  },
+  {
+    id: 3,
+    badge: "District Heritage & Public Pride",
+    badgeIcon: "fa-monument",
+    badgeColor: "#059669",
+    title: "Panch Gaurav Chittorgarh Digital Pride Platform",
+    sub: "Showcasing the 5 Pillars of District Pride — historic monuments, freedom struggle, agricultural excellence, industrial pride & folk culture.",
+    ctaPrimary: { text: "Explore Panch Gaurav", href: "/government-egovernance-solutions", icon: "fa-monument" },
+    ctaSecondary: { text: "Talk to CGRO", href: "https://wa.me/917597451057?text=Namaste%20Kush%20Sir%2C%20I%20am%20inquiring%20about%20District%20Heritage%20and%20Tourism%20Portals.", isExternal: true, icon: "fa-whatsapp" },
+    pills: ["5 Pillars of Pride", "Interactive Monument Map", "10,000+ Monthly Visitors", "State Integrated"],
+    image: "/assets/images/hero-slider/banner1-web-mobile.jpg",
+    alt: "Panch Gaurav Initiative Portal - District Administration Chittorgarh"
+  },
+  {
+    id: 4,
     badge: "Web & Mobile Engineering",
     badgeIcon: "fa-mobile-screen-button",
     badgeColor: "#38bdf8",
@@ -265,7 +305,7 @@ const HERO_SLIDES = [
     alt: "ChittorTech Enterprise Web and Mobile App Development"
   },
   {
-    id: 2,
+    id: 5,
     badge: "Enterprise AI & Automation",
     badgeIcon: "fa-brain",
     badgeColor: "#a855f7",
@@ -278,7 +318,7 @@ const HERO_SLIDES = [
     alt: "ChittorTech AI Support Chatbots and LLM Workflows"
   },
   {
-    id: 3,
+    id: 6,
     badge: "Mobile App Publishing",
     badgeIcon: "fa-google-play",
     badgeColor: "#34d399",
@@ -291,7 +331,7 @@ const HERO_SLIDES = [
     alt: "ChittorTech Google Play Store Publishing Service"
   },
   {
-    id: 4,
+    id: 7,
     badge: "Hospitality ERP Software",
     badgeIcon: "fa-torii-gate",
     badgeColor: "#f59e0b",
@@ -304,7 +344,7 @@ const HERO_SLIDES = [
     alt: "ChittorTech Dharamshala Management System and Room Booking"
   },
   {
-    id: 5,
+    id: 8,
     badge: "Sales & Lead Automation",
     badgeIcon: "fa-location-dot",
     badgeColor: "#ec4899",
@@ -317,7 +357,7 @@ const HERO_SLIDES = [
     alt: "ChittorTech B2B Google Maps Lead Generation Software"
   },
   {
-    id: 6,
+    id: 9,
     badge: "Direct Booking Engine",
     badgeIcon: "fa-hotel",
     badgeColor: "#10b981",
@@ -330,7 +370,7 @@ const HERO_SLIDES = [
     alt: "ChittorTech Hotel Room Booking Engine with 0% OTA Commission"
   },
   {
-    id: 7,
+    id: 10,
     badge: "Cloud & SaaS Architecture",
     badgeIcon: "fa-cloud-arrow-up",
     badgeColor: "#6366f1",
@@ -1444,6 +1484,16 @@ export default function HomePage() {
                           >
                             <i className={`fa-solid ${slideItem.ctaSecondary.icon}`}></i> {slideItem.ctaSecondary.text}
                           </button>
+                        ) : slideItem.ctaSecondary.isExternal || (slideItem.ctaSecondary.href && slideItem.ctaSecondary.href.startsWith("http")) ? (
+                          <a
+                            href={slideItem.ctaSecondary.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ct-btn ct-btn-ghost"
+                            style={{ padding: "11px 24px", fontSize: "0.92rem", textDecoration: "none" }}
+                          >
+                            <i className={slideItem.ctaSecondary.icon.includes("whatsapp") ? "fa-brands fa-whatsapp text-success" : `fa-solid ${slideItem.ctaSecondary.icon}`}></i> {slideItem.ctaSecondary.text}
+                          </a>
                         ) : (
                           <Link
                             href={slideItem.ctaSecondary.href}
