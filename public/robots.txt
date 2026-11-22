@@ -70,5 +70,10 @@ Disallow: /
 User-agent: Barkrowler
 Disallow: /
 
+# 4. LLM & Machine-Readable Knowledge Bases
+# llms.txt: https://chittortech.in/llms.txt
+# llms-full.txt: https://chittortech.in/llms-full.txt
+# leadership: https://chittortech.in/leadership
+
 # Sitemap
 Sitemap: https://chittortech.in/sitemap.xml

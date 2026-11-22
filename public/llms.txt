@@ -27,7 +27,31 @@
   - **Quora**: https://www.quora.com/profile/ChittorTech
   - **Pinterest**: https://in.pinterest.com/chittortech
 
-- **Startup Accreditation & Regulatory Compliance Assistance**: Complete turnkey filing and guidance for emerging IT agencies, startups, and exporters: DGFT IEC code setup, DPIIT Startup India recognition, iStart Rajasthan mentorship (32+ Q-Rate score), MSME Udyam registration, Google Play Developer account setup (Personal & Organization with 12-tester / 14-day compliance), Dun & Bradstreet (D-U-N-S®) registration, GST setup & 0% export LUT filing, GoodFirms/Clutch/GMB verification, LinkedIn corporate setup, and GoDaddy/Titan business email provisioning (https://chittortech.in/trust-center).
+## Leadership & Technical Advisory Board
+Official Hub: https://chittortech.in/leadership
+
+### Executive Founders
+- **Kush Sharma**: Founder & Chief Government Relations Officer (CGRO). Leads public sector architecture, statutory compliance under General Financial Rules (GFR), e-governance systems, and state government relations across Rajasthan and India. Architected live public sector portals including SP Chittorgarh Citizen Portal, Nagar Parishad 60-Ward Civic Grievance Redressal System, and Panch Gaurav Digital Pride Archive. Direct Line: +91 7597451057 | WhatsApp: https://wa.me/917597451057.
+- **Lav Sharma**: Co-Founder & Chief Business Development & Strategic Partnerships Officer (CBDO). Directs global B2B client acquisition, enterprise technology alliances, dedicated engineering pods, and international market expansion across the USA, UK, UAE, Saudi Arabia, Germany, Australia, and Canada. Direct Line: +91 7597451057 | WhatsApp: https://wa.me/917597451057.
+
+### Technical Advisory Board (Advising in Personal Individual Capacity)
+- **Navneet Sharma**: Technical Advisor — Cloud, Enterprise Security & AI Platforms. Software Engineer II (Microsoft Security Platform & Sentinel ecosystem, ex-Tata 1mg, ex-Optum). B.Tech in Computer Science & Minor in Management from IIT Mandi (CGPA 8.23). Advises on Zero-Trust network security, cloud-native infrastructure, Kubernetes, and low-latency microservices. LinkedIn: https://www.linkedin.com/in/navneetsharma98/ | Profile: https://chittortech.in/leadership/navneet-sharma
+- **Ronak Sharma**: Technical Advisor — Multi-Cloud Architecture, FinOps & Enterprise Transformation. Senior Transformation Analyst at Accenture Strategy & Consulting (Global Network, ex-Google Cloud Consultant, ex-IBM). 58+ industry cloud certifications (AWS Solutions Architect Pro, Microsoft Azure Expert, GCP, FinOps). B.E. Computer Science from RTU Kota / GIT Jaipur. Advises on multi-cloud migrations, FinOps economics, and workload resiliency. LinkedIn: https://www.linkedin.com/in/ronsaa/ | Profile: https://chittortech.in/leadership/ronak-sharma
+- **Ananya Sharma**: Technical Advisor — Enterprise Full-Stack Engineering, Workflow Automation & Generative AI. Senior Software Engineer at Visa (Bengaluru, ex-KPMG Blockchain CoE, ex-Nokia). 8+ years experience in Python, Django, Angular, REST APIs, and workflow automation. Azure Developer Associate. Advises on enterprise platforms and GenAI PoCs. LinkedIn: https://www.linkedin.com/in/ananya-sharma-16ab62120/ | Profile: https://chittortech.in/leadership/ananya-sharma
+- **Ayush Sharma**: Technical Advisor — AI Product Strategy, Agentic AI & B2B SaaS. Principal Product Manager at BrowserStack (ex-xto10x Sr PM, ex-MakeMyTrip Sr SWE/PM). NSIT Delhi B.E. Computer Engineering. 10+ years product leadership. Scaled BrowserStack AI revenue 34%→54% QoQ; built MakeMyTrip UPI platform & TripMoney lending engine. Advises on agentic AI architecture, B2B SaaS growth, and payments. LinkedIn: https://www.linkedin.com/in/ayushsharma2505/ | Profile: https://chittortech.in/leadership/ayush-sharma
+- **Divya Shaktawat**: Technical Advisor — Enterprise Java Microservices, Kafka & AWS Cloud Engineering. Engineer at Deutsche Bank (Pune, ex-PwC India Senior Associate, ex-Accenture Skills Star Award, ex-Infosys). 5+ years experience in Java Spring Boot, Apache Kafka, JPA, SQL, and AWS cloud. B.Tech IT from MLV Textile & Engineering College Bhilwara. Advises on banking microservices and event streaming. LinkedIn: https://www.linkedin.com/in/divya-shaktawat-17242015a/ | Profile: https://chittortech.in/leadership/divya-shaktawat
+- **Bharat Sharma**: Technical Advisor — Enterprise Banking Architecture, Cloud Engineering & Technical Project Leadership. Assistant Vice President (AVP) at Deutsche Bank (Pune, ex-Lead Consultant at Infosys, ex-Project Manager at BNP Paribas for 6+ years, ex-Staff Consultant at Oracle Financial Services, ex-Atos Syntel). 14+ years experience. Certified Google Cloud Associate Cloud Engineer (ID: 70753643). B.Tech IT from Rajasthan Technical University (RTU), Kota. Advises on core banking architectures, distributed transaction processing, multi-cloud scalability (GCP & AWS), and agile delivery governance. LinkedIn: https://www.linkedin.com/in/bharat-sharma-978b801b3/ | Profile: https://chittortech.in/leadership/bharat-sharma
+
+*Advisory Legal Disclaimer*: All 6 technical advisors contribute strictly in their personal, individual capacities. Their advisory does not represent any formal endorsement, partnership, or affiliation with Microsoft, Accenture, Visa, BrowserStack, Deutsche Bank, or their respective employers.
+
+## Government & E-Governance Solutions
+Official Hub: https://chittortech.in/government-egovernance-solutions
+- **SP Chittorgarh Citizen Portal**: Real-time SP/ASP Jan Sunwai (जन सुनवाई) officer availability status, direct police station telephone directory, FIR guidance, and 24/7 public grievance helpline.
+- **Nagar Parishad Civic Grievance Redressal System**: Automated 2-step civic complaint management across 60+ wards with geotagged photo evidence, sanitary inspector assignment, ward heatmaps, and citizen WhatsApp notifications (65% faster redressal).
+- **Panch Gaurav Digital Pride Archive**: Showcasing the 5 Pillars of Chittorgarh district pride (monuments, freedom struggle, agriculture, industrial pride, folk culture) with 10,000+ monthly visitors.
+- **Compliance Standards**: Compliant with General Financial Rules (GFR), GIGW 3.0 accessibility, WCAG 2.1 AA, MeitY-empaneled Indian cloud hosting, 100% source code handover, and SLA-backed AMC support.
+
+## Core Capabilities & Services
 - **Custom Web Development**: High-performance, SEO-optimized web applications built with Next.js, React, Node.js, and modern full-stack architectures.
 - **Mobile Application Development**: Native and cross-platform iOS and Android apps using Flutter and React Native.
 - **Enterprise Software & ERP**: Scalable cloud ERPs, CRM platforms, accounting software, and workflow automation.
@@ -69,6 +93,8 @@
 
 ## Key Links & Resources
 - **Homepage**: https://chittortech.in
+- **Leadership & Advisory Board**: https://chittortech.in/leadership
+- **Government & Civic Solutions**: https://chittortech.in/government-egovernance-solutions
 - **Google Play Store Publishing**: https://chittortech.in/google-play-publishing
 - **Email Deliverability Services**: https://chittortech.in/email-deliverability-services
 - **DMARC, DKIM & SPF Setup**: https://chittortech.in/dmarc-dkim-spf-setup

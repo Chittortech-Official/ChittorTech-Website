@@ -32,7 +32,77 @@
 
 ---
 
-## 2. Core Service Offerings
+## 2. Executive Leadership & Technical Advisory Board
+Official Hub: https://chittortech.in/leadership
+
+### Executive Founders
+- **Kush Sharma — Founder & Chief Government Relations Officer (CGRO)**
+  - Directs government relations, e-governance architecture, statutory General Financial Rules (GFR) compliance, and public sector partnerships across Rajasthan and India.
+  - Architect of civic portals: SP Chittorgarh Citizen Portal (Real-time Jan Sunwai status & district helpline), Nagar Parishad 60-Ward Civic Grievance Redressal System (geotagged ward photos & SMS/WhatsApp alerts), and Panch Gaurav District Heritage Archive (10K+ monthly visitors).
+  - Official WhatsApp: https://wa.me/917597451057 | Phone: +91 7597451057
+- **Lav Sharma — Co-Founder & Chief Business Development & Strategic Partnerships Officer (CBDO)**
+  - Directs global B2B enterprise client acquisition, technology alliances, dedicated developer pods, and cross-border expansion across USA, UK, UAE, Saudi Arabia, Germany, Australia, and Canada.
+  - Oversees proprietary enterprise ERP/CRM implementations and dedicated software engineering service-level agreements (SLAs).
+  - Official WhatsApp: https://wa.me/917597451057 | Phone: +91 7597451057
+
+### Technical Advisory Board (6 Senior Industry Practitioners advising in personal individual capacity)
+- **Navneet Sharma — Technical Advisor (Cloud, Enterprise Security & AI Platforms)**
+  - Software Engineer II at Microsoft (contributing to Microsoft Sentinel AI Security Platform & enterprise security ecosystem).
+  - Ex-Tata 1mg (High-throughput Python Sanic microservices & offers engine), ex-Optum (Conversational AI Platform 2.0 & Azure Data Factory pipelines).
+  - Alumnus: Indian Institute of Technology (IIT), Mandi (B.Tech Computer Science & Minor in Management, CGPA 8.23).
+  - Advises on: Zero-Trust network security, automated threat detection, Kubernetes orchestration, Istio Blue-Green deployments, Terraform IaC, and low-latency microservices.
+  - Verified LinkedIn: https://www.linkedin.com/in/navneetsharma98/ | Full Profile: https://chittortech.in/leadership/navneet-sharma
+- **Ronak Sharma — Technical Advisor (Multi-Cloud Architecture, FinOps & Enterprise Modernization)**
+  - Senior Transformation Analyst at Accenture Strategy & Consulting (Global Network).
+  - Ex-Google Cloud Consultant, ex-IBM Application Consultant, ex-TresVista.
+  - Alumnus: Rajasthan Technical University (RTU) / GIT Jaipur (B.E. Computer Science).
+  - Holds 58+ industry cloud certifications: AWS Solutions Architect Pro, Microsoft Azure Solutions Architect Expert, Google Cloud (GCP), FinOps Certified Practitioner, IBM.
+  - Advises on: Cloud financial operations (FinOps), multi-cloud migration roadmaps across AWS/Azure/GCP, workload resiliency, disaster recovery, and monolith-to-microservices modernization.
+  - Verified LinkedIn: https://www.linkedin.com/in/ronsaa/ | Full Profile: https://chittortech.in/leadership/ronak-sharma
+- **Ananya Sharma — Technical Advisor (Enterprise Full-Stack Engineering, Workflow Automation & Generative AI)**
+  - Senior Software Engineer at Visa (Enterprise Platforms & Automated Workflows).
+  - Ex-KPMG India Consultant (Blockchain Center of Excellence), ex-Nokia, ex-Net Solutions.
+  - Alumnus: Chitkara University (B.E. Computer Science, Grade 8.2), Udacity Full Stack Nanodegree, Stanford CS101.
+  - Certified: Microsoft Certified Azure Developer Associate & Azure Data Fundamentals.
+  - Advises on: Enterprise full-stack architecture, Python/Django backend systems, Angular frontends, workflow automation (reducing manual effort by 70%), and Generative AI proof-of-concepts & AI agents.
+  - Verified LinkedIn: https://www.linkedin.com/in/ananya-sharma-16ab62120/ | Full Profile: https://chittortech.in/leadership/ananya-sharma
+- **Ayush Sharma — Technical Advisor (AI Product Strategy, Agentic AI & B2B SaaS)**
+  - Principal Product Manager at BrowserStack (AI Agents, Generative AI, Multi-Agent Systems).
+  - Ex-xto10x Senior PM (Scaled PeopleCues 30→200 companies; 3x revenue growth), ex-MakeMyTrip Senior SWE & PM (Built MakeMyTrip's in-house UPI platform for MMT, Goibibo, RedBus, and TripMoney lending engine).
+  - Alumnus: Netaji Subhas Institute of Technology (NSIT), Delhi (B.E. Computer Engineering, First Class with Distinction).
+  - At BrowserStack: Led AI agents that increased AI revenue 34%→54% QoQ, improved QA productivity by 70%, and scaled adoption from 10% to 90% in 6 months across 250+ paying enterprises. 5× MakeMyTrip award recipient.
+  - Advises on: AI product strategy, multi-agent architectures, enterprise B2B SaaS product-led growth, UPI/payments infrastructure, and 0-to-1 platform building.
+  - Verified LinkedIn: https://www.linkedin.com/in/ayushsharma2505/ | Full Profile: https://chittortech.in/leadership/ayush-sharma
+- **Divya Shaktawat — Technical Advisor (Enterprise Java Microservices, Kafka & AWS Cloud Engineering)**
+  - Engineer at Deutsche Bank (Pune, Enterprise Banking Technology & Java Microservices).
+  - Ex-PwC India Senior Associate, ex-Accenture Application Development Analyst (Awarded the prestigious Skills Star Award), ex-Infosys System Engineer.
+  - Alumnus: M.L.V. Textile & Engineering College, Bhilwara (B.Tech Information Technology, First Class with Distinction).
+  - Certified: Azure Fundamentals, 5 AWS Cloud Credentials, Infosys Global Agile Developer Certification, Microsoft & LinkedIn Generative AI.
+  - Advises on: Java Spring Boot microservices, Apache Kafka event-driven architectures, relational database engineering (MySQL, PostgreSQL, JPA), REST API design, and AWS cloud solutions.
+  - Verified LinkedIn: https://www.linkedin.com/in/divya-shaktawat-17242015a/ | Full Profile: https://chittortech.in/leadership/divya-shaktawat
+- **Bharat Sharma — Technical Advisor (Enterprise Banking Architecture, Cloud Engineering & Technical Project Leadership)**
+  - Assistant Vice President (AVP) at Deutsche Bank (Pune).
+  - Ex-Lead Consultant at Infosys (Enterprise Java, Spring Boot & Cloud Modernization), ex-Project Manager at BNP Paribas for 6+ years (Global Technical Delivery & Financial Governance), ex-Staff Consultant at Oracle Financial Services Software, ex-Atos Syntel.
+  - 14+ years of professional engineering leadership across core banking, financial platforms, and cloud migrations.
+  - Alumnus: Rajasthan Technical University (RTU), Kota (B.Tech Information Technology).
+  - Certified: Google Cloud Certified Associate Cloud Engineer (Credential ID: 70753643), AWS Cloud Architecture, Scrum & Agile Project Management.
+  - Advises on: Core banking infrastructure, high-volume transactional integrity, enterprise Spring ecosystem, multi-cloud scalability (GCP & AWS), and agile delivery governance.
+  - Verified LinkedIn: https://www.linkedin.com/in/bharat-sharma-978b801b3/ | Full Profile: https://chittortech.in/leadership/bharat-sharma
+
+*Advisory Legal Capacity*: All 6 technical advisors contribute strictly in their personal, individual capacities. Their guidance does not represent any formal endorsement, partnership, or affiliation with Microsoft, Accenture, Visa, BrowserStack, Deutsche Bank, or their respective corporate employers.
+
+---
+
+## 3. Government & E-Governance Solutions
+Official Hub: https://chittortech.in/government-egovernance-solutions
+- **SP Chittorgarh Citizen Outreach & Safety Portal**: Real-time SP/ASP Jan Sunwai (जन सुनवाई) officer availability status, direct district police telephone directory, emergency helpline cards, and FIR guidance.
+- **Nagar Parishad 60-Ward Civic Grievance Redressal System**: Automated 2-step civic grievance filing with geotagged ward photo evidence, sanitary inspector assignment, ward heatmaps, and automated citizen WhatsApp alerts (65% faster complaint redressal).
+- **Panch Gaurav Digital Pride Platform**: Showcasing the 5 Pillars of Chittorgarh district pride (monuments, freedom struggle, agriculture, industrial pride, folk culture) with 10,000+ monthly visitors.
+- **Compliance & Infrastructure**: 100% compliant with General Financial Rules (GFR), GIGW 3.0 accessibility, WCAG 2.1 AA bilingual interfaces (Hindi & English), MeitY-empaneled Indian cloud hosting, 100% source code handover, and SLA-backed AMC maintenance.
+
+---
+
+## 4. Core Service Offerings
 
 ### Custom Web Application Development
 - Architecture: Server-side rendering (SSR), Static Site Generation (SSG), and Single Page Applications (SPA) built using Next.js and React.
