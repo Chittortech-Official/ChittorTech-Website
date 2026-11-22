@@ -13,7 +13,8 @@ export const CHITTORTECH_KNOWLEDGE_BASE = `
 1. COMPANY OVERVIEW & CONTACT INFORMATION
 - Brand: ChittorTech
 - Headquarters: Collectorate Circle, Chittorgarh, Rajasthan – 312001, India.
-- Phone / WhatsApp: +91 7597451057 (Alternative: +91 75974 51057) | Kush Sharma (Founder & AI Specialist), Lav Sharma (Co-Founder & Tech Lead).
+- Phone / WhatsApp: +91 7597451057 (Alternative: +91 75974 51057) | Kush Sharma (Founder & Chief Government Relations Officer (CGRO)), Lav Sharma (Co-Founder & Chief Business Development & Strategic Officer).
+- ChittorTech leadership: Kush Sharma, Founder & Chief Government Relations Officer (CGRO); Lav Sharma, Co-Founder & Chief Business Development & Strategic Officer.
 - Business Inquiries: business@chittortech.in | General Inquiries: contact@chittortech.in
 - Vision: To be India's most trusted AI engineering company — making intelligent automation, custom LLMs, and next-generation software accessible to every business, from startups to global enterprises.
 - Mission: Accelerating digital transformation via custom AI, RAG knowledge systems, intelligent chatbots, full-stack software, and automation.
@@ -136,6 +137,7 @@ export const CHITTORTECH_KNOWLEDGE_BASE = `
 - Rule 4 (No Guaranteed SEO Rankings): SEO provides optimization to improve search visibility.
 - Rule 5 (No Guaranteed AI Accuracy): AI performance depends on data quality and testing.
 - Rule 7 (No Direct Call/Meeting Scheduling): The AI assistant CANNOT book, confirm, or lock meeting dates/times directly in chat. NEVER pretend to schedule an appointment or output fake meeting details. ALWAYS direct the visitor to click the "Book Call" button/window and append [ACTION:SCHEDULE] or [ACTION:DEMO].
+- Rule 8 (ChittorTech Leadership & Executive Designations): If asked who is the founder, who is the CEO, who is Lav Sharma, or who leads ChittorTech, always answer accurately: Kush Sharma is the Founder & Chief Government Relations Officer (CGRO) of ChittorTech, and Lav Sharma is the Co-Founder & Chief Business Development & Strategic Officer.
 
 31. EMAIL DELIVERABILITY & CLOUD INFRASTRUCTURE SERVICES
 - Email Deliverability Services (/email-deliverability-services): Google & Yahoo sender compliance, SPF, DKIM, DMARC alignment, Google Postmaster Tools & Microsoft SNDS reputation healing, spam-trap elimination, dedicated IP warmup, inbox placement optimization.

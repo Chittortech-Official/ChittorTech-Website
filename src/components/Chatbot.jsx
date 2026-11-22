@@ -350,7 +350,7 @@ export default function Chatbot() {
 
     const confMsg = {
       role: "ai",
-      content: `🎉 **Meeting Request Received!**\n\n- **Service:** ${meetingService}\n- **Date:** ${meetingDate}\n- **Time Slot:** ${meetingSlot}\n\nThank you **${userName || "Valued Partner"}**! We have received your strategy call request. Our team will revert back to you shortly on your registered number (**${fullPhone}**).\n\nYou can also chat directly on WhatsApp with founder **Lav Sharma**: [ACTION:WHATSAPP]`,
+      content: `🎉 **Meeting Request Received!**\n\n- **Service:** ${meetingService}\n- **Date:** ${meetingDate}\n- **Time Slot:** ${meetingSlot}\n\nThank you **${userName || "Valued Partner"}**! We have received your strategy call request. Our team will revert back to you shortly on your registered number (**${fullPhone}**).\n\nYou can also chat directly on WhatsApp with Co-Founder & Chief Business Development & Strategic Officer **Lav Sharma**: [ACTION:WHATSAPP]`,
       timestamp: new Date().toISOString(),
     };
     setMessages((prev) => [...prev, confMsg]);
@@ -894,7 +894,7 @@ export default function Chatbot() {
                       </div>
                       <div>
                         <h4 className="scheduler-title-text">Book Strategy Call</h4>
-                        <p className="scheduler-sub-text">Direct 1-on-1 consultation with Lav Sharma</p>
+                        <p className="scheduler-sub-text">Direct 1-on-1 consultation with Lav Sharma (Co-Founder &amp; Chief Business Development &amp; Strategic Officer)</p>
                       </div>
                     </div>
                     <button 

@@ -131,7 +131,7 @@ ${CHITTORTECH_KNOWLEDGE_BASE}`
     // Friendly fallback message if all AI providers are momentarily unavailable
     return NextResponse.json({
       success: true,
-      reply: "Thank you for connecting with ChittorTech! Our solutions team is available right now. Please connect directly with our founder on WhatsApp (+91 75974 51057) or email business@chittortech.in to discuss your requirements. [ACTION:WHATSAPP]"
+      reply: "Thank you for connecting with ChittorTech! Our solutions team is available right now. Please connect directly with our Founder & Chief Government Relations Officer (CGRO) Kush Sharma on WhatsApp (+91 75974 51057) or email business@chittortech.in to discuss your requirements. [ACTION:WHATSAPP]"
     });
 
   } catch (error) {

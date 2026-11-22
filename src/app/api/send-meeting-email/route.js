@@ -56,7 +56,7 @@ export async function POST(req) {
     <div class="header">
       <div class="header-badge">✨ Call Confirmed</div>
       <h1>Strategy Consultation Scheduled!</h1>
-      <p>Direct 1-on-1 Discussion with ChittorTech Founder</p>
+      <p>Direct 1-on-1 Discussion with ChittorTech Co-Founder & Chief Business Development & Strategic Officer</p>
     </div>
     
     <div class="content">
@@ -91,7 +91,7 @@ export async function POST(req) {
       </div>
 
       <div class="founder-box">
-        <h3>Direct Line with Founder Lav Sharma</h3>
+        <h3>Direct Line with Lav Sharma (Co-Founder & Chief Business Development & Strategic Officer)</h3>
         <p>Our team will reach out directly on your provided phone / WhatsApp at the scheduled slot.</p>
         <a href="https://wa.me/917597451057?text=Namaste%20Lav%20Sir!%20I%20have%20scheduled%20a%20meeting%20for%20${encodeURIComponent(service || 'ChittorTech Services')}." class="cta-btn">
           💬 Connect on WhatsApp (+91 75974 51057)
@@ -129,7 +129,7 @@ export async function POST(req) {
           from: `"ChittorTech" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
           to: email,
           bcc: "kushsharma.cor@gmail.com, lavsharma.cor@gmail.com",
-          subject: `✨ Meeting Confirmed: Strategy Consultation with Founder Lav Sharma`,
+          subject: `✨ Meeting Confirmed: Strategy Consultation with Lav Sharma (Co-Founder & Chief Business Development & Strategic Officer)`,
           html: htmlContent,
         });
       } catch (smtpErr) {

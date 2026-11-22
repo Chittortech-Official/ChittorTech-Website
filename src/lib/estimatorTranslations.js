@@ -91,7 +91,7 @@ export const TRANSLATIONS = {
     leadSubmitBtnInternational: "Request Proposal & Sprint Agreement",
     leadSubmittingText: "Dispatching Proposal...",
     leadSuccessMsg: "Thank you! Your proposal request has been received by our engineering team. We will connect with you via email and WhatsApp shortly!",
-    founderChatBtn: "Chat Direct with Founder",
+    founderChatBtn: "Chat Direct with Founder & CGRO",
   },
 
   hi: {
@@ -178,7 +178,7 @@ export const TRANSLATIONS = {
     leadSubmitBtnInternational: "प्रस्ताव और स्प्रिंट प्लान का अनुरोध करें",
     leadSubmittingText: "प्रस्ताव भेजा जा रहा है...",
     leadSuccessMsg: "धन्यवाद! आपका अनुरोध प्राप्त हो गया है। हमारी इंजीनियरिंग टीम जल्द ही व्हाट्सएप और ईमेल पर आपसे संपर्क करेगी।",
-    founderChatBtn: "फाउंडर से सीधे व्हाट्सएप पर बात करें",
+    founderChatBtn: "फाउंडर व CGRO से सीधे व्हाट्सएप पर बात करें",
   },
 
   ar: {
@@ -265,7 +265,7 @@ export const TRANSLATIONS = {
     leadSubmitBtnInternational: "طلب وثيقة المشروع والاتفاقية المعتمدة",
     leadSubmittingText: "جاري إرسال العرض المعتمد...",
     leadSuccessMsg: "شكراً لك! استلم فريقنا الهندسي طلبك، وسنتواصل معك قريباً عبر الواتساب والبريد الإلكتروني.",
-    founderChatBtn: "محادثة فورية مع المؤسس عبر واتساب",
+    founderChatBtn: "محادثة فورية مع المؤسس وCGRO عبر واتساب",
   },
 
   tr: {
@@ -352,7 +352,7 @@ export const TRANSLATIONS = {
     leadSubmitBtnInternational: "Teklif ve Sprint Planını Talep Et",
     leadSubmittingText: "Teklif Hazırlanıyor...",
     leadSuccessMsg: "Teşekkürler! Talebiniz mühendislik ekibimize ulaştı. En kısa sürede e-posta ve WhatsApp üzerinden sizinle iletişime geçeceğiz.",
-    founderChatBtn: "Kurucu ile Doğrudan WhatsApp'tan Konuşun",
+    founderChatBtn: "Kurucu & CGRO ile Doğrudan WhatsApp'tan Konuşun",
   },
 
   de: {
@@ -439,7 +439,7 @@ export const TRANSLATIONS = {
     leadSubmitBtnInternational: "Architekturplan & Sprint-Angebot anfordern",
     leadSubmittingText: "Angebot wird versendet...",
     leadSuccessMsg: "Vielen Dank! Ihre Anfrage ist eingegangen. Unser Entwicklungsteam wird sich in Kürze mit Ihnen in Verbindung setzen.",
-    founderChatBtn: "Direkt mit dem Gründer via WhatsApp sprechen",
+    founderChatBtn: "Direkt mit dem Gründer & CGRO via WhatsApp sprechen",
   },
 };
 
