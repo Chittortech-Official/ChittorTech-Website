@@ -109,7 +109,7 @@ export default function PaymentTermsPage() {
       content: (
         <>
           <ul>
-            <li><strong>3.1 Indian GST Compliance:</strong> Invoices issued to Indian entities are subject to applicable GST (currently 18%). GST invoices contain official GSTIN and SAC codes for input tax credit (ITC) claiming.</li>
+            <li><strong>3.1 Indian GST Compliance:</strong> Invoices issued to Indian entities are subject to applicable GST (currently 18%). Official GSTIN: <strong>08OTWPS1188A1ZV</strong> (State Code: 08 - Rajasthan). GST invoices contain our official GSTIN and SAC codes for full input tax credit (ITC) claiming.</li>
             <li><strong>3.2 Zero-Rated Export of Services:</strong> Invoices to foreign clients are zero-rated under Section 2(6) of the IGST Act, 2017, supported by Foreign Inward Remittance Certificates (FIRC).</li>
             <li><strong>3.3 Net Payment Terms:</strong> Invoices are payable within seven (7) calendar days of generation. Supported currencies: INR (₹), USD ($), EUR (€), GBP (£), and AUD ($).</li>
           </ul>
@@ -401,7 +401,7 @@ export default function PaymentTermsPage() {
         </p>
         <ul>
           <li>
-            <strong>Indian Goods &amp; Services Tax (GST):</strong> Invoices issued to Indian corporate clients and individuals are subject to applicable GST (currently 18%). GST invoices contain our valid GSTIN, SAC codes, and the client&apos;s GSTIN for input tax credit (ITC) claiming.
+            <strong>Indian Goods &amp; Services Tax (GST):</strong> Invoices issued to Indian corporate clients and individuals are subject to applicable GST (currently 18%). Official GSTIN: <strong>08OTWPS1188A1ZV</strong> (Central Board of Indirect Taxes and Customs - CBIC, Govt. of India, State Code: 08 - Rajasthan). GST invoices contain our valid GSTIN, SAC codes, and the client&apos;s GSTIN for seamless input tax credit (ITC) claiming.
           </li>
           <li>
             <strong>Export of Services (Zero-Rated):</strong> Services provided to clients located outside India are categorized as Export of Services under Section 2(6) of the Integrated Goods and Services Tax (IGST) Act, 2017, and are zero-rated for GST subject to Foreign Inward Remittance Certificate (FIRC) compliance.
@@ -560,6 +560,9 @@ export default function PaymentTermsPage() {
           </div>
           <p style={{ marginBottom: "8px" }}>
             <strong>Department:</strong> Corporate Accounts &amp; Commercial Billing
+          </p>
+          <p style={{ marginBottom: "8px" }}>
+            <strong>Official GSTIN:</strong> <code style={{ background: "#e2e8f0", padding: "2px 6px", borderRadius: "4px", fontWeight: 700, color: "#0f172a" }}>08OTWPS1188A1ZV</code> (State Code: 08 - Rajasthan)
           </p>
           <p style={{ marginBottom: "8px" }}>
             <strong>Direct Billing Email:</strong> <a href="mailto:business@chittortech.in">business@chittortech.in</a> (CC: <a href="mailto:contact@chittortech.in">contact@chittortech.in</a>)

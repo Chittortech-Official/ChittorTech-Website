@@ -62,6 +62,7 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
     phone: invoice.companyPhone || "+91 7597451057",
     email: invoice.companyEmail || "business@chittortech.in",
     website: invoice.companyWebsite || "chittortech.in",
+    gstin: invoice.companyGstin || "08OTWPS1188A1ZV",
   };
 
   const client = {
@@ -464,6 +465,10 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
                   <strong style={{ color: "#1A1A1A", fontWeight: 600 }}>Email: </strong>
                   {company.email}
                 </p>
+                <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#4A4A4A" }}>
+                  <strong style={{ color: "#1A1A1A", fontWeight: 600 }}>GSTIN: </strong>
+                  {company.gstin}
+                </p>
               </div>
 
               {/* Bill To (Client) */}
@@ -790,6 +795,9 @@ export default function ChittorTechInvoiceViewModal({ invoice, onClose }) {
             </span>
             <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <i className="fas fa-globe"></i> {company.website}
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <i className="fas fa-file-invoice"></i> GSTIN: {company.gstin}
             </span>
           </div>
         </div>

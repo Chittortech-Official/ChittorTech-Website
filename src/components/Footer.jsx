@@ -488,6 +488,9 @@ export default function Footer() {
                   <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#0f172a", background: "rgba(15,23,42,0.06)", borderColor: "rgba(15,23,42,0.2)" }}>
                     <i className="fa-solid fa-flag-usa"></i> SAM.gov Contractor
                   </Link>
+                  <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#d97706", background: "rgba(217,119,6,0.08)", borderColor: "rgba(217,119,6,0.25)" }}>
+                    <i className="fa-solid fa-file-invoice-dollar"></i> GSTIN: 08OTWPS1188A1ZV
+                  </Link>
                   <Link prefetch={false} href="/trust-center" className="ct-footer-trust-chip" style={{ color: "#059669", background: "rgba(16,185,129,0.08)", borderColor: "rgba(16,185,129,0.25)" }}>
                     <i className="fa-solid fa-certificate"></i> Trust Center &amp; DGFT IEC
                   </Link>
@@ -795,6 +798,7 @@ export default function Footer() {
               <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' }}><i className="fa-solid fa-city"></i> GeBIZ #Y309075</Link>
               <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f0f9ff', color: '#0284c7', borderColor: '#bae6fd' }}><i className="fa-solid fa-globe"></i> UNGM Supplier</Link>
               <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#f8fafc', color: '#0f172a', borderColor: '#cbd5e1' }}><i className="fa-solid fa-flag-usa"></i> SAM.gov</Link>
+              <Link prefetch={false} href="/trust-center" className="ct-footer-badge-pill" style={{ textDecoration: 'none', background: '#fffbeb', color: '#b45309', borderColor: '#fde68a' }}><i className="fa-solid fa-file-invoice-dollar"></i> GSTIN: 08OTWPS1188A1ZV</Link>
               <span className="ct-footer-badge-pill ssl"><i className="fa-solid fa-shield-halved"></i> SSL Secured</span>
               <span className="ct-footer-badge-pill india"><i className="fa-solid fa-flag"></i> Made in India</span>
             </div>

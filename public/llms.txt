@@ -11,6 +11,7 @@
 - **United Nations Global Marketplace (UNGM)**: Registered UN Vendor / Supplier Entity (Secretariat, UNDP, UNICEF, WHO, Portal: https://www.ungm.org/) across 193 member states
 - **United States Federal Government (SAM.gov & NCAGE)**: Registered US Federal Contractor Entity (SAM.gov & NATO NCAGE catalog, Portal: https://sam.gov/)
 - **DGFT IEC Code**: OTWPS1188A (Directorate General of Foreign Trade, Ministry of Commerce & Industry, Govt. of India)
+- **GSTIN**: 08OTWPS1188A1ZV (Goods and Services Tax Identification Number, Central Board of Indirect Taxes and Customs - CBIC, Department of Revenue, Govt. of India. State Code: 08 - Rajasthan. Full B2B Input Tax Credit / ITC compliant, Zero-rated export invoicing under LUT)
 - **National Startup Recognition**: DPIIT Startup India Recognized Enterprise
 - **State Incubation**: Recognized by iStart Rajasthan (DoIT&C, Govt. of Rajasthan) with verified 32 Q-Rate Score (Startup ID #11478)
 - **MSME Registration**: Registered Micro Enterprise under Ministry of MSME, Govt. of India (MSMED Act 45-day statutory payment protection)

@@ -167,7 +167,14 @@ export default function RootLayout({ children }) {
                   "availableLanguage": ["en", "hi"]
                 }
               ],
+              "taxID": "08OTWPS1188A1ZV",
+              "vatID": "08OTWPS1188A1ZV",
               "identifier": [
+                {
+                  "@type": "PropertyValue",
+                  "name": "Goods and Services Tax Identification Number (GSTIN)",
+                  "value": "08OTWPS1188A1ZV"
+                },
                 {
                   "@type": "PropertyValue",
                   "name": "Importer-Exporter Code (IEC)",
@@ -211,6 +218,7 @@ export default function RootLayout({ children }) {
                 "United States SAM.gov / NCAGE Registered Federal Contractor",
                 "Government of Rajasthan iStart Qrate 32 Recognized Startup",
                 "Government of India MSME Registered IT Enterprise",
+                "Government of India CBIC GST Registered Enterprise (GSTIN: 08OTWPS1188A1ZV)",
                 "DGFT Importer-Exporter Code (IEC: OTWPS1188A) Authorized Software Exporter"
               ],
               "hasCredential": [
@@ -241,6 +249,10 @@ export default function RootLayout({ children }) {
                 {
                   "@type": "EducationalOccupationalCredential",
                   "name": "Government of India MSME Registered Entity"
+                },
+                {
+                  "@type": "EducationalOccupationalCredential",
+                  "name": "Government of India CBIC GST Registered Enterprise (GSTIN: 08OTWPS1188A1ZV)"
                 }
               ],
               "alternateName": [

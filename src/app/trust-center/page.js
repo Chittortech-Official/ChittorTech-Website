@@ -19,8 +19,14 @@ export default function TrustCenterPage() {
     "legalName": "KUSH SHARMA (ChittorTech)",
     "url": "https://chittortech.in",
     "logo": "https://chittortech.in/favicon.png",
-    "taxID": "OTWPS1188A",
+    "taxID": "08OTWPS1188A1ZV",
+    "vatID": "08OTWPS1188A1ZV",
     "identifier": [
+      {
+        "@type": "PropertyValue",
+        "name": "Goods and Services Tax Identification Number (GSTIN)",
+        "value": "08OTWPS1188A1ZV"
+      },
       {
         "@type": "PropertyValue",
         "name": "Importer-Exporter Code (IEC)",
@@ -697,18 +703,21 @@ export default function TrustCenterPage() {
           {/* Track 1: Scrolling Left */}
           <div className="tc-hero-marquee-track left">
             {[
+              { icon: "fa-solid fa-file-invoice-dollar", label: "GSTIN Approved", val: "08OTWPS1188A1ZV" },
               { icon: "fa-solid fa-landmark", label: "ADB CMS Empaneled", val: "#051187" },
               { icon: "fa-solid fa-city", label: "SG GeBIZ Partner", val: "#Y309075" },
               { icon: "fa-solid fa-globe", label: "UNGM Supplier", val: "United Nations" },
               { icon: "fa-solid fa-flag-usa", label: "SAM.gov Contractor", val: "US Federal" },
               { icon: "fa-solid fa-building-columns", label: "DGFT IEC Code", val: "OTWPS1188A" },
             ].concat([
+              { icon: "fa-solid fa-file-invoice-dollar", label: "GSTIN Approved", val: "08OTWPS1188A1ZV" },
               { icon: "fa-solid fa-landmark", label: "ADB CMS Empaneled", val: "#051187" },
               { icon: "fa-solid fa-city", label: "SG GeBIZ Partner", val: "#Y309075" },
               { icon: "fa-solid fa-globe", label: "UNGM Supplier", val: "United Nations" },
               { icon: "fa-solid fa-flag-usa", label: "SAM.gov Contractor", val: "US Federal" },
               { icon: "fa-solid fa-building-columns", label: "DGFT IEC Code", val: "OTWPS1188A" },
             ]).concat([
+              { icon: "fa-solid fa-file-invoice-dollar", label: "GSTIN Approved", val: "08OTWPS1188A1ZV" },
               { icon: "fa-solid fa-landmark", label: "ADB CMS Empaneled", val: "#051187" },
               { icon: "fa-solid fa-city", label: "SG GeBIZ Partner", val: "#Y309075" },
               { icon: "fa-solid fa-globe", label: "UNGM Supplier", val: "United Nations" },
@@ -1325,35 +1334,53 @@ export default function TrustCenterPage() {
                   <div className="tc-card-icon gov">
                     <i className="fa-solid fa-file-invoice-dollar"></i>
                   </div>
-                  <span className="tc-status-pill progress">
-                    <i className="fa-solid fa-clock"></i> Coming Soon
+                  <span className="tc-status-pill verified">
+                    <i className="fa-solid fa-circle-check"></i> Officially Approved
                   </span>
                 </div>
                 <h3 className="tc-card-title">GST &amp; Financial Compliance</h3>
                 <p className="tc-card-sub">
-                  Statutory corporate invoicing compliance under the Central Board of Indirect Taxes and Customs (CBIC). B2B domestic clients receive full Input Tax Credit (ITC).
+                  Approved statutory corporate tax registration under the Central Board of Indirect Taxes and Customs (CBIC). B2B domestic clients receive full Input Tax Credit (ITC).
                 </p>
                 <div className="tc-meta-box">
                   <div className="tc-meta-row">
-                    <span className="tc-meta-label">Authority</span>
+                    <span className="tc-meta-label">GSTIN</span>
+                    <span className="tc-meta-val" style={{ fontWeight: 700, fontFamily: "monospace" }}>
+                      08OTWPS1188A1ZV
+                      <button
+                        className="tc-copy-btn"
+                        onClick={() => handleCopy("08OTWPS1188A1ZV", "gstin")}
+                        title="Copy GSTIN"
+                      >
+                        <i className={copiedId === "gstin" ? "fa-solid fa-check text-success" : "fa-regular fa-copy"}></i>
+                      </button>
+                    </span>
+                  </div>
+                  <div className="tc-meta-row">
+                    <span className="tc-meta-label">Issuing Authority</span>
                     <span className="tc-meta-val">CBIC, Govt of India</span>
                   </div>
                   <div className="tc-meta-row">
-                    <span className="tc-meta-label">Certificate Status</span>
-                    <span className="tc-meta-val" style={{ color: "#b45309" }}>Coming Soon</span>
+                    <span className="tc-meta-label">Jurisdiction</span>
+                    <span className="tc-meta-val">State Code 08 (Rajasthan)</span>
                   </div>
                   <div className="tc-meta-row">
                     <span className="tc-meta-label">B2B Tax Credit</span>
-                    <span className="tc-meta-val">ITC Pass-Through</span>
+                    <span className="tc-meta-val">100% ITC Pass-Through</span>
                   </div>
                   <div className="tc-meta-row">
                     <span className="tc-meta-label">Export Invoicing</span>
                     <span className="tc-meta-val">GST LUT Zero-Rated</span>
                   </div>
                 </div>
-                <Link href="/payment-terms" className="tc-btn-verify">
-                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Read Payment Terms
-                </Link>
+                <a
+                  href="https://services.gst.gov.in/services/searchtp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tc-btn-verify"
+                >
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Verify on GST Portal
+                </a>
               </div>
             </div>
           </div>
@@ -2650,8 +2677,8 @@ export default function TrustCenterPage() {
                     <div className="tc-matrix-icon gov" style={{ background: "#f0fdf4", color: "#059669" }}>
                       <i className="fa-solid fa-file-invoice-dollar"></i>
                     </div>
-                    <span className="tc-status-pill progress">
-                      <i className="fa-solid fa-clock"></i> Coming Soon
+                    <span className="tc-status-pill verified">
+                      <i className="fa-solid fa-circle-check"></i> Active &amp; Approved
                     </span>
                   </div>
                   <div className="tc-matrix-title-wrap">
@@ -2662,6 +2689,10 @@ export default function TrustCenterPage() {
 
                 <div className="tc-matrix-body">
                   <div className="tc-matrix-row">
+                    <span className="tc-matrix-key">GSTIN</span>
+                    <span className="tc-matrix-val" style={{ fontWeight: 800, color: "#0f172a", fontFamily: "monospace" }}>08OTWPS1188A1ZV</span>
+                  </div>
+                  <div className="tc-matrix-row">
                     <span className="tc-matrix-key">Invoicing</span>
                     <span className="tc-matrix-val">GST B2B ITC-Enabled</span>
                   </div>
@@ -2671,14 +2702,30 @@ export default function TrustCenterPage() {
                   </div>
                   <div className="tc-matrix-row">
                     <span className="tc-matrix-key">Compliance Status</span>
-                    <span className="tc-matrix-val">Documentation Phase</span>
+                    <span className="tc-matrix-val" style={{ color: "#059669", fontWeight: 700 }}>Officially Registered</span>
                   </div>
                 </div>
               </div>
 
-              <Link href="/payment-terms" className="tc-matrix-btn">
-                <i className="fa-solid fa-arrow-up-right-from-square"></i> Payment Terms
-              </Link>
+              <div style={{ display: "flex", gap: "8px", marginTop: "14px" }}>
+                <button
+                  type="button"
+                  onClick={() => handleCopy("08OTWPS1188A1ZV", "gstin-matrix")}
+                  className="tc-matrix-btn"
+                  style={{ flex: 1, border: "1px solid #cbd5e1", cursor: "pointer", background: copiedId === "gstin-matrix" ? "#dcfce7" : "#ffffff", color: copiedId === "gstin-matrix" ? "#15803d" : "#0f172a", fontWeight: 600, padding: "8px 12px", borderRadius: "8px", fontSize: "0.82rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}
+                >
+                  <i className={copiedId === "gstin-matrix" ? "fa-solid fa-check text-success" : "fa-regular fa-copy"}></i> {copiedId === "gstin-matrix" ? "Copied!" : "Copy GSTIN"}
+                </button>
+                <a
+                  href="https://services.gst.gov.in/services/searchtp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tc-matrix-btn"
+                  style={{ flex: 1, padding: "8px 12px", borderRadius: "8px", fontSize: "0.82rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", textDecoration: "none" }}
+                >
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i> Verify GST
+                </a>
+              </div>
             </div>
           </div>
         </div>

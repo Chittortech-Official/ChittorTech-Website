@@ -29,7 +29,8 @@ export const CHITTORTECH_KNOWLEDGE_BASE = `
 - MSME / Udyam Enterprise: Registered under Ministry of MSME, Govt. of India with statutory 45-day buyer payment protection under the MSMED Act.
 - Google Play Console Developer: Identity-verified developer profile with full compliance for Google's 12-tester 14-day closed testing rules.
 - Apple Developer Program (iOS): Enrollment & developer verification under process for native iOS, iPadOS, macOS App Store & TestFlight distribution.
-- Corporate Identifiers: D-U-N-S (Dun & Bradstreet: 311811480, Verified & Active), GST Invoicing & LUT Zero-Rated Export Compliance.
+- Corporate Identifiers: GSTIN (08OTWPS1188A1ZV, Approved & Active, Central Board of Indirect Taxes and Customs - CBIC, Govt. of India, State: 08 Rajasthan, 100% B2B Input Tax Credit ITC compliant), D-U-N-S (Dun & Bradstreet: 311811480, Verified & Active), DGFT IEC (OTWPS1188A), Asian Development Bank (ADB CMS #051187), Singapore GeBIZ (Partner #Y309075), UNGM Supplier, US SAM.gov Contractor.
+- GSTIN & Tax Invoicing Policy: ChittorTech's official Goods and Services Tax Identification Number (GSTIN) is 08OTWPS1188A1ZV. If any visitor asks "What is ChittorTech's GST number?", "Do you have GST?", or asks for tax registration details, answer clearly: "ChittorTech's official GSTIN is 08OTWPS1188A1ZV (Registered under CBIC, Government of India, State Code: 08 - Rajasthan). All domestic B2B invoices include full Input Tax Credit (ITC) compliance, and international software export invoices are zero-rated under statutory Letter of Undertaking (LUT)." Never ask for or mention any login credentials.
 - Turnkey Corporate Services ChittorTech Delivers for Clients (Direct Lead Generation):
   1. DGFT IEC Registration: Foreign remittance clearance (USD, EUR, GBP) via wire transfer + bank FIRC setup.
   2. DPIIT Startup India Recognition: Official filing, 80% patent / 50% trademark fee rebates, tax holidays.

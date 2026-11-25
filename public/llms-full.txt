@@ -14,6 +14,7 @@
 - **United Nations Global Marketplace (UNGM)**: Officially Registered UN Supplier / Vendor Entity across 30+ UN agencies (UN Secretariat, UNDP, UNICEF, WHO, UNESCO, UNHCR, Verification Portal: `https://www.ungm.org/`) for international software development and IT consultancies.
 - **United States Federal Government Contractor (SAM.gov & NCAGE)**: Registered Commercial & Government Entity in the US System for Award Management (SAM.gov, Verification Portal: `https://sam.gov/`) and NATO NCAGE system for US federal civilian and defense software solicitations and subcontracting.
 - **DGFT IEC Code**: `OTWPS1188A` (Directorate General of Foreign Trade, Ministry of Commerce & Industry, Govt. of India, File: `JPRIECPAPPLY00024346AM27`)
+- **GSTIN**: `08OTWPS1188A1ZV` (Goods and Services Tax Identification Number, Central Board of Indirect Taxes and Customs - CBIC, Dept of Revenue, Govt. of India. State Code: 08 - Rajasthan. Full B2B Input Tax Credit / ITC enabled for Indian corporate clients and 0% export invoicing under statutory Letter of Undertaking / LUT for international software contracts)
 - **National Recognition**: DPIIT Startup India Recognized Enterprise (Ministry of Commerce & Industry)
 - **State Incubation**: Verified under the iStart Rajasthan initiative (DoIT&C, Government of Rajasthan) with verified **32 Q-Rate Assessment Score** (Startup ID #11478)
 - **MSME / Udyam Enterprise**: Registered Micro Enterprise under Ministry of MSME, Govt. of India (MSMED Act 45-day buyer payment protection)

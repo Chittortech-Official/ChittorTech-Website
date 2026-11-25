@@ -982,6 +982,7 @@ export default function ProjectInvoiceManager() {
       companyPhone: "+91 7597451057",
       companyEmail: "business@chittortech.in",
       companyWebsite: "chittortech.in",
+      companyGstin: "08OTWPS1188A1ZV",
       projectId: invProjName.trim() || "ChittorTech Enterprise Sprint",
       title: invTitle.trim() || (invItems[0]?.description || "Project Milestone Deliverable"),
       items: invItems.map((item, idx) => ({
@@ -3458,6 +3459,7 @@ export default function ProjectInvoiceManager() {
                           <h3 style={{ fontSize: "14px", fontWeight: 900, color: "#000000", margin: "0 0 7px 0" }}>Billing Information:</h3>
                           <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Company Name: </strong>ChittorTech</p>
                           <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Company Address: </strong>Chittorgarh, Rajasthan – 312001</p>
+                          <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>GSTIN: </strong>08OTWPS1188A1ZV</p>
                           <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Phone Number: </strong>+91 7597451057</p>
                           <p style={{ margin: "0 0 3px 0", fontSize: "12px", color: "#4A4A4A" }}><strong>Email: </strong>business@chittortech.in</p>
                         </div>
@@ -3554,6 +3556,7 @@ export default function ProjectInvoiceManager() {
                       <span><i className="fas fa-phone"></i> +91 7597451057</span>
                       <span><i className="fas fa-envelope"></i> business@chittortech.in</span>
                       <span><i className="fas fa-globe"></i> chittortech.in</span>
+                      <span><i className="fas fa-file-invoice"></i> GSTIN: 08OTWPS1188A1ZV</span>
                     </div>
                   </div>
                 </div>

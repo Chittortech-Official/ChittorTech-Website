@@ -218,7 +218,7 @@ const policyContent = {
         <p>Third-party fees (domains, cloud hosting servers, Google Play Console accounts, paid APIs) are 100% non-refundable.</p>
         
         <h3>4. Invoicing &amp; GST Compliance</h3>
-        <p>All domestic Indian invoices comply with 18% GST regulations. International clients receive zero-rated export invoices in USD, EUR, or GBP.</p>
+        <p>All domestic Indian invoices comply with 18% GST regulations (Official GSTIN: <strong>08OTWPS1188A1ZV</strong>, State Code: 08 - Rajasthan). Domestic B2B clients receive full Input Tax Credit (ITC), and international clients receive zero-rated export invoices in USD, EUR, or GBP under statutory Letter of Undertaking (LUT).</p>
         
         <h3>5. Billing Inquiries</h3>
         <p>For invoice questions or receipt copies, contact <a href="mailto:business@chittortech.in">business@chittortech.in</a> or call +91 75974 51057.</p>
